@@ -35,6 +35,11 @@ class GameWorld:
     def update(self):
         while self._running:
 
+            keys = pygame.key.get_pressed()
+
+            if keys[pygame.K_ESCAPE]:
+                pygame.event.post(pygame.event.Event(pygame.QUIT))
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self._running = False

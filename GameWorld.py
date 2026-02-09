@@ -7,7 +7,7 @@ class GameWorld:
         self._gameObjects = []
         self._colliders = []
 
-        self._screen = pygame.display.set_mode((1280,720))
+        self._screen = pygame.display.set_mode((1920,1080))
         self._running = True
         self._clock = pygame.time.Clock()
 

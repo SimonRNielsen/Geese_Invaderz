@@ -16,8 +16,8 @@ class Builder(ABC):
 
 class PlayerBuilder(Builder):
 
-    def build(self):
-        self._gameObject = GameObject(pygame.math.Vector2(0,0))
+    def build(self, position):
+        self._gameObject = GameObject(position)
         self._gameObject.add_component(SpriteRenderer(Entity.PLAYER))
         animator = self._gameObject.add_component(Animator())
         animator.play_animation(Entity.PLAYER)

@@ -9,7 +9,7 @@ class GameWorld:
         self._colliders = []
 
         builder = PlayerBuilder()
-        builder.build()
+        builder.build(pygame.math.Vector2(960,540))
         self._gameObjects.append(builder.get_gameObject())
 
         self._screen = pygame.display.set_mode((1920,1080))

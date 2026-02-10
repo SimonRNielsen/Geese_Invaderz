@@ -9,3 +9,14 @@ class Collisions(Enum):
 class Components(Enum):
     SPRITERENDERER = "SpriteRenderer"
     COLLIDER = "Collider"
+    ANIMATOR = "Animator"
+
+class Assets(Enum):
+    pass
+
+class Entity(Enum):
+    PLAYER = "Player"
+    WALKING_GOOSE = "Walking_Goose"
+    AGGRO_GOOSE = "Aggro_Goose"
+    GOOSIFER = "Goosifer"
+    FIREBALL = "Fireball"

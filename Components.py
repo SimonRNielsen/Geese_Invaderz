@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import pygame
 from Enums import Collisions, Components
+from AssetLoader import AssetLoader
 
 class Component(ABC):
 
@@ -58,11 +59,8 @@ class SpriteRenderer(Component):
 
     def __init__(self, sprite_name) -> None:
         super().__init__()
-
-        self._sprite_image = pygame.image.load(f"assets\\{sprite_name}")
         self._sprite = pygame.sprite.Sprite()
-        self._sprite.rect = self._sprite_image.get_rect()
-        self._sprite_mask = pygame.mask.from_surface(self.sprite_image)
+        self.change_sprite(sprite_name)
 
     @property
     def sprite_image(self):
@@ -91,25 +89,23 @@ class SpriteRenderer(Component):
         self._sprite.rect.topleft = self.gameObject.transform.position
         self._game_world.screen.blit(self._sprite_image,self._sprite.rect)
 
+    def change_sprite(self, sprite_name):
+        self._sprite_image = AssetLoader.get_sprite(sprite_name)
+        self._sprite.rect = self._sprite_image.get_rect()
+        self._sprite_mask = pygame.mask.from_surface(self.sprite_image)
+
 class Animator(Component):
 
     def __init__(self) -> None:
         super().__init__()
         self._animations = {}
-        self._current_animation = None
-        self._animation_time = 0
-        self._current_frame_index = 0
-
-    def add_animation(self, name, *args):
-        frames = []
-        for arg in args:
-            sprite_image = pygame.image.load(f"assets\\{arg}")
-            frames.append(sprite_image)
-
-        self._animations[name] = frames
 
     def play_animation(self, animation):
-        self._current_animation = animation
+        self._current_animation = AssetLoader.get_animations(animation)
+        if animation not in self._animations:
+            self._animations[animation] = self._current_animation
+        self._animation_time = 0
+        self._current_frame_index = 0
 
     def awake(self, game_world):
         self._sprite_renderer = self._gameObject.get_component(Components.SPRITERENDERER.value)
@@ -134,6 +130,7 @@ class Animator(Component):
 class Collider(Component):
 
     def __init__(self) -> None:
+        super().__init__()
         self._other_colliders = []
         self._other_masks = []
         self._listeners = {}
@@ -151,6 +148,9 @@ class Collider(Component):
         self._collision_box = sr.sprite.rect
         self._sprite_mask = sr.sprite_mask
         game_world.colliders.append(self)
+        self._other_colliders.clear()
+        self._other_masks.clear()
+        self._listeners.clear()
 
     def start(self):
         pass

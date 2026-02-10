@@ -98,12 +98,9 @@ class Animator(Component):
 
     def __init__(self) -> None:
         super().__init__()
-        self._animations = {}
 
     def play_animation(self, animation):
         self._current_animation = AssetLoader.get_animations(animation)
-        if animation not in self._animations:
-            self._animations[animation] = self._current_animation
         self._animation_time = 0
         self._current_frame_index = 0
 
@@ -120,12 +117,11 @@ class Animator(Component):
         if self._animation_time >= frame_duration:
             self._animation_time = 0
             self._current_frame_index += 1
-            animation_sequence = self._animations[self._current_animation]
 
-            if self._current_frame_index >= len(animation_sequence):
+            if self._current_frame_index >= len(self._current_animation):
                 self._current_frame_index = 0
 
-            self._sprite_renderer.sprite_image = animation_sequence[self._current_frame_index]
+            self._sprite_renderer.sprite_image = self._current_animation[self._current_frame_index]
 
 class Collider(Component):
 

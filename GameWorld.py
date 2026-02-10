@@ -1,4 +1,5 @@
 import pygame
+from Builder import PlayerBuilder
 
 class GameWorld:
 
@@ -6,6 +7,10 @@ class GameWorld:
         pygame.init()
         self._gameObjects = []
         self._colliders = []
+
+        builder = PlayerBuilder()
+        builder.build()
+        self._gameObjects.append(builder.get_gameObject())
 
         self._screen = pygame.display.set_mode((1920,1080))
         self._running = True

@@ -66,7 +66,7 @@ class AssetLoader:
             args = cls.get_animation_args(asset_key)
             animation = []
             for arg in args:
-                    sprite_image = pygame.image.load(f"assets\\{arg}").convert_alpha()
+                    sprite_image = pygame.image.load(f"assets\\{arg}")
                     animation.append(sprite_image)
             cls._animations[asset_key] = animation
         return cls._animations[asset_key]
@@ -75,6 +75,6 @@ class AssetLoader:
     def get_sprite(cls, asset_key):
         if asset_key not in cls._sprites:
             arg = cls.get_sprite_arg(asset_key)
-            sprite = pygame.image.load(f"assets\\{arg}").convert_alpha()
+            sprite = pygame.image.load(f"assets\\{arg}")
             cls._sprites[asset_key] = sprite
         return cls._sprites[asset_key]

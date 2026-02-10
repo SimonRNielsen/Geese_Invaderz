@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from GameObject import GameObject
 from Components import SpriteRenderer, Animator, Collider
-from Enums import Entity, Components
+from Enums import Entity
 import random, pygame
 
 class Builder(ABC):

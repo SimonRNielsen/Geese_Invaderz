@@ -14,9 +14,10 @@ class Components(Enum):
 class Assets(Enum):
     pass
 
-class Entity(Enum):
+class Entities(Enum):
     PLAYER = "Player"
     WALKING_GOOSE = "Walking_Goose"
     AGGRO_GOOSE = "Aggro_Goose"
     GOOSIFER = "Goosifer"
     FIREBALL = "Fireball"
+    UNKNOWN = ""

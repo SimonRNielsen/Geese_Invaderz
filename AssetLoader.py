@@ -1,4 +1,4 @@
-from Enums import Assets, Entity
+from Enums import Assets, Entities
 import pygame
 
 class AssetLoader:
@@ -10,13 +10,13 @@ class AssetLoader:
     def get_animation_args(cls, asset_key):
         args = ()
         match asset_key:
-            case Entity.PLAYER:
+            case Entities.PLAYER:
                 args = ("player\\mortenMonk0.png",
                         "player\\mortenMonk1.png",
                         "player\\mortenMonk2.png",
                         "player\\mortenMonk3.png",
                         "player\\mortenMonk4.png",)
-            case Entity.WALKING_GOOSE:
+            case Entities.WALKING_GOOSE:
                 args = ("enemy\\gooseWalk0.png",
                         "enemy\\gooseWalk1.png",
                         "enemy\\gooseWalk2.png",
@@ -25,7 +25,7 @@ class AssetLoader:
                         "enemy\\gooseWalk5.png",
                         "enemy\\gooseWalk6.png",
                         "enemy\\gooseWalk7.png",)
-            case Entity.AGGRO_GOOSE:
+            case Entities.AGGRO_GOOSE:
                 args = ("enemy\\aggro0.png",
                         "enemy\\aggro1.png",
                         "enemy\\aggro2.png",
@@ -34,7 +34,7 @@ class AssetLoader:
                         "enemy\\aggro5.png",
                         "enemy\\aggro6.png",
                         "enemy\\aggro7.png",)
-            case Entity.GOOSIFER:
+            case Entities.GOOSIFER:
                 args = ("enemy\\goosifer0.png",
                         "enemy\\goosifer1.png",
                         "enemy\\goosifer2.png",)
@@ -46,15 +46,15 @@ class AssetLoader:
     @classmethod
     def get_sprite_arg(cls, asset_key):
         match asset_key:
-            case Entity.PLAYER:
+            case Entities.PLAYER:
                 return "player\\monkSling0.png"
-            case Entity.WALKING_GOOSE:
+            case Entities.WALKING_GOOSE:
                 return "enemy\\gooseWalk0.png"
-            case Entity.AGGRO_GOOSE:
+            case Entities.AGGRO_GOOSE:
                 return "enemy\\aggro0.png"
-            case Entity.GOOSIFER:
+            case Entities.GOOSIFER:
                 return "enemy\\goosifer0.png"
-            case Entity.FIREBALL:
+            case Entities.FIREBALL:
                 return "projectiles\\fireball0.png"
             case _:
                 print(f"No match case for {asset_key} in get_sprite_arg")

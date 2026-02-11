@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import pygame
-from Enums import Collisions, Components
+from Enums import Collisions, Components, Entities
 from AssetLoader import AssetLoader
 
 class Component(ABC):
@@ -203,3 +203,33 @@ class Collider(Component):
     
     def subscribe(self, service, method):
         self._listeners[service] = method
+
+class Entity(Component):
+
+    _health = 0
+    _max_health = 0
+    _entity_type = Entities.UNKNOWN
+
+    @property
+    def health(self):
+        return self._health
+    
+    @health.setter
+    def health(self, value):
+        self._health = value
+
+    @property
+    def entity_type(self):
+        return self._entity_type
+    
+    @entity_type.setter
+    def entity_type(self, value):
+        self._entity_type = value
+
+    @property
+    def max_health(self):
+        return self._max_health
+    
+    @max_health.setter
+    def max_health(self, value):
+        self._max_health = value

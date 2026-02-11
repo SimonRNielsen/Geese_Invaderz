@@ -12,7 +12,7 @@ class Components(Enum):
     ANIMATOR = "Animator"
 
 class Assets(Enum):
-    pass
+    START_MENU = "Start"
 
 class Entities(Enum):
     PLAYER = "Player"

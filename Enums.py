@@ -13,7 +13,7 @@ class Components(Enum):
     ENEMY = "Enemy"
 
 class Assets(Enum):
-    pass
+    START_MENU = "Start"
 
 class Entities(Enum):
     PLAYER = "Player"

@@ -233,3 +233,12 @@ class Entity(Component):
     @max_health.setter
     def max_health(self, value):
         self._max_health = value
+
+    def awake(self, game_world):
+        pass
+
+    def start(self):
+        pass
+
+    def update(self, delta_time):
+        pass

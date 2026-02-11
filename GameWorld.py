@@ -1,5 +1,6 @@
 import pygame
 from Builder import PlayerBuilder
+from Menu import Menu
 
 class GameWorld:
 
@@ -10,7 +11,12 @@ class GameWorld:
 
         builder = PlayerBuilder()
         builder.build(pygame.math.Vector2(960,540))
+
+        menu = Menu()
+        self._gameObjects.append(menu.show_menu())
         self._gameObjects.append(builder.get_gameObject())
+
+
 
         self._screen = pygame.display.set_mode((1920,1080))
         self._running = True

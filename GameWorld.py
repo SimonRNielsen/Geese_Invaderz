@@ -19,8 +19,6 @@ class GameWorld:
         self._gameObjects.append(builder.get_gameObject())
         self._enemy_pool = EnemyPool(self)
 
-
-
         self._screen = pygame.display.set_mode((1920,1080))
         self._running = True
         self._clock = pygame.time.Clock()

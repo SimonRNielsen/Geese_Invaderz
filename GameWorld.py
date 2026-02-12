@@ -17,8 +17,8 @@ class GameWorld:
 
         self._screen = pygame.display.set_mode((1920,1080))
 
-        # self.menu = Button(self)
-        # self._gameObjects.append(self.menu.get_button())
+        self.menu = Button(self)
+        self._gameObjects.append(self.menu.get_button())
         
         self._running = True
         self._clock = pygame.time.Clock()

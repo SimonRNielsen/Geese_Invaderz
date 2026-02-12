@@ -3,7 +3,7 @@ from AssetLoader import AssetLoader
 from Enums import Assets
 from Components import SpriteRenderer
 from GameObject import GameObject
-import mouse
+import time
 
 class Menu():
     def __init__(self):
@@ -46,7 +46,7 @@ class Button():
         return self._gameObject
     
     def update(self,delta_time):
-        pass
+        self._delta_time = delta_time
 
     def awake(self, game_world):
         pass
@@ -56,5 +56,9 @@ class Button():
 
     def klik_i_din_rumpe(self):
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
-            self._gameObject.destroy()
-            print(self._gameObject.is_destroyed)
+            if(self._sr.sprite_image == self._image):
+                self._sr.change_sprite(Assets.BUTTON_PRESSED)
+            else:
+                self._sr.change_sprite(Assets.BUTTON)
+
+            

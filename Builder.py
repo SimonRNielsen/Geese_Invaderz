@@ -31,10 +31,8 @@ class PlayerBuilder(Builder):
         self._gameObject = GameObject(start_pos)
         
         self._gameObject.add_component(SpriteRenderer(Entities.PLAYER))
-        
         animator = self._gameObject.add_component(Animator())
         animator.play_animation(Entities.PLAYER)
-        
         self._gameObject.add_component(Collider())
         self._gameObject.add_component(Player())
     

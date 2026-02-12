@@ -13,6 +13,7 @@ class Components(Enum):
 
 class Assets(Enum):
     START_MENU = "Start"
+    BUTTON = "Button"
 
 class Entities(Enum):
     PLAYER = "Player"

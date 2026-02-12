@@ -15,7 +15,8 @@ class GameWorld:
         self._player_score = 0
 
         builder = PlayerBuilder()
-        builder.build(pygame.math.Vector2(0,0)) #960,540
+        builder.build()
+        self._gameObjects.append(builder.get_gameObject())
 
         self._gameObjects.append(builder.get_gameObject())
         self._enemy_pool = EnemyPool(self)
@@ -39,7 +40,7 @@ class GameWorld:
         return self._colliders
     
     def instantiate(self, gameObject):
-        gameObject.awake(self)
+        gameObject.awake(self) 
         gameObject.start()
         self._gameObjects.append(gameObject)
 

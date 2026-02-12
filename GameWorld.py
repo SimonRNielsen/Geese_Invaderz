@@ -10,13 +10,12 @@ class GameWorld:
         self._colliders = []
 
         builder = PlayerBuilder()
-        builder.build(pygame.math.Vector2(960,540))
+        builder.build()
+        self._gameObjects.append(builder.get_gameObject())
 
         menu = Menu()
         self._gameObjects.append(menu.show_menu())
         self._gameObjects.append(builder.get_gameObject())
-
-
 
         self._screen = pygame.display.set_mode((1920,1080))
         self._running = True
@@ -31,7 +30,7 @@ class GameWorld:
         return self._colliders
     
     def instantiate(self, gameObject):
-        gameObject.awake(self)
+        gameObject.awake(self) 
         gameObject.start()
         self._gameObjects.append(gameObject)
 

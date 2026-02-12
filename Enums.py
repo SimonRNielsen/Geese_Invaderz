@@ -10,6 +10,7 @@ class Components(Enum):
     SPRITERENDERER = "SpriteRenderer"
     COLLIDER = "Collider"
     ANIMATOR = "Animator"
+    ENEMY = "Enemy"
 
 class Assets(Enum):
     pass
@@ -20,4 +21,5 @@ class Entities(Enum):
     AGGRO_GOOSE = "Aggro_Goose"
     GOOSIFER = "Goosifer"
     FIREBALL = "Fireball"
+    SHEEP = "Sheep"
     UNKNOWN = ""

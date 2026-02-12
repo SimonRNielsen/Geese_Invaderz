@@ -1,10 +1,14 @@
 from abc import ABC, abstractmethod
 from GameObject import GameObject
 from Components import SpriteRenderer, Animator, Collider
+from Enemy import Enemy
 from Enums import Entities
-import random, pygame
+import pygame
 
 class Builder(ABC):
+
+    def __init__(self):
+        super().__init__()
 
     @classmethod
     @abstractmethod
@@ -16,6 +20,9 @@ class Builder(ABC):
 
 class PlayerBuilder(Builder):
 
+    def __init__(self):
+        super().__init__()
+
     def build(self, position):
         self._gameObject = GameObject(position)
         self._gameObject.add_component(SpriteRenderer(Entities.PLAYER))
@@ -24,4 +31,22 @@ class PlayerBuilder(Builder):
         self._gameObject.add_component(Collider())
     
     def get_gameObject(self) -> GameObject:
+        return self._gameObject
+    
+class EnemyBuilder(Builder):
+
+    def __init__(self):
+        super().__init__()
+
+    def build(self, entity_type):
+        self._gameObject = GameObject(pygame.math.Vector2(-1000,-1000))
+        self._gameObject.add_component(SpriteRenderer(entity_type))
+        animator = self._gameObject.add_component(Animator())
+        animator.play_animation(entity_type)
+        self._gameObject.add_component(Collider())
+        enemy = self._gameObject.add_component(Enemy())
+        enemy.set_value(entity_type)
+        self._gameObject.destroy()
+
+    def get_gameObject(self):
         return self._gameObject

@@ -1,5 +1,7 @@
-import pygame
+import pygame, random
 from Builder import PlayerBuilder
+from ObjectPool import EnemyPool
+from Enums import Entities
 
 class GameWorld:
 
@@ -11,6 +13,7 @@ class GameWorld:
         builder = PlayerBuilder()
         builder.build(pygame.math.Vector2(960,540))
         self._gameObjects.append(builder.get_gameObject())
+        self._enemy_pool = EnemyPool(self)
 
         self._screen = pygame.display.set_mode((1920,1080))
         self._running = True
@@ -61,6 +64,7 @@ class GameWorld:
                     collider1.collision_check(collider2)
 
             self._gameObjects = [obj for obj in self._gameObjects if not obj.is_destroyed]
+            self._colliders = [obj for obj in self._colliders if not obj.gameObject.is_destroyed]
 
             pygame.display.flip()
 

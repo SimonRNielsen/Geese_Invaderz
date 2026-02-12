@@ -14,6 +14,10 @@ class GameObject:
     @property
     def is_destroyed(self):
         return self._is_destroyed
+    
+    @is_destroyed.setter
+    def is_destroyed(self, value):
+        self._is_destroyed = value
 
     def add_component(self, component):
         component_name = component.__class__.__name__

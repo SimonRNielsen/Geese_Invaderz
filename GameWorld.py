@@ -1,6 +1,6 @@
 import pygame
 from Builder import PlayerBuilder
-from Menu import Button
+from Menu import Button, Menu
 
 
 class GameWorld:
@@ -17,8 +17,10 @@ class GameWorld:
 
         self._screen = pygame.display.set_mode((1920,1080))
 
-        self.menu = Button(self)
-        self._gameObjects.append(self.menu.get_button())
+        # self._start_manu = Menu()
+        # self._gameObjects.append(self._start_manu.get_menu())
+        # self._button = Button(self, self._start_manu.get_menu())
+        # self._gameObjects.append(self._button.get_button())
         
         self._running = True
         self._clock = pygame.time.Clock()
@@ -56,7 +58,7 @@ class GameWorld:
                 if event.type == pygame.QUIT:
                     self._running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.menu.klik_i_din_rumpe()
+                    self._button.klik_i_din_rumpe()
 
             self._screen.fill("cornflowerblue")
             delta_time = self._clock.tick(60) / 1000.0

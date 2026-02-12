@@ -24,11 +24,11 @@ class Menu():
         pass
 
 class Button():
-    def __init__(self, game_world):
+    def __init__(self, game_world, menu):
         self._gameWorld = game_world
         self._screen_size = self._gameWorld.screen
         self._pos = pygame.math.Vector2(self._screen_size.get_width() / 2, self._screen_size.get_height() / 2)
-
+        self._menu = menu
 
 
 
@@ -57,6 +57,7 @@ class Button():
     def klik_i_din_rumpe(self):
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
             if(self._sr.sprite_image == self._image):
+                self._menu.destroy()
                 self._sr.change_sprite(Assets.BUTTON_PRESSED)
             else:
                 self._sr.change_sprite(Assets.BUTTON)

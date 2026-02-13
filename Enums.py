@@ -18,6 +18,7 @@ class Assets(Enum):
     LOOSE_SCREEN = "Loose"
     BUTTON = "Button"
     BUTTON_PRESSED = "Button pressed"
+    PAUSE = "Pause"
 
 class Entities(Enum):
     PLAYER = "Player"

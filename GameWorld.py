@@ -3,7 +3,7 @@ from Builder import PlayerBuilder
 from Menu import Button, Menu
 
 from ObjectPool import EnemyPool
-from Enums import Entities
+from Enums import Entities, Assets, Button_Types
 
 class GameWorld:
 
@@ -21,10 +21,10 @@ class GameWorld:
 
         self._screen = pygame.display.set_mode((1920,1080))
 
-        self._start_manu = Menu().get_menu()
-        self._gameObjects.append(self._start_manu)
-        self._button = Button(self, self._start_manu)
-        self._gameObjects.append(self._button.get_button())        
+        self._start_manu = Menu(Assets.START_MENU)
+        self._gameObjects.append(self._start_manu).get_menu()
+        self._button = Button(self, self._start_manu, Button_Types.EXIT)
+        self._gameObjects.append(self._button.get_button())   
 
         self._running = True
         self._clock = pygame.time.Clock()
@@ -63,6 +63,10 @@ class GameWorld:
                     self._running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self._button.klik_i_din_rumpe()
+
+
+            self._start_manu.show_pause()
+
 
             self._screen.fill("cornflowerblue")
             delta_time = self._clock.tick(60) / 1000.0

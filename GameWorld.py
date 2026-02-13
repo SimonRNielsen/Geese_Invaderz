@@ -20,10 +20,11 @@ class GameWorld:
 
         self._screen = pygame.display.set_mode((1920,1080))
 
-        # self._start_manu = Menu()
-        # self._gameObjects.append(self._start_manu.get_menu())
-        # self._button = Button(self, self._start_manu.get_menu())
-        # self._gameObjects.append(self._button.get_button())
+        self._start_manu = Menu().get_menu()
+        self._gameObjects.append(self._start_manu)
+        self._button = Button(self, self._start_manu)
+        self._gameObjects.append(self._button.get_button())
+        self._button.draw_text("START", pygame.font.SysFont("Arial", 30), (0, 0, 0), 100, 100)
         
         self._running = True
         self._clock = pygame.time.Clock()

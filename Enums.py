@@ -25,3 +25,7 @@ class Entities(Enum):
     FIREBALL = "Fireball"
     SHEEP = "Sheep"
     UNKNOWN = ""
+
+class Button_Types(Enum):
+    START = "Start"
+    EXIT = "Exit"

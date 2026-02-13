@@ -1,6 +1,9 @@
-import pygame
+import pygame, random
 from Builder import PlayerBuilder
-from Menu import Menu
+from Menu import Button, Menu
+
+from ObjectPool import EnemyPool
+from Enums import Entities
 
 class GameWorld:
 
@@ -13,11 +16,16 @@ class GameWorld:
         builder.build()
         self._gameObjects.append(builder.get_gameObject())
 
-        menu = Menu()
-        self._gameObjects.append(menu.show_menu())
         self._gameObjects.append(builder.get_gameObject())
+        self._enemy_pool = EnemyPool(self)
 
         self._screen = pygame.display.set_mode((1920,1080))
+
+        # self._start_manu = Menu()
+        # self._gameObjects.append(self._start_manu.get_menu())
+        # self._button = Button(self, self._start_manu.get_menu())
+        # self._gameObjects.append(self._button.get_button())
+        
         self._running = True
         self._clock = pygame.time.Clock()
 
@@ -53,6 +61,8 @@ class GameWorld:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self._running = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self._button.klik_i_din_rumpe()
 
             self._screen.fill("cornflowerblue")
             delta_time = self._clock.tick(60) / 1000.0
@@ -66,6 +76,7 @@ class GameWorld:
                     collider1.collision_check(collider2)
 
             self._gameObjects = [obj for obj in self._gameObjects if not obj.is_destroyed]
+            self._colliders = [obj for obj in self._colliders if not obj.gameObject.is_destroyed]
 
             pygame.display.flip()
 

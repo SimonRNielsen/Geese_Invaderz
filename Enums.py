@@ -10,9 +10,12 @@ class Components(Enum):
     SPRITERENDERER = "SpriteRenderer"
     COLLIDER = "Collider"
     ANIMATOR = "Animator"
+    ENEMY = "Enemy"
 
 class Assets(Enum):
     START_MENU = "Start"
+    BUTTON = "Button"
+    BUTTON_PRESSED = "Button pressed"
 
 class Entities(Enum):
     PLAYER = "Player"
@@ -20,4 +23,5 @@ class Entities(Enum):
     AGGRO_GOOSE = "Aggro_Goose"
     GOOSIFER = "Goosifer"
     FIREBALL = "Fireball"
+    SHEEP = "Sheep"
     UNKNOWN = ""

@@ -57,7 +57,11 @@ class AssetLoader:
             case Entities.FIREBALL:
                 return "projectiles\\fireball.png"
             case Assets.START_MENU:
-                return "menu\\OdeanDefendersLogo.png"
+                return "menu\\winScreen.png"
+            case Assets.BUTTON:
+                return "menu\\button.png"
+            case Assets.BUTTON_PRESSED:
+                return "menu\\buttonPressed.png"
             case _:
                 print(f"No match case for {asset_key} in get_sprite_arg")
                 return None

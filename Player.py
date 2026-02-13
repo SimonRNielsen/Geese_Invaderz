@@ -51,7 +51,8 @@ class Player(Component):
         transform = self.gameObject.transform
         transform.position.y += direction * self._speed * delta_time
 
-        #Player kan ikke bevæge sig udenfor skærmens grænser
+        #Clamp så player ikke kan bevæge sig udenfor skærmens grænser
+        sprite_height = self.gameObject.get_component("SpriteRenderer").sprite_image.get_height()
         if transform.position.y < 0:
             transform.position.y = 0
         elif transform.position.y > self._screen_height - self._sprite_height:

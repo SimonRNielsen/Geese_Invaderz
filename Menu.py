@@ -41,32 +41,39 @@ class Button():
 
 
         self._image = AssetLoader.get_sprite(Assets.BUTTON)
-        # self._image_size = self._image.get_size()
         self.rect = self._image.get_rect(topleft=(self._pos))
-
-        # self._text_font = pygame.font.SysFont("Arial", 30)
+        self._text = "Die geese"
+        self._show_text =True
     
 
     def get_button(self):
         return self._gameObject
     
+    def draw_text(self, text):
+        self._font = pygame.font.SysFont("Inkfree", 60)
+        self._text_surface = self._font.render(text, True, (0, 0, 0))
+        self._text_rect = self._text_surface.get_rect()
+        
 
-    def draw_text(self, text, font, text_color, x, y):
-        img = font.render(text, True, text_color)
-        self._screen.blit(img, (x, y))
+
 
     def klik_i_din_rumpe(self):
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
             if(self._sr.sprite_image == self._image):
                 self._menu.destroy()
-                self._sr.change_sprite(Assets.BUTTON_PRESSED)
-            else:
-                self._sr.change_sprite(Assets.BUTTON)
+                self._gameObject.destroy()
+                self._show_text = False
+            #     self._sr.change_sprite(Assets.BUTTON_PRESSED)
+            #     self._text = "Holy Morten"
+            # else:
+            #     self._sr.change_sprite(Assets.BUTTON)
+    
     
     def update(self,delta_time):
-        # draw_text(self, "START", self._text_font, (0, 0, 0), 0,0)
-        pass
-
+        if (self._show_text == True):
+            self.draw_text(self._text)
+            self._text_rect.center = self.rect.center
+            self._screen.blit(self._text_surface, self._text_rect)
 
     def awake(self, game_world):
         pass

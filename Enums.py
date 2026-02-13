@@ -14,6 +14,8 @@ class Components(Enum):
 
 class Assets(Enum):
     START_MENU = "Start"
+    WIN_SCREEN = "Win"
+    LOOSE_SCREEN = "Loose"
     BUTTON = "Button"
     BUTTON_PRESSED = "Button pressed"
 

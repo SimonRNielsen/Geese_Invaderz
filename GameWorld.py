@@ -9,6 +9,7 @@ class GameWorld:
 
     def __init__(self) -> None:
         pygame.init()
+        pygame.display.set_caption("Geese invaderz")
         self._gameObjects = []
         self._colliders = []
 
@@ -23,9 +24,8 @@ class GameWorld:
         self._start_manu = Menu().get_menu()
         self._gameObjects.append(self._start_manu)
         self._button = Button(self, self._start_manu)
-        self._gameObjects.append(self._button.get_button())
-        self._button.draw_text("START", pygame.font.SysFont("Arial", 30), (0, 0, 0), 100, 100)
-        
+        self._gameObjects.append(self._button.get_button())        
+
         self._running = True
         self._clock = pygame.time.Clock()
 
@@ -69,6 +69,8 @@ class GameWorld:
 
             for gameObject in self._gameObjects[:]:
                 gameObject.update(delta_time)
+
+            self._button.update(delta_time)
 
             for i, collider1 in enumerate(self._colliders):
                 for j in range(i+1, len(self._colliders)):

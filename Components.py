@@ -94,6 +94,7 @@ class SpriteRenderer(Component):
         self._sprite.rect = self._sprite_image.get_rect()
         self._sprite_mask = pygame.mask.from_surface(self.sprite_image)
 
+
 class Animator(Component):
 
     def __init__(self) -> None:

@@ -22,11 +22,6 @@ class GameWorld:
         self._enemy_pool = EnemyPool(self)
 
         self._screen = pygame.display.set_mode((1920,1080))
-
-        # self._start_manu = Menu()
-        # self._gameObjects.append(self._start_manu.get_menu())
-        # self._button = Button(self, self._start_manu.get_menu())
-        # self._gameObjects.append(self._button.get_button())
         
         self._running = True
         self._clock = pygame.time.Clock()
@@ -64,6 +59,7 @@ class GameWorld:
             gameObject.awake(self)
 
     def start(self):
+        self.instantiate(self._enemy_pool.get_object(Entities.WALKING_GOOSE, pygame.math.Vector2(1000,500)))
         for gameObject in self._gameObjects[:]:
             gameObject.start()
 

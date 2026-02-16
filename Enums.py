@@ -25,6 +25,8 @@ class Entities(Enum):
     FIREBALL = "Fireball"
     SHEEP = "Sheep"
     UNKNOWN = ""
+    PLAYER_PROJECTILE = "Player_Projectile"
+    ENEMY_PROJECTILE = "Enemy_Projectile"
 
 class GameEvents(Enum):
     ENEMY_DEATH = auto()

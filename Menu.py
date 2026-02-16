@@ -11,11 +11,31 @@ class Menu():
         self._menu_type = menu_type
         self._gameObject = GameObject(pygame.math.Vector2(0,0))
         self._gameWorld = gameWorld
-        self._screen = self._gameWorld.screen
+        # self._screen = self._gameWorld.screen
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
 
 
-        
+
+
+
+
+        match self._menu_type:
+            case Assets.START_MENU:
+                
+                self._start_button = Button(self._gameWorld, self, Button_Types.START)
+                self._gameWorld.instantiate(self._start_button.get_button())
+                self._gameWorld.add_to_text_button(self._start_button)
+                self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
+                self._gameWorld.instantiate(self._exit_button.get_button())
+                self._gameWorld.add_to_text_button(self._exit_button)
+
+
+
+    @property
+    def menu_type(self):
+        return self._menu_type
+
+
     def show_pause(self):
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
     
@@ -33,10 +53,6 @@ class Menu():
     def start(self):
         pass
 
-    def draw_text(self, text):
-        self._font = pygame.font.SysFont("timesnerroman", 90)
-        self._text_surface = self._font.render(text, True, (0, 0, 0))
-        self._text_rect = self._text_surface.get_rect()
 
 class Button():
     def __init__(self, game_world, menu, button_type):
@@ -45,7 +61,6 @@ class Button():
         self._menu = menu
         self._button_type = button_type
         self._texts: List[Button] = self._gameWorld.texts        
-      
         
 
         #Position of the button
@@ -72,10 +87,10 @@ class Button():
         self._image = AssetLoader.get_sprite(Assets.BUTTON)
         self.rect = self._image.get_rect(topleft=(self._pos))
         self._show_text =True
+        pygame.sprite.LayeredUpdates.move_to_front(self)
 
         #Text on the button
         self._text = button_type.name
-
                 
 
     

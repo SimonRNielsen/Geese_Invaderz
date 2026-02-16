@@ -28,14 +28,7 @@ class GameWorld:
         #Menus and buttons
         self._pause = Menu(self, Assets.PAUSE)
         self._start_manu = Menu(self, Assets.START_MENU)
-        self._gameObjects.append(self._start_manu.get_menu())
-        self._start_button = Button(self, self._start_manu, Button_Types.START)
-        self._exit_button = Button(self, self._start_manu, Button_Types.EXIT)
-
-        self._gameObjects.append(self._start_button.get_button())
-        self._text_button.append(self._start_button)   
-        self._gameObjects.append(self._exit_button.get_button())
-        self._text_button.append(self._exit_button)   
+        self._gameObjects.append(self._start_manu.get_menu()) 
 
 
         self._running = True
@@ -52,6 +45,9 @@ class GameWorld:
     @property
     def texts(self):
         return self._text_button
+    
+    def add_to_text_button(self, button):
+        self._text_button.append(button)
     
     def instantiate(self, gameObject):
         gameObject.awake(self)

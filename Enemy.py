@@ -10,9 +10,10 @@ class Enemy(Entity):
         self._gameObject._entity_type = entity_type
         match entity_type:
             case _:
-                self._max_health = 0
+                self._max_health = 1
 
     def awake(self, game_world):
+        self._game_world = game_world
         self._gameObject._health = self._max_health
         self._gameObject._is_destroyed = False
     
@@ -21,3 +22,8 @@ class Enemy(Entity):
 
     def update(self, delta_time):
         pass
+
+    def take_damage(self, value):
+        self.gameObject._health -= value
+        if self.gameObject._health <= 0:
+            self._game_world._enemy_pool.return_object(self._gameObject)

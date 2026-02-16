@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from Enums import Entities, Components
+from Enums import Entities, Components, GameEvents
 from Builder import EnemyBuilder
 
 class ObjectPool(ABC):
@@ -37,6 +37,7 @@ class EnemyPool(ObjectPool):
     def return_object(self, entity):
         entity.destroy()
         self._enemy_pool.append(entity)
+        self._game_world._events[GameEvents.ENEMY_DEATH](entity)
 
     def get_object(self, entity_type, position):
         self._enemy_pool = [obj for obj in self._enemy_pool if obj.is_destroyed]

@@ -3,7 +3,7 @@ from Builder import PlayerBuilder
 from Menu import Button, Menu
 
 from ObjectPool import EnemyPool
-from Enums import Entities
+from Enums import Entities, GameEvents
 
 class GameWorld:
 
@@ -11,6 +11,8 @@ class GameWorld:
         pygame.init()
         self._gameObjects = []
         self._colliders = []
+        self._events = {}
+        self._player_score = 0
 
         builder = PlayerBuilder()
         builder.build()
@@ -42,7 +44,22 @@ class GameWorld:
         gameObject.start()
         self._gameObjects.append(gameObject)
 
+    def subscribe(self, event, method):
+        self._events[event] = method
+
+    def enemy_death(self, gameObject):
+        match gameObject._entity_type:
+            case Entities.WALKING_GOOSE:
+                self._player_score += 1
+            case Entities.AGGRO_GOOSE:
+                self._player_score += 3
+            case Entities.SHEEP:
+                self._player_score += 7
+            case Entities.GOOSIFER:
+                self._player_score += 10
+
     def awake(self):
+        self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)
 

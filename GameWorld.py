@@ -22,16 +22,11 @@ class GameWorld:
 
         builder = PlayerBuilder()
         builder.build()
-        self._gameObjects.append(builder.get_gameObject())
-        
-        builder.build(pygame.math.Vector2(0,0)) #960,540
         self._player = builder.get_gameObject()
 
 
         self._gameObjects.append(self._player)
         self._enemy_pool = EnemyPool(self)
-
-        self._screen = pygame.display.set_mode((1920,1080))
         
         self._start_manu = Menu(self, Assets.START_MENU)
 
@@ -89,10 +84,9 @@ class GameWorld:
             if keys[pygame.K_ESCAPE]:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p]:
-                print("Pause")
                 self._pause = Menu(self, Assets.PAUSE).get_menu()
                 self.add_menu_and_button(self._pause)
-            if keys[pygame.K_d]:
+            if keys[pygame.K_k]:
                 self._player.is_destroyed = True
 
 

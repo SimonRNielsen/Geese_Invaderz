@@ -135,7 +135,6 @@ class Boss_Strategy(Strategy):
         if direction.length() < 10:
             self._current_waypoint = self._waypoints.pop(0)
             self._waypoints.append(self._current_waypoint)
-            direction = direction.normalize()
         direction = direction.normalize()
         self._parent.gameObject.transform.position += direction * self._parent.speed * delta_time
 

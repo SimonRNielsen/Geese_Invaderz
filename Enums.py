@@ -36,3 +36,9 @@ class Button_Types(Enum):
     RESUME = "Resume"
     MAIN = "Main menu"
     # EXIT_PAUSE = "Exit pause"
+    PLAYER_PROJECTILE = "Player_Projectile"
+    ENEMY_PROJECTILE = "Enemy_Projectile"
+
+class GameEvents(Enum):
+    ENEMY_DEATH = auto()
+    PLAYER_DEATH = auto()

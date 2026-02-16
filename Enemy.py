@@ -99,6 +99,10 @@ class Move_Strategy(Strategy):
 
     def enter(self, parent, game_world):
         self._parent = parent
+        if self._parent._strategy is not None and self._parent._strategy is not self:
+            self._parent._strategy.exit()
+            self._parent._previous_strategy = self._parent._strategy
+            self._parent._strategy = self
         self._game_world = game_world
         if self._vertical:
             self._sprite_height = self._parent.gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_height()
@@ -113,7 +117,7 @@ class Move_Strategy(Strategy):
                 self._time_since_direction_change = 0
         
     def exit(self):
-        pass
+        self._parent._previous_strategy = self
 
 class Boss_Strategy(Strategy):
 
@@ -123,6 +127,9 @@ class Boss_Strategy(Strategy):
 
     def enter(self, parent, game_world):
         self._parent = parent
+        if self._parent._strategy is not None and self._parent._strategy is not self:
+            self._parent._strategy.exit()
+            self._parent._strategy = self
         self._game_world = game_world
         sr = self._parent.gameObject.get_component(Components.SPRITERENDERER.value)
         self._right_border = game_world.screen.get_width() - sr.sprite_image.get_width()
@@ -139,7 +146,7 @@ class Boss_Strategy(Strategy):
         self._parent.gameObject.transform.position += direction * self._parent.speed * delta_time
 
     def exit(self):
-        pass
+        self._parent._previous_strategy = self
 
     def set_waypoints(self):
         right = self._right_border

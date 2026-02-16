@@ -26,17 +26,23 @@ class Projectile(Component):
     def awake(self, game_world):
         self._screen = game_world.screen
         self._transform = self.gameObject.transform
-
-        try:
-            if self._type.lower() == "player":
-                self._sprite_image = AssetLoader.get_sprite(Entities.PLAYER)  # eller lav en PLAYER_PROJECTILE
-            elif self._type.lower() == "enemy":
-                self._sprite_image = AssetLoader.get_sprite(Entities.ENEMY_PROJECTILE)
-            elif self._type.lower() == "boss":
-                self._sprite_image = AssetLoader.get_sprite(Entities.FIREBALL)
-        except Exception as e:
-            self._sprite_image = None
-            print(f"[projectile] Sprite for {self._type} ikke fundet: {e}")
+        match self._type.capitalize():
+            case "Player":
+                self._gameObject._entity_type = Entities.PLAYER_PROJECTILE
+            case "Boss":
+                self._gameObject._entity_type = Entities.FIREBALL
+            case "Enemy":
+                self._gameObject._entity_type = Entities.ENEMY_PROJECTILE
+        # try:
+        #     if self._type.lower() == "player":
+        #         self._sprite_image = AssetLoader.get_sprite(Entities.PLAYER)  # eller lav en PLAYER_PROJECTILE
+        #     elif self._type.lower() == "enemy":
+        #         self._sprite_image = AssetLoader.get_sprite(Entities.ENEMY_PROJECTILE)
+        #     elif self._type.lower() == "boss":
+        #         self._sprite_image = AssetLoader.get_sprite(Entities.FIREBALL)
+        # except Exception as e:
+        #     self._sprite_image = None
+        #     print(f"[projectile] Sprite for {self._type} ikke fundet: {e}")
 
     def start(self):
         pass
@@ -46,8 +52,8 @@ class Projectile(Component):
         self._transform.position.x += self._speed * delta_time * self._direction
 
         #Tegn projectile hvis sprite findes
-        if self._sprite_image:
-            self._screen.blit(self._sprite_image, self._transform.position)
+        # if self._sprite_image:
+        #     self._screen.blit(self._sprite_image, self._transform.position)
 
         #Fjern hvis udenfor skærmen
         if self._transform.position.x < 0 or self._transform.position.x > self._screen.get_width():

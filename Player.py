@@ -1,7 +1,7 @@
 import pygame
 from AssetLoader import AssetLoader
 from Enums import Entities
-from Components import Component, SpriteRenderer
+from Components import Component, SpriteRenderer, Collider
 from GameObject import GameObject
 from Projectile import Projectile
 
@@ -73,4 +73,5 @@ class Player(Component):
             projectile_type = "boss", #Can be 'Player', 'Enemy', 'Boss'
             direction = 1 #Player shoots to the right
         ))
+        proj_obj.add_component(Collider())
         self._game_world.instantiate(proj_obj)

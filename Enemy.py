@@ -1,5 +1,5 @@
 from Components import Entity
-from Enums import Entities, Components, Collisions
+from Enums import Entities, Components, Collisions, GameEvents
 from abc import ABC, abstractmethod
 import pygame
 
@@ -12,6 +12,8 @@ class Enemy(Entity):
     def set_value(self, entity_type):
         self._gameObject._entity_type = entity_type
         self._damage = 1
+        self._sprite_width = self._gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_width()
+        self._x_left_boundary = -self._sprite_width
         match entity_type:
             case Entities.GOOSIFER:
                 self._speed = 400
@@ -35,10 +37,10 @@ class Enemy(Entity):
 
     def awake(self, game_world):
         self._game_world = game_world
-        if not self._strategy == None:
-            self._strategy.enter(self, game_world)
         self._gameObject._health = self._max_health
         self._gameObject._is_destroyed = False
+        if not self._strategy == None:
+            self._strategy.enter(self, game_world)
     
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
@@ -47,6 +49,9 @@ class Enemy(Entity):
     def update(self, delta_time):
         if self._strategy is not None:
             self._strategy.execute(delta_time)
+        if self.gameObject.transform.position.x <= self._x_left_boundary:
+            self._game_world._enemy_pool.return_object(self.gameObject)
+            self._game_world._events[GameEvents.ENEMY_ESCAPED](self._damage)
 
     def take_damage(self, collider):
         other = collider.gameObject
@@ -96,14 +101,14 @@ class Move_Strategy(Strategy):
         self._parent = parent
         self._game_world = game_world
         if self._vertical:
-            sr = self._parent.gameObject.get_component(Components.SPRITERENDERER.value)
-            self._sprite_height = sr.sprite_image.get_height()
+            self._sprite_height = self._parent.gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_height()
+            self._screen_height = game_world.screen.get_height()
 
     def execute(self, delta_time):
         self._parent._gameObject.transform.position -= self._direction * self._parent.speed * delta_time
         if self._vertical:
             self._time_since_direction_change += delta_time
-            if (self._parent._gameObject.transform.position.y <= 0 or self._parent._gameObject.transform.position.y >= (self._game_world.screen.get_height() - self._sprite_height)) and self._time_since_direction_change > 1:
+            if (self._parent._gameObject.transform.position.y <= 0 or self._parent._gameObject.transform.position.y >= (self._screen_height - self._sprite_height)) and self._time_since_direction_change > 1:
                 self._direction = -self._direction
                 self._time_since_direction_change = 0
         
@@ -132,7 +137,7 @@ class Boss_Strategy(Strategy):
             self._waypoints.append(self._current_waypoint)
             direction = direction.normalize()
         direction = direction.normalize()
-        self._parent.gameObject.transform.position += direction * self._parent._speed * delta_time
+        self._parent.gameObject.transform.position += direction * self._parent.speed * delta_time
 
     def exit(self):
         pass

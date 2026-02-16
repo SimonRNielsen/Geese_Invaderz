@@ -1,6 +1,6 @@
 import pygame
 from AssetLoader import AssetLoader
-from Enums import Entities
+from Enums import Entities, GameEvents
 from Components import Component, SpriteRenderer, Collider
 from GameObject import GameObject
 from Projectile import Projectile
@@ -13,12 +13,20 @@ class Player(Component):
         self._shoot_cooldown = 0.50
         self._time_since_last_shot = 0
 
+    def take_damage(self, amount):
+        self.gameObject._health -= amount
+        if self.gameObject._health <= 0:
+            self.gameObject._health = 0
+            self.destroy()
+            # self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
+
     def awake(self, gameWorld):
         #Gem reference til skærmen, så der kan laves højdegrænser
         self._screen_height = gameWorld.screen.get_height()
         self._game_world = gameWorld
         self._gameObject._entity_type = Entities.PLAYER
         self._gameObject._health = 3
+        gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.take_damage)
 
     def start(self):
         pass

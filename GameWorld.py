@@ -14,25 +14,28 @@ class GameWorld:
         self._screen = pygame.display.set_mode((1920,1080))
         self._gameObjects = []
         self._colliders = []
-        self._text: List[Button] = []
+        self._text_button: List[Button] = []
+
 
         builder = PlayerBuilder()
         builder.build(pygame.math.Vector2(0,0)) #960,540
+        self._player = builder.get_gameObject()
 
-        self._gameObjects.append(builder.get_gameObject())
+
+        self._gameObjects.append(self._player)
         self._enemy_pool = EnemyPool(self)
 
         #Menus and buttons
-        self._pause = Menu(Assets.PAUSE)
-        self._start_manu = Menu(Assets.START_MENU)
+        self._pause = Menu(self, Assets.PAUSE)
+        self._start_manu = Menu(self, Assets.START_MENU)
         self._gameObjects.append(self._start_manu.get_menu())
         self._start_button = Button(self, self._start_manu, Button_Types.START)
         self._exit_button = Button(self, self._start_manu, Button_Types.EXIT)
 
         self._gameObjects.append(self._start_button.get_button())
-        self._text.append(self._start_button)   
+        self._text_button.append(self._start_button)   
         self._gameObjects.append(self._exit_button.get_button())
-        self._text.append(self._exit_button)   
+        self._text_button.append(self._exit_button)   
 
 
         self._running = True
@@ -47,8 +50,8 @@ class GameWorld:
         return self._colliders
 
     @property
-    def buttons(self):
-        return self._text
+    def texts(self):
+        return self._text_button
     
     def instantiate(self, gameObject):
         gameObject.awake(self)
@@ -72,13 +75,15 @@ class GameWorld:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p]:
                 print("Pause")
+                self._loose = Menu(self, Assets.LOOSE_SCREEN)
+                self.instantiate(self._loose.get_menu())
 
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self._running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    for text in self._text[:]:
+                    for text in self._text_button[:]:
                         text.klik_i_din_rumpe()
 
 
@@ -89,7 +94,7 @@ class GameWorld:
                 gameObject.update(delta_time)
 
             #Text update
-            for text in self._text[:]:
+            for text in self._text_button[:]:
                 text.update(delta_time)
 
             for i, collider1 in enumerate(self._colliders):

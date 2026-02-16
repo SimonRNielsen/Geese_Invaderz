@@ -1,3 +1,4 @@
+from typing import List
 import pygame
 from AssetLoader import AssetLoader
 from Enums import Assets, Button_Types
@@ -6,12 +7,13 @@ from GameObject import GameObject
 import time
 
 class Menu():
-    def __init__(self, menu_type):
+    def __init__(self, gameWorld, menu_type):
         self._menu_type = menu_type
         self._gameObject = GameObject(pygame.math.Vector2(0,0))
-
-        # if ( self._menu_type != Assets.PAUSE):
+        self._gameWorld = gameWorld
+        self._screen = self._gameWorld.screen
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
+
 
         
     def show_pause(self):
@@ -24,11 +26,17 @@ class Menu():
     def update(self,delta_time):
         pass
 
+
     def awake(self, game_world):
         pass
 
     def start(self):
         pass
+
+    def draw_text(self, text):
+        self._font = pygame.font.SysFont("timesnerroman", 90)
+        self._text_surface = self._font.render(text, True, (0, 0, 0))
+        self._text_rect = self._text_surface.get_rect()
 
 class Button():
     def __init__(self, game_world, menu, button_type):
@@ -36,15 +44,16 @@ class Button():
         self._screen = self._gameWorld.screen
         self._menu = menu
         self._button_type = button_type
-        self._buttons = self._gameWorld.buttons
+        self._texts: List[Button] = self._gameWorld.texts        
+      
         
 
         #Position of the button
         match self._button_type:
             case Button_Types.START:
-                self._pos = pygame.math.Vector2(100, 100)
+                self._pos = pygame.math.Vector2(800, 550)
             case Button_Types.EXIT:
-                self._pos = pygame.math.Vector2(500,500)
+                self._pos = pygame.math.Vector2(1000,550)
             case Button_Types.RESTART:
                 self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
             case Button_Types.RESUME:
@@ -89,9 +98,9 @@ class Button():
             elif(self._button_type == Button_Types.EXIT):
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
 
-            # self._gameObject.destroy()
-            self._show_text = False
-            self._buttons.destroy()
+            for text_and_button in self._texts:
+                text_and_button._show_text = False
+                text_and_button.get_button().destroy()
     
     
     def update(self,delta_time):

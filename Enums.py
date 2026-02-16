@@ -34,5 +34,5 @@ class Button_Types(Enum):
     EXIT = "Exit"
     RESTART = "Restart"
     RESUME = "Resume"
-    MAIN_MENU = "Main Menu"
-    EXIT_PAUSE = "Exit pause"
+    MAIN = "Main menu"
+    # EXIT_PAUSE = "Exit pause"

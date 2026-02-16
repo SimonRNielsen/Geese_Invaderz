@@ -15,20 +15,29 @@ class Menu():
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
 
 
-
+        self._gameWorld.add_to_gameObjects(self._gameObject)
 
 
 
         match self._menu_type:
-            case Assets.START_MENU:
-                
+            case Assets.START_MENU:             
                 self._start_button = Button(self._gameWorld, self, Button_Types.START)
                 self._gameWorld.instantiate(self._start_button.get_button())
                 self._gameWorld.add_to_text_button(self._start_button)
                 self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                 self._gameWorld.instantiate(self._exit_button.get_button())
                 self._gameWorld.add_to_text_button(self._exit_button)
+            case Assets.PAUSE:
+                self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
+                self._gameWorld.instantiate(self._exit_button.get_button())
+                self._gameWorld.add_to_text_button(self._exit_button)
+                self._resume_button = Button(self._gameWorld, self, Button_Types.RESUME)
+                self._gameWorld.instantiate(self._resume_button.get_button())
+                self._gameWorld.add_to_text_button(self._resume_button)
 
+                self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                self._gameWorld.instantiate(self._main_button.get_button())
+                self._gameWorld.add_to_text_button(self._main_button)
 
 
     @property
@@ -72,9 +81,9 @@ class Button():
             case Button_Types.RESTART:
                 self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
             case Button_Types.RESUME:
-                self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
-            case Button_Types.MAIN_MENU:
-                self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2 + 100)
+                self._pos = pygame.math.Vector2(800, 550)
+            case Button_Types.MAIN:
+                self._pos = pygame.math.Vector2(900, 700)
             case _:
                 print(f"No match case for {button_type} in Button.__init__")
                 self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
@@ -87,7 +96,6 @@ class Button():
         self._image = AssetLoader.get_sprite(Assets.BUTTON)
         self.rect = self._image.get_rect(topleft=(self._pos))
         self._show_text =True
-        pygame.sprite.LayeredUpdates.move_to_front(self)
 
         #Text on the button
         self._text = button_type.name
@@ -108,10 +116,12 @@ class Button():
 
     def klik_i_din_rumpe(self):
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
-            if(self._button_type == Button_Types.START):
-                self._menu.get_menu().destroy()
-            elif(self._button_type == Button_Types.EXIT):
+            if(self._button_type == Button_Types.EXIT):
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
+            elif(self._button_type == Button_Types.MAIN):
+                self._gameWorld.instantiate(Menu(self._gameWorld, Assets.START_MENU.get_menu()))
+            else:
+                self._menu.get_menu().destroy()
 
             for text_and_button in self._texts:
                 text_and_button._show_text = False

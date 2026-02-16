@@ -25,10 +25,7 @@ class GameWorld:
         self._gameObjects.append(self._player)
         self._enemy_pool = EnemyPool(self)
 
-        #Menus and buttons
-        self._pause = Menu(self, Assets.PAUSE)
         self._start_manu = Menu(self, Assets.START_MENU)
-        self._gameObjects.append(self._start_manu.get_menu()) 
 
 
         self._running = True
@@ -46,8 +43,6 @@ class GameWorld:
     def texts(self):
         return self._text_button
     
-    def add_to_text_button(self, button):
-        self._text_button.append(button)
     
     def instantiate(self, gameObject):
         gameObject.awake(self)
@@ -71,8 +66,11 @@ class GameWorld:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p]:
                 print("Pause")
-                self._loose = Menu(self, Assets.LOOSE_SCREEN)
-                self.instantiate(self._loose.get_menu())
+                self._pause = Menu(self, Assets.PAUSE).get_menu()
+                self.add_menu_and_button(self._pause)
+            if keys[pygame.K_d]:
+                self._player.is_destroyed = True
+
 
 
             for event in pygame.event.get():
@@ -93,6 +91,10 @@ class GameWorld:
             for text in self._text_button[:]:
                 text.update(delta_time)
 
+            if self._player.is_destroyed == True:
+                self._loose = Menu(self, Assets.LOOSE_SCREEN).get_menu()
+                self.add_menu_and_button(self._loose)
+
             for i, collider1 in enumerate(self._colliders):
                 for j in range(i+1, len(self._colliders)):
                     collider2 = self._colliders[j]
@@ -104,6 +106,18 @@ class GameWorld:
             pygame.display.flip()
 
         pygame.quit()
+
+    def add_to_text_button(self, button):
+        self._text_button.append(button)
+
+    def add_to_gameObjects(self, gameObject):
+        self._gameObjects.append(gameObject)
+
+    def add_menu_and_button(self, gameObject):
+        gameObject.awake(self)
+        gameObject.start()
+
+
 
 gw = GameWorld()
 

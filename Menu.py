@@ -10,8 +10,8 @@ class Menu():
         self._menu_type = menu_type
         self._gameObject = GameObject(pygame.math.Vector2(0,0))
 
-        if ( self._menu_type != Assets.PAUSE):
-            self._gameObject.add_component(SpriteRenderer(self._menu_type))
+        # if ( self._menu_type != Assets.PAUSE):
+        self._gameObject.add_component(SpriteRenderer(self._menu_type))
 
         
     def show_pause(self):
@@ -34,18 +34,37 @@ class Button():
     def __init__(self, game_world, menu, button_type):
         self._gameWorld = game_world
         self._screen = self._gameWorld.screen
-        self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
         self._menu = menu
         self._button_type = button_type
+        self._buttons = self._gameWorld.buttons
+        
 
+        #Position of the button
+        match self._button_type:
+            case Button_Types.START:
+                self._pos = pygame.math.Vector2(100, 100)
+            case Button_Types.EXIT:
+                self._pos = pygame.math.Vector2(500,500)
+            case Button_Types.RESTART:
+                self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
+            case Button_Types.RESUME:
+                self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
+            case Button_Types.MAIN_MENU:
+                self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2 + 100)
+            case _:
+                print(f"No match case for {button_type} in Button.__init__")
+                self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
+
+        #GameObject and SpriteRenderer for the button
         self._gameObject = GameObject(self._pos)
         self._sr =self._gameObject.add_component(SpriteRenderer(Assets.BUTTON))
 
-
+        #Text on the button
         self._image = AssetLoader.get_sprite(Assets.BUTTON)
         self.rect = self._image.get_rect(topleft=(self._pos))
         self._show_text =True
 
+        #Text on the button
         self._text = button_type.name
 
                 
@@ -66,11 +85,13 @@ class Button():
     def klik_i_din_rumpe(self):
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
             if(self._button_type == Button_Types.START):
-                self._menu.destroy()
-                self._gameObject.destroy()
-                self._show_text = False
+                self._menu.get_menu().destroy()
             elif(self._button_type == Button_Types.EXIT):
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+            # self._gameObject.destroy()
+            self._show_text = False
+            self._buttons.destroy()
     
     
     def update(self,delta_time):

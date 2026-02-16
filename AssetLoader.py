@@ -57,7 +57,7 @@ class AssetLoader:
             case Entities.FIREBALL:
                 return "projectiles\\fireball0.png"
             case Assets.START_MENU:
-                return "menu\\pause.png"
+                return "menu\\startMenu.png"
             case Assets.WIN_SCREEN:
                 return "menu\\winScreen.png"
             case Assets.LOOSE_SCREEN:

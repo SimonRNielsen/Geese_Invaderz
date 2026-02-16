@@ -32,3 +32,7 @@ class Entities(Enum):
 class Button_Types(Enum):
     START = "Start"
     EXIT = "Exit"
+    RESTART = "Restart"
+    RESUME = "Resume"
+    MAIN_MENU = "Main Menu"
+    EXIT_PAUSE = "Exit pause"

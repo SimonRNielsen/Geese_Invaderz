@@ -52,13 +52,20 @@ class GameWorld:
             case Entities.GOOSIFER:
                 self._player_score += 10
 
+    def spawn_enemy(self, entity_type, position):
+        self.instantiate(self._enemy_pool.get_object(entity_type, position))
+
     def awake(self):
+
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
+
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)
 
     def start(self):
-        self.instantiate(self._enemy_pool.get_object(Entities.GOOSIFER, pygame.math.Vector2(1000,500)))
+
+        self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+        
         for gameObject in self._gameObjects[:]:
             gameObject.start()
 

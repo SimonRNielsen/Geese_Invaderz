@@ -126,7 +126,13 @@ class Boss_Strategy(Strategy):
         self._current_waypoint = self._waypoints[len(self._waypoints)-1]
 
     def execute(self, delta_time):
-        self._parent.gameObject.transform.position += (self._parent.gameObject.transform.position - self._current_waypoint) * self._parent._speed * delta_time
+        direction = self._current_waypoint - self._parent.gameObject.transform.position
+        if direction.length() < 10:
+            self._current_waypoint = self._waypoints.pop(0)
+            self._waypoints.append(self._current_waypoint)
+            direction = direction.normalize()
+        direction = direction.normalize()
+        self._parent.gameObject.transform.position += direction * self._parent._speed * delta_time
 
     def exit(self):
         pass
@@ -135,9 +141,8 @@ class Boss_Strategy(Strategy):
         right = self._right_border
         bottom = self._bottom_border
         waypoints = self._waypoints
-
-        waypoints.append(pygame.math.Vector2((right / 100) * 88, (bottom / 100) * 55))
-        waypoints.append(pygame.math.Vector2((right / 100) * 62, (bottom / 100) * 35))
-        waypoints.append(pygame.math.Vector2((right / 100) * 88, (bottom / 100) * 35))
-        waypoints.append(pygame.math.Vector2((right / 100) * 62, (bottom / 100) * 55))
-        waypoints.append(pygame.math.Vector2((right / 100) * 25, (bottom / 100) * 15))
+        waypoints.append(pygame.math.Vector2(right * 0.75, bottom * 0.01))  # top
+        waypoints.append(pygame.math.Vector2(right * 0.98, bottom * 0.98))  # nederst højre
+        waypoints.append(pygame.math.Vector2(right * 0.52, bottom * 0.30))  # midt venstre
+        waypoints.append(pygame.math.Vector2(right * 0.98, bottom * 0.30))  # midt højre
+        waypoints.append(pygame.math.Vector2(right * 0.52, bottom * 0.98))  # nederst venstre

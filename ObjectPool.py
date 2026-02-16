@@ -25,14 +25,15 @@ class EnemyPool(ObjectPool):
             builder = EnemyBuilder()
             builder.build(Entities.WALKING_GOOSE)
             self._enemy_pool.append(builder.get_gameObject())
-
             builder = EnemyBuilder()
             builder.build(Entities.AGGRO_GOOSE)
             self._enemy_pool.append(builder.get_gameObject())
+            # builder = EnemyBuilder()
+            # builder.build(Entities.SHEEP)
+            # self._enemy_pool.append(builder.get_gameObject())
         builder = EnemyBuilder()
         builder.build(Entities.GOOSIFER)
         self._enemy_pool.append(builder.get_gameObject())
-
 
     def return_object(self, entity):
         entity.destroy()

@@ -17,6 +17,8 @@ class Player(Component):
         #Gem reference til skærmen, så der kan laves højdegrænser
         self._screen_height = gameWorld.screen.get_height()
         self._game_world = gameWorld
+        self._gameObject._entity_type = Entities.PLAYER
+        self._gameObject._health = 3
 
     def start(self):
         pass

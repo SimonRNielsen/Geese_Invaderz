@@ -58,7 +58,7 @@ class GameWorld:
             gameObject.awake(self)
 
     def start(self):
-        self.instantiate(self._enemy_pool.get_object(Entities.WALKING_GOOSE, pygame.math.Vector2(1000,500)))
+        self.instantiate(self._enemy_pool.get_object(Entities.GOOSIFER, pygame.math.Vector2(1000,500)))
         for gameObject in self._gameObjects[:]:
             gameObject.start()
 

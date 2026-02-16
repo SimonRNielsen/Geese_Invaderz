@@ -26,6 +26,7 @@ class Projectile(Component):
     def awake(self, game_world):
         self._screen = game_world.screen
         self._transform = self.gameObject.transform
+        self._gameObject._damage = 1
         match self._type.capitalize():
             case "Player":
                 self._gameObject._entity_type = Entities.PLAYER_PROJECTILE

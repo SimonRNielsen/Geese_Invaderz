@@ -46,6 +46,8 @@ class GameWorld:
     def texts(self):
         return self._text_button
     
+    def spawn_main_menu(self):
+        Menu(self, Assets.START_MENU)
     
     def instantiate(self, gameObject):
         gameObject.awake(self) 
@@ -68,6 +70,7 @@ class GameWorld:
 
     def awake(self):
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
+        self.subscribe(GameEvents.MAIN, self.spawn_main_menu)
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)
 
@@ -84,10 +87,13 @@ class GameWorld:
             if keys[pygame.K_ESCAPE]:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p]:
-                self._pause = Menu(self, Assets.PAUSE).get_menu()
+                self._pause = Menu(self, Assets.PAUSE)
                 self.add_menu_and_button(self._pause)
             if keys[pygame.K_k]:
                 self._player.is_destroyed = True
+                # self.__kage = Menu(self, Assets.START_MENU)
+            
+            # self._events[GameEvents.MAIN]
 
 
 
@@ -110,8 +116,8 @@ class GameWorld:
                 text.update(delta_time)
 
             if self._player.is_destroyed == True:
-                self._loose = Menu(self, Assets.LOOSE_SCREEN).get_menu()
-                self.add_menu_and_button(self._loose)
+                self._loose = Menu(self, Assets.LOOSE_SCREEN)
+  
 
             for i, collider1 in enumerate(self._colliders):
                 for j in range(i+1, len(self._colliders)):
@@ -128,8 +134,8 @@ class GameWorld:
     def add_to_text_button(self, button):
         self._text_button.append(button)
 
-    def add_to_gameObjects(self, gameObject):
-        self._gameObjects.append(gameObject)
+    # def add_to_gameObjects(self, gameObject):
+    #     self._gameObjects.append(gameObject)
 
     def add_menu_and_button(self, gameObject):
         gameObject.awake(self)

@@ -1,7 +1,7 @@
 from typing import List
 import pygame
 from AssetLoader import AssetLoader
-from Enums import Assets, Button_Types
+from Enums import Assets, Button_Types, GameEvents
 from Components import SpriteRenderer
 from GameObject import GameObject
 import time
@@ -13,31 +13,32 @@ class Menu():
         self._gameWorld = gameWorld
         # self._screen = self._gameWorld.screen
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
+        self._gameObject.add_component(self)
 
-
-        self._gameWorld.add_to_gameObjects(self._gameObject)
-
-
+        self._gameWorld.instantiate(self._gameObject)
 
         match self._menu_type:
             case Assets.START_MENU:             
                 self._start_button = Button(self._gameWorld, self, Button_Types.START)
                 self._gameWorld.instantiate(self._start_button.get_button())
-                self._gameWorld.add_to_text_button(self._start_button)
+                # self._gameWorld.add_to_text_button(self._start_button)
                 self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                 self._gameWorld.instantiate(self._exit_button.get_button())
-                self._gameWorld.add_to_text_button(self._exit_button)
+                # self._gameWorld.add_to_text_button(self._exit_button)
             case Assets.PAUSE:
                 self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                 self._gameWorld.instantiate(self._exit_button.get_button())
-                self._gameWorld.add_to_text_button(self._exit_button)
+                # self._gameWorld.add_to_text_button(self._exit_button)
                 self._resume_button = Button(self._gameWorld, self, Button_Types.RESUME)
                 self._gameWorld.instantiate(self._resume_button.get_button())
-                self._gameWorld.add_to_text_button(self._resume_button)
-
+                # self._gameWorld.add_to_text_button(self._resume_button)
                 self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
                 self._gameWorld.instantiate(self._main_button.get_button())
-                self._gameWorld.add_to_text_button(self._main_button)
+                # self._gameWorld.add_to_text_button(self._main_button)
+
+
+
+
 
 
     @property
@@ -59,6 +60,8 @@ class Menu():
     def awake(self, game_world):
         pass
 
+        
+
     def start(self):
         pass
 
@@ -70,6 +73,7 @@ class Button():
         self._menu = menu
         self._button_type = button_type
         self._texts: List[Button] = self._gameWorld.texts        
+        self._main_bool = False
         
 
         #Position of the button
@@ -99,8 +103,10 @@ class Button():
 
         #Text on the button
         self._text = button_type.name
-                
 
+        self._gameWorld.add_to_text_button(self)
+                
+    
     
 
     def get_button(self):
@@ -119,7 +125,8 @@ class Button():
             if(self._button_type == Button_Types.EXIT):
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             elif(self._button_type == Button_Types.MAIN):
-                self._gameWorld.instantiate(Menu(self._gameWorld, Assets.START_MENU.get_menu()))
+                self._main_bool = True
+                self._menu.get_menu().destroy()
             else:
                 self._menu.get_menu().destroy()
 
@@ -133,6 +140,10 @@ class Button():
             self.draw_text(self._text)
             self._text_rect.center = self.rect.center
             self._screen.blit(self._text_surface, self._text_rect)
+        if self._main_bool == True:
+            self._main = self._gameWorld._events[GameEvents.MAIN]()
+            self._main_bool = False
+
 
     def awake(self, game_world):
         pass

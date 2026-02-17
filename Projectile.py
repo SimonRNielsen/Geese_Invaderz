@@ -1,5 +1,5 @@
 import pygame
-from Enums import Entities
+from Enums import Entities, Components
 from AssetLoader import AssetLoader
 from Components import Component
 #from Enums import Entities
@@ -29,6 +29,7 @@ class Projectile(Component):
         self._transform = self.gameObject.transform
         self._gameObject._damage = 1
         self._gameObject._is_destroyed = False
+        self._sprite_width = self.gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_width()
         # try:
         #     if self._type.lower() == "player":
         #         self._sprite_image = AssetLoader.get_sprite(Entities.PLAYER)  # eller lav en PLAYER_PROJECTILE
@@ -52,5 +53,5 @@ class Projectile(Component):
         #     self._screen.blit(self._sprite_image, self._transform.position)
 
         #Fjern hvis udenfor skærmen
-        if self._transform.position.x < 0 or self._transform.position.x > self._screen.get_width():
+        if self._transform.position.x - self._sprite_width < 0 or self._transform.position.x > self._screen.get_width():
             self._game_world._projectile_pool.return_object(self.gameObject)

@@ -1,6 +1,6 @@
 import pygame
 from AssetLoader import AssetLoader
-from Enums import Entities, GameEvents
+from Enums import Entities, GameEvents, Components, Collisions
 from Components import Component, SpriteRenderer, Collider
 from GameObject import GameObject
 from Projectile import Projectile
@@ -32,7 +32,8 @@ class Player(Component):
         gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.take_damage)
 
     def start(self):
-        pass
+        collider = self.gameObject.get_component(Components.COLLIDER.value)
+        collider.subscribe(Collisions.PIXEL_ENTER, self.take_damage)
             
     def update(self, delta_time):
         if self.gameObject is None:
@@ -78,3 +79,17 @@ class Player(Component):
         # ))
         # proj_obj.add_component(Collider())
         # self._game_world.instantiate(proj_obj)
+
+    def take_damage(self, collider):
+        other = collider.gameObject
+        match other._entity_type:
+            case Entities.PLAYER_PROJECTILE:
+                return
+            case Entities.ENEMY_PROJECTILE:
+                self.gameObject._health -= other._damage
+                self._game_world._projectile_pool.return_object(other)
+            case Entities.FIREBALL:
+                self.gameObject._health -= other._damage
+                self._game_world._projectile_pool.return_object(other)
+        if self.gameObject._health <= 0:
+            self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)

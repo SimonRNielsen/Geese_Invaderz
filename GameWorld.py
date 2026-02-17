@@ -64,7 +64,7 @@ class GameWorld:
 
     def start(self):
 
-        self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+        self.spawn_enemy(Entities.SHEEP, pygame.math.Vector2(1000,500))
 
         for gameObject in self._gameObjects[:]:
             gameObject.start()

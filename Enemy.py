@@ -56,9 +56,9 @@ class Enemy(Entity):
     def take_damage(self, collider):
         other = collider.gameObject
         match other._entity_type:
-            case Entities.FIREBALL: #ændre til PLAYER_PROJECTILE
+            case Entities.PLAYER_PROJECTILE:
                 self.gameObject._health -= other._damage
-                other.destroy() #til object pool?
+                self._game_world._projectile_pool.return_object(other)
                 if self.gameObject._health <= 0:
                     self._game_world._enemy_pool.return_object(self._gameObject)
             case Entities.PLAYER:
@@ -104,19 +104,32 @@ class Move_Strategy(Strategy):
             self._parent._strategy = self
         self._game_world = game_world
         if self._vertical:
-            self._sprite_height = self._parent.gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_height()
+            sr = self._parent.gameObject.get_component(Components.SPRITERENDERER.value)
+            self._sprite_height = sr.sprite_image.get_height()
+            self._sprite_width = sr.sprite_image.get_width()
             self._screen_height = game_world.screen.get_height()
+            self._time_since_last_shot = -3
+            self._can_shoot_after = 2
 
     def execute(self, delta_time):
         self._parent._gameObject.transform.position -= self._direction * self._parent.speed * delta_time
         if self._vertical:
             self._time_since_direction_change += delta_time
+            self._time_since_last_shot += delta_time
+            if self._time_since_last_shot >= self._can_shoot_after:
+                self.shoot()
             if (self._parent._gameObject.transform.position.y <= 0 or self._parent._gameObject.transform.position.y >= (self._screen_height - self._sprite_height)) and self._time_since_direction_change > 1:
                 self._direction = -self._direction
                 self._time_since_direction_change = 0
         
     def exit(self):
         self._parent._previous_strategy = self
+
+    def shoot(self):
+        parent_pos = self._parent.gameObject.transform.position
+        pos = pygame.math.Vector2(parent_pos.x, parent_pos.y + (self._sprite_height / 2))
+        self._game_world.spawn_projectile(Entities.ENEMY_PROJECTILE, pos)
+        self._time_since_last_shot = 0
 
 class Boss_Strategy(Strategy):
 

@@ -49,6 +49,9 @@ class GameWorld:
             case Entities.GOOSIFER:
                 self._player_score += 10
 
+    def player_death(self, player):
+        pass
+
     def spawn_enemy(self, entity_type, position):
         self.instantiate(self._enemy_pool.get_object(entity_type, position))
         
@@ -58,6 +61,7 @@ class GameWorld:
     def awake(self):
 
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
+        self.subscribe(GameEvents.PLAYER_DEATH, self.player_death)
 
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)

@@ -136,6 +136,10 @@ class Boss_Strategy(Strategy):
     def __init__(self):
         super().__init__()
         self._waypoints = []
+        self._first_shot = False
+        self._second_shot = False
+        self._time_since_last_barrage = -2
+        self._time_between_barrages = 5
 
     def enter(self, parent, game_world):
         self._parent = parent
@@ -144,12 +148,17 @@ class Boss_Strategy(Strategy):
             self._parent._strategy = self
         self._game_world = game_world
         sr = self._parent.gameObject.get_component(Components.SPRITERENDERER.value)
-        self._right_border = game_world.screen.get_width() - sr.sprite_image.get_width()
-        self._bottom_border = game_world.screen.get_height() - sr.sprite_image.get_height()
+        self._sprite_height = sr.sprite_image.get_height()
+        self._sprite_width = sr.sprite_image.get_width()
+        self._right_border = game_world.screen.get_width() - self._sprite_width
+        self._bottom_border = game_world.screen.get_height() - self._sprite_height
         self.set_waypoints()
         self._current_waypoint = self._waypoints[len(self._waypoints)-1]
 
     def execute(self, delta_time):
+        self._time_since_last_barrage += delta_time
+        if self._time_since_last_barrage >= self._time_between_barrages:
+            self.shoot()
         direction = self._current_waypoint - self._parent.gameObject.transform.position
         if direction.length() < 10:
             self._current_waypoint = self._waypoints.pop(0)
@@ -169,3 +178,18 @@ class Boss_Strategy(Strategy):
         waypoints.append(pygame.math.Vector2(right * 0.52, bottom * 0.30))  # midt venstre
         waypoints.append(pygame.math.Vector2(right * 0.98, bottom * 0.30))  # midt højre
         waypoints.append(pygame.math.Vector2(right * 0.52, bottom * 0.98))  # nederst venstre
+
+    def shoot(self):
+        pos = self._parent.gameObject.transform.position
+        shot_pos = pygame.math.Vector2(pos.x, pos.y + (self._sprite_height / 2))
+        if not self._first_shot:
+            self._first_shot = True
+            self._game_world.spawn_projectile(Entities.FIREBALL, shot_pos)
+        elif self._time_since_last_barrage >= self._time_between_barrages + 0.5 and not self._second_shot:
+            self._second_shot = True
+            self._game_world.spawn_projectile(Entities.FIREBALL, shot_pos)
+        elif self._time_since_last_barrage >= self._time_between_barrages + 1:
+            self._game_world.spawn_projectile(Entities.FIREBALL, shot_pos)
+            self._time_since_last_barrage = 0
+            self._first_shot = False
+            self._second_shot = False

@@ -53,5 +53,5 @@ class Projectile(Component):
         #     self._screen.blit(self._sprite_image, self._transform.position)
 
         #Fjern hvis udenfor skærmen
-        if self._transform.position.x - self._sprite_width < 0 or self._transform.position.x > self._screen.get_width():
+        if self._transform.position.x < -self._sprite_width or self._transform.position.x > self._screen.get_width():
             self._game_world._projectile_pool.return_object(self.gameObject)

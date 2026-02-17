@@ -46,6 +46,11 @@ class GameWorld:
     def texts(self):
         return self._text_button
     
+    @property
+    def player_alive(self):
+        return self._player
+    
+    
     def spawn_main_menu(self):
         Menu(self, Assets.START_MENU)
     
@@ -89,12 +94,13 @@ class GameWorld:
             if keys[pygame.K_p]:
                 self._pause = Menu(self, Assets.PAUSE)
                 self.add_menu_and_button(self._pause)
+            
+
             if keys[pygame.K_k]:
                 self._player.is_destroyed = True
                 # self.__kage = Menu(self, Assets.START_MENU)
-            
-            # self._events[GameEvents.MAIN]
-
+            if self._player.is_destroyed == True:
+                self._loose = Menu(self, Assets.LOOSE_SCREEN)
 
 
             for event in pygame.event.get():
@@ -102,7 +108,7 @@ class GameWorld:
                     self._running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for text in self._text_button[:]:
-                        text.klik_i_din_rumpe()
+                        text.click_on_button()
 
 
             self._screen.fill("cornflowerblue")
@@ -115,8 +121,6 @@ class GameWorld:
             for text in self._text_button[:]:
                 text.update(delta_time)
 
-            if self._player.is_destroyed == True:
-                self._loose = Menu(self, Assets.LOOSE_SCREEN)
   
 
             for i, collider1 in enumerate(self._colliders):

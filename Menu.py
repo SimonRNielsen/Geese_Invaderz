@@ -21,20 +21,29 @@ class Menu():
             case Assets.START_MENU:             
                 self._start_button = Button(self._gameWorld, self, Button_Types.START)
                 self._gameWorld.instantiate(self._start_button.get_button())
-                # self._gameWorld.add_to_text_button(self._start_button)
                 self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                 self._gameWorld.instantiate(self._exit_button.get_button())
-                # self._gameWorld.add_to_text_button(self._exit_button)
             case Assets.PAUSE:
                 self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                 self._gameWorld.instantiate(self._exit_button.get_button())
-                # self._gameWorld.add_to_text_button(self._exit_button)
                 self._resume_button = Button(self._gameWorld, self, Button_Types.RESUME)
                 self._gameWorld.instantiate(self._resume_button.get_button())
-                # self._gameWorld.add_to_text_button(self._resume_button)
                 self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
                 self._gameWorld.instantiate(self._main_button.get_button())
-                # self._gameWorld.add_to_text_button(self._main_button)
+            case Assets.WIN_SCREEN:
+                self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
+                self._gameWorld.instantiate(self._restart_button.get_button())
+                self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
+                self._gameWorld.instantiate(self._exit_button.get_button())
+                self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                self._gameWorld.instantiate(self._main_button.get_button())
+            case Assets.LOOSE_SCREEN:
+                self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
+                self._gameWorld.instantiate(self._restart_button.get_button())
+                self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
+                self._gameWorld.instantiate(self._exit_button.get_button())
+                self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                self._gameWorld.instantiate(self._main_button.get_button())
 
 
 
@@ -83,7 +92,7 @@ class Button():
             case Button_Types.EXIT:
                 self._pos = pygame.math.Vector2(1000,550)
             case Button_Types.RESTART:
-                self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
+                self._pos = pygame.math.Vector2(800, 550)
             case Button_Types.RESUME:
                 self._pos = pygame.math.Vector2(800, 550)
             case Button_Types.MAIN:
@@ -120,15 +129,24 @@ class Button():
 
 
 
-    def klik_i_din_rumpe(self):
+    def click_on_button(self):
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
-            if(self._button_type == Button_Types.EXIT):
-                pygame.event.post(pygame.event.Event(pygame.QUIT))
-            elif(self._button_type == Button_Types.MAIN):
-                self._main_bool = True
-                self._menu.get_menu().destroy()
-            else:
-                self._menu.get_menu().destroy()
+            match self._button_type:
+                case Button_Types.EXIT:
+                    pygame.event.post(pygame.event.Event(pygame.QUIT))
+                case Button_Types.MAIN:
+                    self._gameWorld.player_alive.is_destroyed = False
+                    self._main_bool = True
+                    self._menu.get_menu().destroy()
+                case Button_Types.RESTART:
+                    self._gameWorld.player_alive.is_destroyed = False
+                    self._menu.get_menu().destroy()
+                ##############################Kald Restart metoden
+                case Button_Types.START:
+                    self._menu.get_menu().destroy()
+                    ##############################Kald Restart metoden
+                case Button_Types.RESUME:
+                    self._menu.get_menu().destroy()
 
             for text_and_button in self._texts:
                 text_and_button._show_text = False
@@ -141,7 +159,7 @@ class Button():
             self._text_rect.center = self.rect.center
             self._screen.blit(self._text_surface, self._text_rect)
         if self._main_bool == True:
-            self._main = self._gameWorld._events[GameEvents.MAIN]()
+            self._main = Menu(self._gameWorld, Assets.START_MENU)
             self._main_bool = False
 
 

@@ -20,8 +20,8 @@ class GameWorld:
         builder.build()
         self._gameObjects.append(builder.get_gameObject())
 
-        menu = Menu()
-        self._gameObjects.append(menu.show_menu())
+        # menu = Menu()
+        # self._gameObjects.append(menu.show_menu())
         self._enemy_pool = EnemyPool(self)
         self._projectile_pool = ProjectilePool(self)
 

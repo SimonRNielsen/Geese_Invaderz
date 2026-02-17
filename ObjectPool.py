@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from Enums import Entities, Components, GameEvents
-from Builder import EnemyBuilder
+from Enums import Entities, GameEvents
+from Builder import EnemyBuilder, ProjectileBuilder
 
 class ObjectPool(ABC):
 
@@ -12,7 +12,7 @@ class ObjectPool(ABC):
         pass
 
     @abstractmethod
-    def return_object(self, entity):
+    def return_object(self, entity_type, position):
         pass
 
 class EnemyPool(ObjectPool):
@@ -47,6 +47,39 @@ class EnemyPool(ObjectPool):
                 entity.transform.position = position
                 return entity
         builder = EnemyBuilder()
+        builder.build(entity_type)
+        object = builder.get_gameObject()
+        object.transform.position = position
+        return object
+    
+class ProjectilePool(ObjectPool):
+
+    def __init__(self, game_world):
+        super().__init__()
+        self._game_world = game_world
+        self._projectile_pool = []
+        for i in range(10):
+            builder = ProjectileBuilder()
+            builder.build(Entities.ENEMY_PROJECTILE)
+            self._projectile_pool.append(builder.get_gameObject())
+            builder = ProjectileBuilder()
+            builder.build(Entities.PLAYER_PROJECTILE)
+            self._projectile_pool.append(builder.get_gameObject())
+            builder = ProjectileBuilder()
+            builder.build(Entities.FIREBALL)
+            self._projectile_pool.append(builder.get_gameObject())
+
+    def return_object(self, entity):
+        entity.destroy()
+        self._projectile_pool.append(entity)
+
+    def get_object(self, entity_type, position):
+        self._projectile_pool = [obj for obj in self._projectile_pool if obj.is_destroyed]
+        for entity in self._projectile_pool:
+            if entity._entity_type == entity_type:
+                entity.transform.position = position
+                return entity
+        builder = ProjectileBuilder()
         builder.build(entity_type)
         object = builder.get_gameObject()
         object.transform.position = position

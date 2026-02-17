@@ -1,14 +1,16 @@
 import pygame, random
 from Builder import PlayerBuilder
 from Menu import Button, Menu
-
-from ObjectPool import EnemyPool
+from ObjectPool import EnemyPool, ProjectilePool
 from Enums import Entities, GameEvents
 
 class GameWorld:
 
     def __init__(self) -> None:
         pygame.init()
+        self._screen = pygame.display.set_mode((1920,1080))
+        self._running = True
+        self._clock = pygame.time.Clock()
         self._gameObjects = []
         self._colliders = []
         self._events = {}
@@ -17,13 +19,8 @@ class GameWorld:
         builder = PlayerBuilder()
         builder.build()
         self._gameObjects.append(builder.get_gameObject())
-        
         self._enemy_pool = EnemyPool(self)
-
-        self._screen = pygame.display.set_mode((1920,1080))
-        
-        self._running = True
-        self._clock = pygame.time.Clock()
+        self._projectile_pool = ProjectilePool(self)
 
     @property
     def screen(self):
@@ -54,6 +51,9 @@ class GameWorld:
 
     def spawn_enemy(self, entity_type, position):
         self.instantiate(self._enemy_pool.get_object(entity_type, position))
+        
+    def spawn_projectile(self, entity_type, position):
+        self.instantiate(self._projectile_pool.get_object(entity_type, position))
 
     def awake(self):
 

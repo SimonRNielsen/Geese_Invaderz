@@ -56,6 +56,10 @@ class AssetLoader:
                 return "enemy\\goosifer0.png"
             case Entities.FIREBALL:
                 return "projectiles\\fireball.png"
+            case Entities.PLAYER_PROJECTILE:
+                return "projectiles\\hvede.png"
+            case Entities.ENEMY_PROJECTILE:
+                return "projectiles\\egg2.png"
             case Assets.START_MENU:
                 return "menu\\winScreen.png"
             case Assets.BUTTON:

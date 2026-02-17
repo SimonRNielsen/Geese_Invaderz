@@ -25,15 +25,10 @@ class Projectile(Component):
     
     def awake(self, game_world):
         self._screen = game_world.screen
+        self._game_world = game_world
         self._transform = self.gameObject.transform
         self._gameObject._damage = 1
-        match self._type.capitalize():
-            case "Player":
-                self._gameObject._entity_type = Entities.PLAYER_PROJECTILE
-            case "Boss":
-                self._gameObject._entity_type = Entities.FIREBALL
-            case "Enemy":
-                self._gameObject._entity_type = Entities.ENEMY_PROJECTILE
+        self._gameObject._is_destroyed = False
         # try:
         #     if self._type.lower() == "player":
         #         self._sprite_image = AssetLoader.get_sprite(Entities.PLAYER)  # eller lav en PLAYER_PROJECTILE
@@ -58,4 +53,4 @@ class Projectile(Component):
 
         #Fjern hvis udenfor skærmen
         if self._transform.position.x < 0 or self._transform.position.x > self._screen.get_width():
-            self.gameObject.destroy()
+            self._game_world._projectile_pool.return_object(self.gameObject)

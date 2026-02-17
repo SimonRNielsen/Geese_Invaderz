@@ -101,7 +101,6 @@ class Move_Strategy(Strategy):
         self._parent = parent
         if self._parent._strategy is not None and self._parent._strategy is not self:
             self._parent._strategy.exit()
-            self._parent._previous_strategy = self._parent._strategy
             self._parent._strategy = self
         self._game_world = game_world
         if self._vertical:

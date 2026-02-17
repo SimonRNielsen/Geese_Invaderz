@@ -13,13 +13,6 @@ class Player(Component):
         self._shoot_cooldown = 0.50
         self._time_since_last_shot = 0
 
-    def take_damage(self, amount):
-        self.gameObject._health -= amount
-        if self.gameObject._health <= 0:
-            self.gameObject._health = 0
-            self.destroy()
-            # self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
-
     def awake(self, gameWorld):
         #Gem reference til skærmen, så der kan laves højdegrænser
         self._screen_height = gameWorld.screen.get_height()

@@ -93,7 +93,8 @@ class GameWorld:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p]:
                 self._pause = Menu(self, Assets.PAUSE)
-                self.add_menu_and_button(self._pause)
+            if keys[pygame.K_h]:
+                Menu(self, Assets.WIN_SCREEN)
             
 
             if keys[pygame.K_k]:

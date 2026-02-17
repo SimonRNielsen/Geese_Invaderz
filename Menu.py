@@ -82,19 +82,19 @@ class Button():
         self._menu = menu
         self._button_type = button_type
         self._texts: List[Button] = self._gameWorld.texts        
-        self._main_bool = False
+        self._main_menu_bool = False
         
 
         #Position of the button
         match self._button_type:
             case Button_Types.START:
-                self._pos = pygame.math.Vector2(800, 550)
+                self._pos = pygame.math.Vector2(800, 600)
             case Button_Types.EXIT:
-                self._pos = pygame.math.Vector2(1000,550)
+                self._pos = pygame.math.Vector2(1000,600)
             case Button_Types.RESTART:
-                self._pos = pygame.math.Vector2(800, 550)
+                self._pos = pygame.math.Vector2(800, 600)
             case Button_Types.RESUME:
-                self._pos = pygame.math.Vector2(800, 550)
+                self._pos = pygame.math.Vector2(800, 600)
             case Button_Types.MAIN:
                 self._pos = pygame.math.Vector2(900, 700)
             case _:
@@ -122,7 +122,7 @@ class Button():
         return self._gameObject
     
     def draw_text(self, text):
-        self._font = pygame.font.SysFont("timesnerroman", 30)
+        self._font = pygame.font.SysFont("CopperplateGothicBold", 30)
         self._text_surface = self._font.render(text, True, (0, 0, 0))
         self._text_rect = self._text_surface.get_rect()
         
@@ -136,17 +136,11 @@ class Button():
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
                 case Button_Types.MAIN:
                     self._gameWorld.player_alive.is_destroyed = False
-                    self._main_bool = True
-                    self._menu.get_menu().destroy()
+                    self._main_menu_bool = True
                 case Button_Types.RESTART:
                     self._gameWorld.player_alive.is_destroyed = False
-                    self._menu.get_menu().destroy()
-                ##############################Kald Restart metoden
-                case Button_Types.START:
-                    self._menu.get_menu().destroy()
-                    ##############################Kald Restart metoden
-                case Button_Types.RESUME:
-                    self._menu.get_menu().destroy()
+
+            self._menu.get_menu().destroy()
 
             for text_and_button in self._texts:
                 text_and_button._show_text = False
@@ -158,9 +152,9 @@ class Button():
             self.draw_text(self._text)
             self._text_rect.center = self.rect.center
             self._screen.blit(self._text_surface, self._text_rect)
-        if self._main_bool == True:
-            self._main = Menu(self._gameWorld, Assets.START_MENU)
-            self._main_bool = False
+        if self._main_menu_bool == True:
+            Menu(self._gameWorld, Assets.START_MENU)
+            self._main_menu_bool = False
 
 
     def awake(self, game_world):

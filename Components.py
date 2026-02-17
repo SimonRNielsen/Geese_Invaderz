@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import pygame
-from Enums import Collisions, Components, Entities
+from Enums import Collisions, Components
 from AssetLoader import AssetLoader
 
 class Component(ABC):
@@ -147,18 +147,29 @@ class Collider(Component):
         self._other_colliders.clear()
         self._other_masks.clear()
         self._listeners.clear()
+        self._game_world = game_world
+        self._sprite = self._gameObject.get_component(Components.SPRITERENDERER.value).sprite
 
     def start(self):
         pass
 
     def update(self, delta_time):
+        # if True:
+        #     mask_surf = self._sprite_mask.to_surface(
+        #     setcolor=(255, 0, 0, 120),
+        #     unsetcolor=(0, 0, 0, 0)
+        # )
+        # self._game_world.screen.blit(mask_surf, self._sprite.rect.topleft)
         pass
 
     def collision_check(self, other):
         is_rect_colliding = self._collision_box.colliderect(other._collision_box)
         is_already_colliding = other in self._other_colliders
 
-        if is_rect_colliding:
+        self._other_colliders = [obj for obj in self._other_colliders if not obj.gameObject.is_destroyed]
+        self._other_masks = [obj for obj in self._other_masks if not obj.gameObject.is_destroyed]
+
+        if is_rect_colliding and not other.gameObject.is_destroyed:
             if not is_already_colliding:
                 self.collision_enter(other)
                 other.collision_enter(self)
@@ -181,7 +192,8 @@ class Collider(Component):
             self._listeners[Collisions.ENTER](other)
 
     def collision_exit(self, other):
-        self._other_colliders.remove(other)
+        if other in self._other_colliders:
+            self._other_colliders.remove(other)
         if Collisions.EXIT in self._listeners:
             self._listeners[Collisions.EXIT](other)
 
@@ -191,7 +203,8 @@ class Collider(Component):
             self._listeners[Collisions.PIXEL_ENTER](other)
 
     def pixel_collision_exit(self, other):
-        self._other_masks.remove(other)
+        if other in self._other_masks:
+            self._other_masks.remove(other)
         if Collisions.PIXEL_EXIT in self._listeners:
             self._listeners[Collisions.PIXEL_EXIT](other)
 

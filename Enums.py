@@ -31,3 +31,4 @@ class Entities(Enum):
 class GameEvents(Enum):
     ENEMY_DEATH = auto()
     PLAYER_DEATH = auto()
+    ENEMY_ESCAPED = auto()

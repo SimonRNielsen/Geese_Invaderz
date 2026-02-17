@@ -1,14 +1,16 @@
 import pygame, random
 from Builder import PlayerBuilder
 from Menu import Button, Menu
-
-from ObjectPool import EnemyPool
+from ObjectPool import EnemyPool, ProjectilePool
 from Enums import Entities, GameEvents
 
 class GameWorld:
 
     def __init__(self) -> None:
         pygame.init()
+        self._screen = pygame.display.set_mode((1920,1080))
+        self._running = True
+        self._clock = pygame.time.Clock()
         self._gameObjects = []
         self._colliders = []
         self._events = {}
@@ -17,13 +19,11 @@ class GameWorld:
         builder = PlayerBuilder()
         builder.build()
         self._gameObjects.append(builder.get_gameObject())
-        
-        self._enemy_pool = EnemyPool(self)
 
-        self._screen = pygame.display.set_mode((1920,1080))
-        
-        self._running = True
-        self._clock = pygame.time.Clock()
+        # menu = Menu()
+        # self._gameObjects.append(menu.show_menu())
+        self._enemy_pool = EnemyPool(self)
+        self._projectile_pool = ProjectilePool(self)
 
     @property
     def screen(self):
@@ -52,13 +52,27 @@ class GameWorld:
             case Entities.GOOSIFER:
                 self._player_score += 10
 
+    def player_death(self, player):
+        pass
+
+    def spawn_enemy(self, entity_type, position):
+        self.instantiate(self._enemy_pool.get_object(entity_type, position))
+        
+    def spawn_projectile(self, entity_type, position):
+        self.instantiate(self._projectile_pool.get_object(entity_type, position))
+
     def awake(self):
+
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
+        self.subscribe(GameEvents.PLAYER_DEATH, self.player_death)
+
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)
 
     def start(self):
-        self.instantiate(self._enemy_pool.get_object(Entities.WALKING_GOOSE, pygame.math.Vector2(1000,500)))
+
+        self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+
         for gameObject in self._gameObjects[:]:
             gameObject.start()
 

@@ -25,7 +25,7 @@ class GameWorld:
         builder = PlayerBuilder()
         builder.build()
         self._player = builder.get_gameObject()
-
+        self._gameObjects.append(self._player)
 
         player_entity = builder.get_gameObject().get_component("Entity")
         self._healthbar = Healthbar(player_entity, self.screen)

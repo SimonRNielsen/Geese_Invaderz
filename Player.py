@@ -27,6 +27,7 @@ class Player(Component):
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
         collider.subscribe(Collisions.PIXEL_ENTER, self.take_damage)
+        self._entity = self.gameObject.get_component("Entity")
             
     def update(self, delta_time):
         if self.gameObject is None:
@@ -57,8 +58,7 @@ class Player(Component):
             self.shoot()
             self._time_since_last_shot = 0
 
-        entity = self.gameObject.get_component("Entity")
-        print(entity.health)
+        print(self._entity.health)
 
     def shoot(self):
                 
@@ -67,15 +67,6 @@ class Player(Component):
             self._sprite_height // 2
         )
         self._game_world.spawn_projectile(Entities.PLAYER_PROJECTILE, pos)
-        # proj_obj = GameObject(pos)
-        # proj_obj.add_component(SpriteRenderer(Entities.FIREBALL))
-        # proj_obj.add_component(Projectile(
-        #     speed = 700,
-        #     projectile_type = "boss", #Can be 'Player', 'Enemy', 'Boss'
-        #     direction = 1 #Player shoots to the right
-        # ))
-        # proj_obj.add_component(Collider())
-        # self._game_world.instantiate(proj_obj)
 
     def take_damage(self, collider):
         other = collider.gameObject
@@ -83,10 +74,10 @@ class Player(Component):
             case Entities.PLAYER_PROJECTILE:
                 return
             case Entities.ENEMY_PROJECTILE:
-                self.gameObject._health -= other._damage
+                self._entity.health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
             case Entities.FIREBALL:
-                self.gameObject._health -= other._damage
+                self._entity.health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
-        if self.gameObject._health <= 0:
+        if self._entity.health <= 0:
             self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)

@@ -27,7 +27,7 @@ class PlayerBuilder(Builder):
 
     def build(self):
         #Startposition: venstre side midt på skærmen
-        start_pos = pygame.math.Vector2(50, 1080 // 2)
+        start_pos = pygame.math.Vector2(100, 1080 // 2)
         self._gameObject = GameObject(start_pos)
         
         self._gameObject.add_component(SpriteRenderer(Entities.PLAYER))

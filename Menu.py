@@ -147,6 +147,7 @@ class Button():
 
             self._menu.get_menu().destroy()
             self._gameWorld.menu_bool = False
+            self._gameWorld.pause_bool = False
 
 
             for text_and_button in self._texts:

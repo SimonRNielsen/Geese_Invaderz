@@ -61,6 +61,13 @@ class GameWorld:
     def menu_bool(self, value):
         self._menu_bool = value
     
+    @property
+    def pause_bool(self):
+        return self.pause_bool
+    
+    @pause_bool.setter
+    def pause_bool(self, value):
+        self._pause_bool = value
 
 
     # def spawn_main_menu(self):
@@ -145,7 +152,12 @@ class GameWorld:
 
             self._screen.fill("cornflowerblue")
 
-            delta_time = self._clock.tick(60) / 1000.0
+
+            #Pause functionaly => stupid
+            if self._pause_bool == False:
+                delta_time = self._clock.tick(60) / 1000.0
+            else:
+                delta_time = 0
 
             for gameObject in self._gameObjects[:]:
                 gameObject.update(delta_time)

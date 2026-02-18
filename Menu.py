@@ -11,11 +11,8 @@ class Menu():
         self._menu_type = menu_type
         self._gameObject = GameObject(pygame.math.Vector2(0,0))
         self._gameWorld = gameWorld
-        # self._screen = self._gameWorld.screen
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
         self._gameObject.add_component(self)
-
-        self._active = True
 
 
         if self._gameObject not in self._gameWorld._gameObjects:
@@ -51,12 +48,6 @@ class Menu():
 
 
     @property
-    def active(self):
-        return self._active
-
-
-
-    @property
     def menu_type(self):
         return self._menu_type
     
@@ -72,7 +63,6 @@ class Menu():
         pass
 
         
-
     def start(self):
         pass
 
@@ -119,7 +109,6 @@ class Button():
         self._main_amount = 0
                 
     
-    
 
     def get_button(self):
         return self._gameObject
@@ -129,8 +118,6 @@ class Button():
         self._text_surface = self._font.render(text, True, (0, 0, 0))
         self._text_rect = self._text_surface.get_rect()
         
-
-
 
     def click_on_button(self):
         # pygame.mixer.Sound #Knaplyd

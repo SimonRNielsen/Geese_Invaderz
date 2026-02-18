@@ -27,6 +27,8 @@ class Entities(Enum):
     GOOSIFER = "Goosifer"
     FIREBALL = "Fireball"
     SHEEP = "Sheep"
+    PLAYER_PROJECTILE = "Player_Projectile"
+    ENEMY_PROJECTILE = "Enemy_Projectile"
     UNKNOWN = ""
 
 class Button_Types(Enum):
@@ -36,8 +38,6 @@ class Button_Types(Enum):
     RESUME = "Resume"
     MAIN = "Main menu"
     # EXIT_PAUSE = "Exit pause"
-    PLAYER_PROJECTILE = "Player_Projectile"
-    ENEMY_PROJECTILE = "Enemy_Projectile"
 
 class GameEvents(Enum):
     ENEMY_DEATH = auto()

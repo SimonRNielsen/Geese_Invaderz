@@ -40,10 +40,6 @@ class GameWorld:
         self._start_manu = Menu(self, Assets.START_MENU)
         self._menu_bool = True
 
-
-        self._running = True
-        self._clock = pygame.time.Clock()
-
     @property
     def screen(self):
         return self._screen

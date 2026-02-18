@@ -1,6 +1,7 @@
 import pygame, random
 from Builder import PlayerBuilder
 from Menu import Button, Menu
+from SoundManager import SoundManager
 from ObjectPool import EnemyPool, ProjectilePool
 from Enums import Entities, GameEvents
 
@@ -8,6 +9,7 @@ class GameWorld:
 
     def __init__(self) -> None:
         pygame.init()
+        self._sound_manager = SoundManager()
         self._screen = pygame.display.set_mode((1920,1080))
         self._running = True
         self._clock = pygame.time.Clock()
@@ -15,6 +17,7 @@ class GameWorld:
         self._colliders = []
         self._events = {}
         self._player_score = 0
+        self._enemies_killed = 0
 
         builder = PlayerBuilder()
         builder.build()
@@ -33,6 +36,18 @@ class GameWorld:
     def colliders(self):
         return self._colliders
     
+    def reset_game(self):
+        self._gameObjects = []
+        self._colliders = []
+        self._events = {}
+        self._player_score = 0
+        self._enemies_killed = 0
+        builder = PlayerBuilder()
+        builder.build()
+        self._gameObjects.append(builder.get_gameObject())
+        self._enemy_pool = EnemyPool(self)
+        self._projectile_pool = ProjectilePool(self)
+    
     def instantiate(self, gameObject):
         gameObject.awake(self) 
         gameObject.start()
@@ -42,6 +57,7 @@ class GameWorld:
         self._events[event] = method
 
     def enemy_death(self, gameObject):
+        self._enemies_killed += 1
         match gameObject._entity_type:
             case Entities.WALKING_GOOSE:
                 self._player_score += 1

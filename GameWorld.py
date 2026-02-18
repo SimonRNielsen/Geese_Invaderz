@@ -31,6 +31,7 @@ class GameWorld:
         self._projectile_pool = ProjectilePool(self)
         
         self._start_manu = Menu(self, Assets.START_MENU)
+        self._menu_bool = True
 
 
         self._running = True
@@ -52,6 +53,13 @@ class GameWorld:
     def player_alive(self):
         return self._player
     
+    @property
+    def menu_bool(self):
+        return self.menu_bool
+    
+    @menu_bool.setter
+    def menu_bool(self, value):
+        self._menu_bool = value
     
     def spawn_main_menu(self):
         Menu(self, Assets.START_MENU)
@@ -107,8 +115,9 @@ class GameWorld:
 
             if keys[pygame.K_ESCAPE]:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
-            if keys[pygame.K_p]:
+            if keys[pygame.K_p] and self._menu_bool == False:
                 self._pause = Menu(self, Assets.PAUSE)
+                self._menu_bool = True
             if keys[pygame.K_h]:
                 Menu(self, Assets.WIN_SCREEN)
             
@@ -116,8 +125,9 @@ class GameWorld:
             if keys[pygame.K_k]:
                 self._player.is_destroyed = True
                 # self.__kage = Menu(self, Assets.START_MENU)
-            if self._player.is_destroyed == True:
+            if self._player.is_destroyed == True and self._menu_bool == False:
                 self._loose = Menu(self, Assets.LOOSE_SCREEN)
+                self._menu_bool = True
 
 
             for event in pygame.event.get():

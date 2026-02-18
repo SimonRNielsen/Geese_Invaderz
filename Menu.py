@@ -14,36 +14,36 @@ class Menu():
         # self._screen = self._gameWorld.screen
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
         self._gameObject.add_component(self)
+        if self._gameObject not in self._gameWorld._gameObjects:
+            self._gameWorld.instantiate(self._gameObject)
 
-        self._gameWorld.instantiate(self._gameObject)
-
-        match self._menu_type:
-            case Assets.START_MENU:             
-                self._start_button = Button(self._gameWorld, self, Button_Types.START)
-                self._gameWorld.instantiate(self._start_button.get_button())
-                self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
-                self._gameWorld.instantiate(self._exit_button.get_button())
-            case Assets.PAUSE:
-                self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
-                self._gameWorld.instantiate(self._exit_button.get_button())
-                self._resume_button = Button(self._gameWorld, self, Button_Types.RESUME)
-                self._gameWorld.instantiate(self._resume_button.get_button())
-                self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
-                self._gameWorld.instantiate(self._main_button.get_button())
-            case Assets.WIN_SCREEN:
-                self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
-                self._gameWorld.instantiate(self._restart_button.get_button())
-                self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
-                self._gameWorld.instantiate(self._exit_button.get_button())
-                self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
-                self._gameWorld.instantiate(self._main_button.get_button())
-            case Assets.LOOSE_SCREEN:
-                self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
-                self._gameWorld.instantiate(self._restart_button.get_button())
-                self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
-                self._gameWorld.instantiate(self._exit_button.get_button())
-                self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
-                self._gameWorld.instantiate(self._main_button.get_button())
+            match self._menu_type:
+                case Assets.START_MENU:             
+                    self._start_button = Button(self._gameWorld, self, Button_Types.START)
+                    self._gameWorld.instantiate(self._start_button.get_button())
+                    self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
+                    self._gameWorld.instantiate(self._exit_button.get_button())
+                case Assets.PAUSE:
+                    self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
+                    self._gameWorld.instantiate(self._exit_button.get_button())
+                    self._resume_button = Button(self._gameWorld, self, Button_Types.RESUME)
+                    self._gameWorld.instantiate(self._resume_button.get_button())
+                    self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                    self._gameWorld.instantiate(self._main_button.get_button())
+                case Assets.WIN_SCREEN:
+                    self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
+                    self._gameWorld.instantiate(self._restart_button.get_button())
+                    self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
+                    self._gameWorld.instantiate(self._exit_button.get_button())
+                    self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                    self._gameWorld.instantiate(self._main_button.get_button())
+                case Assets.LOOSE_SCREEN:
+                    self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
+                    self._gameWorld.instantiate(self._restart_button.get_button())
+                    self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
+                    self._gameWorld.instantiate(self._exit_button.get_button())
+                    self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                    self._gameWorld.instantiate(self._main_button.get_button())
 
 
 
@@ -141,6 +141,7 @@ class Button():
                     self._gameWorld.player_alive.is_destroyed = False
 
             self._menu.get_menu().destroy()
+            self._gameWorld.menu_bool = False
 
             for text_and_button in self._texts:
                 text_and_button._show_text = False

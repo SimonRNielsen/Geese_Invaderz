@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 from GameObject import GameObject
-from Components import SpriteRenderer, Animator, Collider
+from Components import SpriteRenderer, Animator, Collider, Entity
 from Enemy import Enemy
 from Enums import Entities
 from Player import Player
 from Projectile import Projectile
 import random, pygame
+from UI import Healthbar
 
 class Builder(ABC):
 
@@ -27,16 +28,19 @@ class PlayerBuilder(Builder):
 
     def build(self):
         #Startposition: venstre side midt på skærmen
-        start_pos = pygame.math.Vector2(50, 1080 // 2)
+        start_pos = pygame.math.Vector2(100, 1080 // 2)
         self._gameObject = GameObject(start_pos)
         
         self._gameObject.add_component(SpriteRenderer(Entities.PLAYER))
-        
         animator = self._gameObject.add_component(Animator())
         animator.play_animation(Entities.PLAYER)
         
         self._gameObject.add_component(Collider())
         self._gameObject.add_component(Player())
+
+        entity = self._gameObject.add_component(Entity())
+        entity.max_health = 100
+        entity.health = 100
     
     def get_gameObject(self) -> GameObject:
         return self._gameObject

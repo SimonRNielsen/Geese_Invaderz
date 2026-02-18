@@ -66,7 +66,13 @@ class AssetLoader:
             case Entities.ENEMY_PROJECTILE:
                 return "projectiles\\egg2.png"
             case Assets.START_MENU:
+                return "menu\\startMenu.png"
+            case Assets.WIN_SCREEN:
                 return "menu\\winScreen.png"
+            case Assets.LOOSE_SCREEN:
+                return "menu\\looseScreen.png"
+            case Assets.PAUSE:
+                return "menu\\pause.png"
             case Assets.BUTTON:
                 return "menu\\button.png"
             case Assets.BUTTON_PRESSED:

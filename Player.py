@@ -22,7 +22,7 @@ class Player(Component):
         sr = self.gameObject.get_component("SpriteRenderer")
         self._sprite_height = sr.sprite_image.get_height()
         self._sprite_width = sr.sprite_image.get_width()
-        gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.take_damage)
+        gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.enemy_escaped)
 
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
@@ -83,6 +83,11 @@ class Player(Component):
                 self._entity.health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
         if self._entity.health <= 0:
-        self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
-        if self.gameObject._health <= 0:
+            self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
+            self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
+
+    def enemy_escaped(self):
+        self._entity.health -= 1
+        if self._entity.health <= 0:
+            self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
             self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)

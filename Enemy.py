@@ -56,7 +56,7 @@ class Enemy(Entity):
             self._strategy.execute(delta_time)
         if self.gameObject.transform.position.x <= self._x_left_boundary:
             self._game_world._enemy_pool.return_object(self.gameObject)
-            self._game_world._events[GameEvents.ENEMY_ESCAPED](self._damage)
+            self._game_world._events[GameEvents.ENEMY_ESCAPED]()
 
     def take_damage(self, collider):
         other = collider.gameObject

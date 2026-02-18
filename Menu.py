@@ -14,6 +14,10 @@ class Menu():
         # self._screen = self._gameWorld.screen
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
         self._gameObject.add_component(self)
+
+        self._active = True
+
+
         if self._gameObject not in self._gameWorld._gameObjects:
             self._gameWorld.instantiate(self._gameObject)
 
@@ -46,17 +50,15 @@ class Menu():
                     self._gameWorld.instantiate(self._main_button.get_button())
 
 
-
+    @property
+    def active(self):
+        return self._active
 
 
 
     @property
     def menu_type(self):
         return self._menu_type
-
-
-    def show_pause(self):
-        self._gameObject.add_component(SpriteRenderer(self._menu_type))
     
 
     def get_menu(self):
@@ -112,8 +114,9 @@ class Button():
 
         #Text on the button
         self._text = button_type.name
-
         self._gameWorld.add_to_text_button(self)
+
+        self._main_amount = 0
                 
     
     
@@ -130,6 +133,7 @@ class Button():
 
 
     def click_on_button(self):
+        # pygame.mixer.Sound #Knaplyd
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
             match self._button_type:
                 case Button_Types.EXIT:
@@ -137,11 +141,13 @@ class Button():
                 case Button_Types.MAIN:
                     self._gameWorld.player_alive.is_destroyed = False
                     self._main_menu_bool = True
+                    self._main_amount += 1
                 case Button_Types.RESTART:
                     self._gameWorld.player_alive.is_destroyed = False
 
             self._menu.get_menu().destroy()
             self._gameWorld.menu_bool = False
+
 
             for text_and_button in self._texts:
                 text_and_button._show_text = False
@@ -153,7 +159,7 @@ class Button():
             self.draw_text(self._text)
             self._text_rect.center = self.rect.center
             self._screen.blit(self._text_surface, self._text_rect)
-        if self._main_menu_bool == True:
+        if self._main_menu_bool == True and self._main_amount == 1:
             Menu(self._gameWorld, Assets.START_MENU)
             self._main_menu_bool = False
 

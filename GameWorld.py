@@ -32,7 +32,7 @@ class GameWorld:
         
         self._start_manu = Menu(self, Assets.START_MENU)
         self._menu_bool = True
-
+        self._pause_bool = False
 
         self._running = True
         self._clock = pygame.time.Clock()
@@ -61,8 +61,10 @@ class GameWorld:
     def menu_bool(self, value):
         self._menu_bool = value
     
-    def spawn_main_menu(self):
-        Menu(self, Assets.START_MENU)
+
+
+    # def spawn_main_menu(self):
+    #     Menu(self, Assets.START_MENU)
     
     def instantiate(self, gameObject):
         gameObject.awake(self) 
@@ -97,7 +99,7 @@ class GameWorld:
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
         self.subscribe(GameEvents.PLAYER_DEATH, self.player_death)
 
-        self.subscribe(GameEvents.MAIN, self.spawn_main_menu)
+        # self.subscribe(GameEvents.MAIN, self.spawn_main_menu)
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)
 
@@ -116,17 +118,18 @@ class GameWorld:
             if keys[pygame.K_ESCAPE]:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p] and self._menu_bool == False:
-                self._pause = Menu(self, Assets.PAUSE)
+                Menu(self, Assets.PAUSE)
                 self._menu_bool = True
+                self._pause_bool = True
+
             if keys[pygame.K_h]:
                 Menu(self, Assets.WIN_SCREEN)
             
 
             if keys[pygame.K_k]:
                 self._player.is_destroyed = True
-                # self.__kage = Menu(self, Assets.START_MENU)
             if self._player.is_destroyed == True and self._menu_bool == False:
-                self._loose = Menu(self, Assets.LOOSE_SCREEN)
+                Menu(self, Assets.LOOSE_SCREEN)
                 self._menu_bool = True
 
 
@@ -138,7 +141,10 @@ class GameWorld:
                         text.click_on_button()
 
 
+            
+
             self._screen.fill("cornflowerblue")
+
             delta_time = self._clock.tick(60) / 1000.0
 
             for gameObject in self._gameObjects[:]:
@@ -164,9 +170,6 @@ class GameWorld:
 
     def add_to_text_button(self, button):
         self._text_button.append(button)
-
-    # def add_to_gameObjects(self, gameObject):
-    #     self._gameObjects.append(gameObject)
 
     def add_menu_and_button(self, gameObject):
         gameObject.awake(self)

@@ -4,6 +4,7 @@ from Menu import Button, Menu
 
 from ObjectPool import EnemyPool
 from Enums import Entities
+from UI import Healthbar
 
 class GameWorld:
 
@@ -12,14 +13,19 @@ class GameWorld:
         self._gameObjects = []
         self._colliders = []
 
+        self._screen = pygame.display.set_mode((1920,1080))
+        
         builder = PlayerBuilder()
         builder.build()
         self._gameObjects.append(builder.get_gameObject())
 
-        self._gameObjects.append(builder.get_gameObject())
+        player_entity = builder.get_gameObject().get_component("Entity")
+        self._healthbar = Healthbar(player_entity, self.screen)
+
+        #self._gameObjects.append(builder.get_gameObject())
         self._enemy_pool = EnemyPool(self)
 
-        self._screen = pygame.display.set_mode((1920,1080))
+
 
         # self._start_manu = Menu()
         # self._gameObjects.append(self._start_manu.get_menu())
@@ -77,6 +83,8 @@ class GameWorld:
 
             self._gameObjects = [obj for obj in self._gameObjects if not obj.is_destroyed]
             self._colliders = [obj for obj in self._colliders if not obj.gameObject.is_destroyed]
+
+            self._healthbar.draw()
 
             pygame.display.flip()
 

@@ -50,6 +50,9 @@ class Player(Component):
             self.shoot()
             self._time_since_last_shot = 0
 
+        entity = self.gameObject.get_component("Entity")
+        print(entity.health)
+
     def shoot(self):
         #Spawn projectile infront of player
         sr = self.gameObject.get_component("SpriteRenderer")

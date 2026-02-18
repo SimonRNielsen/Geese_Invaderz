@@ -38,6 +38,9 @@ class AssetLoader:
                 args = ("enemy\\goosifer0.png",
                         "enemy\\goosifer1.png",
                         "enemy\\goosifer2.png",)
+            case Entities.SHEEP:
+                args = ("enemy\\sheep.png",
+                        "enemy\\sheep.png",)
             case _:
                 print(f"No match case for {asset_key} in get_animation_args")
                 return None
@@ -47,17 +50,29 @@ class AssetLoader:
     def get_sprite_arg(cls, asset_key):
         match asset_key:
             case Entities.PLAYER:
-                return "player\\monkSling0.png"
+                return "player\\mortenMonk0.png"
             case Entities.WALKING_GOOSE:
                 return "enemy\\gooseWalk0.png"
             case Entities.AGGRO_GOOSE:
                 return "enemy\\aggro0.png"
+            case Entities.SHEEP:
+                return "enemy\\sheep.png"
             case Entities.GOOSIFER:
                 return "enemy\\goosifer0.png"
             case Entities.FIREBALL:
                 return "projectiles\\fireball.png"
+            case Entities.PLAYER_PROJECTILE:
+                return "projectiles\\hvede.png"
+            case Entities.ENEMY_PROJECTILE:
+                return "projectiles\\egg2.png"
             case Assets.START_MENU:
+                return "menu\\startMenu.png"
+            case Assets.WIN_SCREEN:
                 return "menu\\winScreen.png"
+            case Assets.LOOSE_SCREEN:
+                return "menu\\looseScreen.png"
+            case Assets.PAUSE:
+                return "menu\\pause.png"
             case Assets.BUTTON:
                 return "menu\\button.png"
             case Assets.BUTTON_PRESSED:

@@ -14,8 +14,11 @@ class Components(Enum):
 
 class Assets(Enum):
     START_MENU = "Start"
+    WIN_SCREEN = "Win"
+    LOOSE_SCREEN = "Loose"
     BUTTON = "Button"
     BUTTON_PRESSED = "Button pressed"
+    PAUSE = "Pause"
 
 class Entities(Enum):
     PLAYER = "Player"
@@ -24,4 +27,20 @@ class Entities(Enum):
     GOOSIFER = "Goosifer"
     FIREBALL = "Fireball"
     SHEEP = "Sheep"
+    PLAYER_PROJECTILE = "Player_Projectile"
+    ENEMY_PROJECTILE = "Enemy_Projectile"
     UNKNOWN = ""
+
+class Button_Types(Enum):
+    START = "Start"
+    EXIT = "Exit"
+    RESTART = "Restart"
+    RESUME = "Resume"
+    MAIN = "Main menu"
+    # EXIT_PAUSE = "Exit pause"
+
+class GameEvents(Enum):
+    ENEMY_DEATH = auto()
+    PLAYER_DEATH = auto()
+    ENEMY_ESCAPED = auto()
+    MAIN = auto()

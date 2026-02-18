@@ -2,8 +2,7 @@ from typing import List
 import pygame, random
 from Builder import PlayerBuilder
 from Menu import Button, Menu
-
-from ObjectPool import EnemyPool
+from ObjectPool import EnemyPool, ProjectilePool
 
 from Enums import Entities, Assets, Button_Types, GameEvents
 
@@ -13,6 +12,9 @@ class GameWorld:
         pygame.init()
         pygame.display.set_caption("Geese invaderz")
         self._screen = pygame.display.set_mode((1920,1080))
+        self._screen = pygame.display.set_mode((1920,1080))
+        self._running = True
+        self._clock = pygame.time.Clock()
         self._gameObjects = []
         self._colliders = []
         self._events = {}
@@ -27,6 +29,7 @@ class GameWorld:
 
         self._gameObjects.append(self._player)
         self._enemy_pool = EnemyPool(self)
+        self._projectile_pool = ProjectilePool(self)
         
         self._start_manu = Menu(self, Assets.START_MENU)
 
@@ -73,14 +76,28 @@ class GameWorld:
             case Entities.GOOSIFER:
                 self._player_score += 10
 
+    def player_death(self, player):
+        pass
+
+    def spawn_enemy(self, entity_type, position):
+        self.instantiate(self._enemy_pool.get_object(entity_type, position))
+        
+    def spawn_projectile(self, entity_type, position):
+        self.instantiate(self._projectile_pool.get_object(entity_type, position))
+
     def awake(self):
+
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
+        self.subscribe(GameEvents.PLAYER_DEATH, self.player_death)
+
         self.subscribe(GameEvents.MAIN, self.spawn_main_menu)
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)
 
     def start(self):
-        self.instantiate(self._enemy_pool.get_object(Entities.WALKING_GOOSE, pygame.math.Vector2(1000,500)))
+
+        self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+
         for gameObject in self._gameObjects[:]:
             gameObject.start()
 

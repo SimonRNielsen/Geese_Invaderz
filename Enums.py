@@ -42,4 +42,5 @@ class Button_Types(Enum):
 class GameEvents(Enum):
     ENEMY_DEATH = auto()
     PLAYER_DEATH = auto()
+    ENEMY_ESCAPED = auto()
     MAIN = auto()

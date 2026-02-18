@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from Enums import Entities, GameEvents
+from Enums import Entities, GameEvents, Components
 from Builder import EnemyBuilder, ProjectileBuilder
 
 class ObjectPool(ABC):
@@ -58,12 +58,14 @@ class ProjectilePool(ObjectPool):
         super().__init__()
         self._game_world = game_world
         self._projectile_pool = []
+        self._player_projectile_type = Entities.PLAYER_PROJECTILE
+        self._player_projectile_damage = 1
         for i in range(10):
             builder = ProjectileBuilder()
             builder.build(Entities.ENEMY_PROJECTILE)
             self._projectile_pool.append(builder.get_gameObject())
             builder = ProjectileBuilder()
-            builder.build(Entities.PLAYER_PROJECTILE)
+            builder.build(self._player_projectile_type)
             self._projectile_pool.append(builder.get_gameObject())
             builder = ProjectileBuilder()
             builder.build(Entities.FIREBALL)
@@ -82,5 +84,16 @@ class ProjectilePool(ObjectPool):
         builder = ProjectileBuilder()
         builder.build(entity_type)
         object = builder.get_gameObject()
+        if entity_type is Entities.PLAYER_PROJECTILE and self._player_projectile_type is not Entities.PLAYER_PROJECTILE:
+            object.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
+            object._damage = self._player_projectile_damage
         object.transform.position = position
         return object
+    
+    def upgrade_pooled_shots(self, upgraded_sprite, upgraded_damage):
+        self._player_projectile_type = upgraded_sprite
+        self._player_projectile_damage = upgraded_damage
+        for projectile in self._projectile_pool:
+            if projectile._entity_type is Entities.PLAYER_PROJECTILE:
+                projectile.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
+                projectile._damage = self._player_projectile_damage

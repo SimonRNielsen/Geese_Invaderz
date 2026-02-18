@@ -44,3 +44,16 @@ class GameEvents(Enum):
     PLAYER_DEATH = auto()
     ENEMY_ESCAPED = auto()
     MAIN = auto()
+
+class Music(Enum):
+    MENU = "assets\\sfx\\music\\menu.mp3"
+    BOSSFIGHT = "assets\\sfx\\music\\boss_fight.mp3"
+
+class SFX(Enum):
+    PLAYER_TAKES_DAMAGE = "assets\\sfx\\sounds\\morten_Av.wav"
+    PLAYER_WALK_ONE = "assets\\sfx\\sounds\\walkSound.wav"
+    PLAYER_WALK_TWO = "assets\\sfx\\sounds\\walkSound2.wav"
+    BUTTON_CLICK = "assets\\sfx\\sounds\\click.mp3"
+    PLAYER_SHOOT = "assets\\sfx\\sounds\\slingshoot.mp3"
+    ENEMY_HONK = "assets\\sfx\\sounds\\gooseSound_Short.wav"
+    EGG_SMASH = "assets\\sfx\\sounds\\eggSmashSound.wav"

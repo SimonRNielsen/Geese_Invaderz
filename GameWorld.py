@@ -2,15 +2,18 @@ from typing import List
 import pygame, random
 from Builder import PlayerBuilder
 from Menu import Button, Menu
+from SoundManager import SoundManager
 from ObjectPool import EnemyPool, ProjectilePool
 
 from Enums import Entities, Assets, Button_Types, GameEvents
+from UI import Healthbar
 
 class GameWorld:
 
     def __init__(self) -> None:
         pygame.init()
         pygame.display.set_caption("Geese invaderz")
+        self._sound_manager = SoundManager()
         self._screen = pygame.display.set_mode((1920,1080))
         self._running = True
         self._clock = pygame.time.Clock()
@@ -20,22 +23,22 @@ class GameWorld:
         self._player_score = 0
         self._text_button: List[Button] = []
 
+        self._enemies_killed = 0
 
         builder = PlayerBuilder()
         builder.build()
         self._player = builder.get_gameObject()
-
-
         self._gameObjects.append(self._player)
+
+        player_entity = builder.get_gameObject().get_component("Entity")
+        self._healthbar = Healthbar(player_entity, self.screen)
+
+        #self._gameObjects.append(self._player)
         self._enemy_pool = EnemyPool(self)
         self._projectile_pool = ProjectilePool(self)
         
         self._start_manu = Menu(self, Assets.START_MENU)
         self._menu_bool = True
-        self._pause_bool = False
-
-        self._running = True
-        self._clock = pygame.time.Clock()
 
     @property
     def screen(self):
@@ -73,6 +76,30 @@ class GameWorld:
     # def spawn_main_menu(self):
     #     Menu(self, Assets.START_MENU)
     
+    def reset_game(self):
+        self._gameObjects = []
+        self._colliders = []
+        self._events = {}
+        self._player_score = 0
+        self._enemies_killed = 0
+        builder = PlayerBuilder()
+        builder.build()
+        self._gameObjects.append(builder.get_gameObject())
+        self._enemy_pool = EnemyPool(self)
+        self._projectile_pool = ProjectilePool(self)
+    
+    def reset_game(self):
+        self._gameObjects = []
+        self._colliders = []
+        self._events = {}
+        self._player_score = 0
+        self._enemies_killed = 0
+        builder = PlayerBuilder()
+        builder.build()
+        self._gameObjects.append(builder.get_gameObject())
+        self._enemy_pool = EnemyPool(self)
+        self._projectile_pool = ProjectilePool(self)
+    
     def instantiate(self, gameObject):
         gameObject.awake(self) 
         gameObject.start()
@@ -82,6 +109,7 @@ class GameWorld:
         self._events[event] = method
 
     def enemy_death(self, gameObject):
+        self._enemies_killed += 1
         match gameObject._entity_type:
             case Entities.WALKING_GOOSE:
                 self._player_score += 1
@@ -175,6 +203,8 @@ class GameWorld:
 
             self._gameObjects = [obj for obj in self._gameObjects if not obj.is_destroyed]
             self._colliders = [obj for obj in self._colliders if not obj.gameObject.is_destroyed]
+
+            self._healthbar.draw()
 
             pygame.display.flip()
 

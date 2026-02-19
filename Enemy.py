@@ -59,6 +59,9 @@ class Enemy(Entity):
         if self.gameObject.transform.position.x <= self._x_left_boundary:
             self._game_world._enemy_pool.return_object(self.gameObject)
             self._game_world._events[GameEvents.ENEMY_ESCAPED]()
+        
+        if self._game_world.player_alive.is_destroyed == True:
+            self._gameObject.is_destroyed = True
 
     def take_damage(self, collider):
         other = collider.gameObject

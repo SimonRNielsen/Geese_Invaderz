@@ -52,7 +52,8 @@ LEVELS = [
             "projectile_speed" : 620,
             "projectile_damage" : 3,
         }
-    }
+    },
+    
 
 ]
 
@@ -67,6 +68,15 @@ class LevelManager:
         self._spawn_timer = 0
         self._spawn_interval = 2
     
+    @property
+    def active_bool(self):
+        return self._active
+    
+    @active_bool.setter
+    def active_bool(self, value):
+        self._active = value
+
+
     def start_level(self):
         level = LEVELS[self._current_level]
         self._active = True
@@ -101,6 +111,7 @@ class LevelManager:
 
             if self._time_left <= 0:
                 self.next_level()
+        
         self._spawn_timer += delta_time
         if self._spawn_timer >= self._spawn_interval:
             self._spawn_timer = 0
@@ -110,6 +121,8 @@ class LevelManager:
         self._current_level += 1
 
         if self._current_level >= len(LEVELS):
+            self._gw.player_alive.is_destroyed = True
+            self._active = False
             return #Game done(Win/Lose Screen)
         
         self.start_level()
@@ -119,3 +132,6 @@ class LevelManager:
     
     def player_died(self):
         self._gw.show_loose_screen()
+
+    def reset_level_to_zero(self):
+        self._current_level = 0

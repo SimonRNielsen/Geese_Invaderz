@@ -27,6 +27,7 @@ class Menu():
                     self._gameWorld.instantiate(self._start_button.get_button())
                     self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                     self._gameWorld.instantiate(self._exit_button.get_button())
+                    self._gameWorld.change_level_manager_bool(False)
                 case Assets.PAUSE:
                     self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                     self._gameWorld.instantiate(self._exit_button.get_button())
@@ -43,6 +44,7 @@ class Menu():
                     self._gameWorld.instantiate(self._main_button.get_button())
                     self._killed_button = Button(self._gameWorld, self, Button_Types.KILLED)
                     self._gameWorld.instantiate(self._killed_button.get_button())
+                    self._gameWorld.change_level_manager_bool(False)
                 case Assets.LOOSE_SCREEN:
                     self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
                     self._gameWorld.instantiate(self._restart_button.get_button())
@@ -52,6 +54,7 @@ class Menu():
                     self._gameWorld.instantiate(self._main_button.get_button())
                     self._killed_button = Button(self._gameWorld, self, Button_Types.KILLED)
                     self._gameWorld.instantiate(self._killed_button.get_button())
+                    self._gameWorld.change_level_manager_bool(False)
 
 
     @property
@@ -147,13 +150,13 @@ class Button():
                 case Button_Types.EXIT:
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
                 case Button_Types.MAIN:
-                    self._gameWorld.player_alive.is_destroyed = False
+                    self._gameWorld.player_alive.is_destroyed = True
                     self._main_amount += 1
                 case Button_Types.RESTART:
                     self._gameWorld.player_alive.is_destroyed = False
                     self._gameWorld.reset_game_bool = True
                 case Button_Types.START:
-                    self._gameWorld.player_alive.is_destroyed = False
+                    # self._gameWorld.player_alive.is_destroyed = False
                     self._gameWorld.reset_game_bool = True
 
             self._menu.get_menu().destroy()

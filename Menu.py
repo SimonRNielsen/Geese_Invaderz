@@ -38,6 +38,8 @@ class Menu():
                     self._gameWorld.instantiate(self._exit_button.get_button())
                     self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
                     self._gameWorld.instantiate(self._main_button.get_button())
+                    self._killed_button = Button(self._gameWorld, self, Button_Types.KILLED)
+                    self._gameWorld.instantiate(self._killed_button.get_button())
                 case Assets.LOOSE_SCREEN:
                     self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
                     self._gameWorld.instantiate(self._restart_button.get_button())
@@ -45,6 +47,8 @@ class Menu():
                     self._gameWorld.instantiate(self._exit_button.get_button())
                     self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
                     self._gameWorld.instantiate(self._main_button.get_button())
+                    self._killed_button = Button(self._gameWorld, self, Button_Types.KILLED)
+                    self._gameWorld.instantiate(self._killed_button.get_button())
 
 
     @property
@@ -75,6 +79,7 @@ class Button():
         self._button_type = button_type
         self._texts: List[Button] = self._gameWorld.texts        
         self._main_menu_bool = False
+
         
 
         #Position of the button
@@ -89,6 +94,9 @@ class Button():
                 self._pos = pygame.math.Vector2(800, 600)
             case Button_Types.MAIN:
                 self._pos = pygame.math.Vector2(900, 700)
+            case Button_Types.KILLED:
+                # self._pos = pygame.math.Vector2(self._screen.get_width()/2, 400)
+                self._pos = pygame.math.Vector2(1000,500)
             case _:
                 print(f"No match case for {button_type} in Button.__init__")
                 self._pos = pygame.math.Vector2(self._screen.get_width() / 2, self._screen.get_height() / 2)
@@ -103,8 +111,17 @@ class Button():
         self._show_text =True
 
         #Text on the button
-        self._text = button_type.name
+        if(self._button_type == Button_Types.KILLED):
+            self._text = str(self._gameWorld.killed_enemies)
+        else:
+            self._text = button_type.name
         self._gameWorld.add_to_text_button(self)
+
+
+        #Text
+        self._font = pygame.font.SysFont("CopperplateGothicBold", 30)
+        self._text_surface = self._font.render(self._text, True, (0, 0, 0))
+        self._text_rect = self._text_surface.get_rect(center=self.rect.center)
 
         self._main_amount = 0
                 
@@ -113,10 +130,10 @@ class Button():
     def get_button(self):
         return self._gameObject
     
-    def draw_text(self, text):
-        self._font = pygame.font.SysFont("CopperplateGothicBold", 30)
-        self._text_surface = self._font.render(text, True, (0, 0, 0))
-        self._text_rect = self._text_surface.get_rect()
+    # def draw_text(self, text):
+    #     self._font = pygame.font.SysFont("CopperplateGothicBold", 30)
+    #     self._text_surface = self._font.render(text, True, (0, 0, 0))
+    #     self._text_rect = self._text_surface.get_rect()
         
 
     def click_on_button(self):
@@ -140,11 +157,15 @@ class Button():
             for text_and_button in self._texts:
                 text_and_button._show_text = False
                 text_and_button.get_button().destroy()
+
+            self._texts.clear()
+
+            
     
     
     def update(self,delta_time):
         if (self._show_text == True):
-            self.draw_text(self._text)
+            # self.draw_text(self._text)
             self._text_rect.center = self.rect.center
             self._screen.blit(self._text_surface, self._text_rect)
         if self._main_menu_bool == True and self._main_amount == 1:

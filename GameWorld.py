@@ -39,6 +39,7 @@ class GameWorld:
         
         self._start_manu = Menu(self, Assets.START_MENU)
         self._menu_bool = True
+        self._pause_bool = False
 
     @property
     def screen(self):
@@ -51,6 +52,10 @@ class GameWorld:
     @property
     def texts(self):
         return self._text_button
+    
+    @texts.setter
+    def texts(self, value):
+        self._text_button = value
     
     @property
     def player_alive(self):
@@ -72,6 +77,10 @@ class GameWorld:
     def pause_bool(self, value):
         self._pause_bool = value
 
+    @property
+    def killed_enemies(self):
+        return self._enemies_killed
+
 
     # def spawn_main_menu(self):
     #     Menu(self, Assets.START_MENU)
@@ -88,17 +97,17 @@ class GameWorld:
         self._enemy_pool = EnemyPool(self)
         self._projectile_pool = ProjectilePool(self)
     
-    def reset_game(self):
-        self._gameObjects = []
-        self._colliders = []
-        self._events = {}
-        self._player_score = 0
-        self._enemies_killed = 0
-        builder = PlayerBuilder()
-        builder.build()
-        self._gameObjects.append(builder.get_gameObject())
-        self._enemy_pool = EnemyPool(self)
-        self._projectile_pool = ProjectilePool(self)
+    # def reset_game(self):
+    #     self._gameObjects = []
+    #     self._colliders = []
+    #     self._events = {}
+    #     self._player_score = 0
+    #     self._enemies_killed = 0
+    #     builder = PlayerBuilder()
+    #     builder.build()
+    #     self._gameObjects.append(builder.get_gameObject())
+    #     self._enemy_pool = EnemyPool(self)
+    #     self._projectile_pool = ProjectilePool(self)
     
     def instantiate(self, gameObject):
         gameObject.awake(self) 

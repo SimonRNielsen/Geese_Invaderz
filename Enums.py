@@ -37,6 +37,7 @@ class Button_Types(Enum):
     RESTART = "Restart"
     RESUME = "Resume"
     MAIN = "Main menu"
+    KILLED = "Killed enemies"
     # EXIT_PAUSE = "Exit pause"
 
 class GameEvents(Enum):

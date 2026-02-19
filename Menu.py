@@ -1,7 +1,7 @@
 from typing import List
 import pygame
 from AssetLoader import AssetLoader
-from Enums import Assets, Button_Types, GameEvents
+from Enums import Assets, Button_Types, GameEvents, SFX
 from Components import SpriteRenderer
 from GameObject import GameObject
 import time
@@ -131,6 +131,7 @@ class Button():
 
     def click_on_button(self):
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
+            self._gameWorld._sound_manager.play_sound(SFX.BUTTON_CLICK)
             match self._button_type:
                 case Button_Types.EXIT:
                     pygame.event.post(pygame.event.Event(pygame.QUIT))

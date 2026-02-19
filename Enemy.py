@@ -1,7 +1,7 @@
 from Components import Entity
-from Enums import Entities, Components, Collisions, GameEvents
+from Enums import Entities, Components, Collisions, GameEvents, SFX, Music
 from abc import ABC, abstractmethod
-import pygame
+import pygame, random
 
 class Enemy(Entity):
 
@@ -39,12 +39,19 @@ class Enemy(Entity):
         self._game_world = game_world
         self._gameObject._health = self._max_health
         self._gameObject._is_destroyed = False
+        screen_width = game_world.screen.get_width()
+        if self.gameObject._entity_type is Entities.SHEEP:
+            self._initial_x = random.randint(int(screen_width * 0.6),int(screen_width * 0.95))
         if not self._strategy == None:
             self._strategy.enter(self, game_world)
     
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
         collider.subscribe(Collisions.PIXEL_ENTER, self.take_damage)
+        if self.gameObject._entity_type is not Entities.SHEEP:
+            self._game_world._sound_manager.play_sound(SFX.ENEMY_HONK)
+        else:
+            self._game_world._sound_manager.play_sound(SFX.SHEEP)
 
     def update(self, delta_time):
         if self._strategy is not None:
@@ -57,6 +64,7 @@ class Enemy(Entity):
         other = collider.gameObject
         match other._entity_type:
             case Entities.PLAYER_PROJECTILE:
+                self._game_world._sound_manager.play_sound(SFX.HVEDE)
                 self.gameObject._health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
                 if self.gameObject._health <= 0:
@@ -65,9 +73,11 @@ class Enemy(Entity):
                         self._game_world.level_manager.boss_killed()
 
                     self._game_world._enemy_pool.return_object(self._gameObject)
+                    if self.gameObject._entity_type is Entities.GOOSIFER:
+                        self._game_world._sound_manager.play_music(Music.MENU)
             case Entities.PLAYER:
                 self._game_world._enemy_pool.return_object(self._gameObject)
-                other._health -= self._damage
+                other.get_component(Components.ENTITY.value).health -= self._damage
 
     @property
     def speed(self):
@@ -117,15 +127,19 @@ class Move_Strategy(Strategy):
             self._can_shoot_after = 2
 
     def execute(self, delta_time):
-        self._parent._gameObject.transform.position -= self._direction * self._parent.speed * delta_time
         if self._vertical:
             self._time_since_direction_change += delta_time
             self._time_since_last_shot += delta_time
             if self._time_since_last_shot >= self._can_shoot_after:
                 self.shoot()
+            x_distance = abs(self._parent._initial_x - self._parent._gameObject.transform.position.x)
+            if x_distance > 60:
+                self._parent._gameObject.transform.position -= pygame.math.Vector2(1,0) * self._parent.speed * delta_time
+                return
             if (self._parent._gameObject.transform.position.y <= 0 or self._parent._gameObject.transform.position.y >= (self._screen_height - self._sprite_height)) and self._time_since_direction_change > 1:
                 self._direction = -self._direction
                 self._time_since_direction_change = 0
+        self._parent._gameObject.transform.position -= self._direction * self._parent.speed * delta_time
         
     def exit(self):
         self._parent._previous_strategy = self
@@ -161,12 +175,14 @@ class Boss_Strategy(Strategy):
         self._current_waypoint = self._waypoints[len(self._waypoints)-1]
 
     def execute(self, delta_time):
+        self._game_world._sound_manager.play_music(Music.BOSSFIGHT)
         self._time_since_last_barrage += delta_time
         if self._time_since_last_barrage >= self._time_between_barrages:
             self.shoot()
         direction = self._current_waypoint - self._parent.gameObject.transform.position
         if direction.length() < 10:
             self._current_waypoint = self._waypoints.pop(0)
+            self._game_world._sound_manager.play_sound(SFX.ENEMY_HONK)
             self._waypoints.append(self._current_waypoint)
         direction = direction.normalize()
         self._parent.gameObject.transform.position += direction * self._parent.speed * delta_time

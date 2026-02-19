@@ -2,8 +2,9 @@ from typing import List
 import pygame, random
 from Builder import PlayerBuilder
 from Menu import Button, Menu
+from SoundManager import SoundManager
 from ObjectPool import EnemyPool, ProjectilePool
-
+from CollisionRules import COLLISION_RULES
 from Enums import Entities, Assets, Button_Types, GameEvents
 from UI import Healthbar, LevelTimer
 from AssetLoader import AssetLoader
@@ -14,6 +15,7 @@ class GameWorld:
     def __init__(self) -> None:
         pygame.init()
         pygame.display.set_caption("Geese invaderz")
+        self._sound_manager = SoundManager()
         self._screen = pygame.display.set_mode((1920,1080))
         self._background = None
         self._running = True
@@ -24,6 +26,7 @@ class GameWorld:
         self._player_score = 0
         self._text_button: List[Button] = []
 
+        self._enemies_killed = 0
 
         builder = PlayerBuilder()
         builder.build()
@@ -87,6 +90,18 @@ class GameWorld:
             Menu(self, Assets.LOOSE_SCREEN)
             self._menu_bool = True
     
+    def reset_game(self):
+        self._gameObjects = []
+        self._colliders = []
+        self._events = {}
+        self._player_score = 0
+        self._enemies_killed = 0
+        builder = PlayerBuilder()
+        builder.build()
+        self._gameObjects.append(builder.get_gameObject())
+        self._enemy_pool = EnemyPool(self)
+        self._projectile_pool = ProjectilePool(self)
+    
     def instantiate(self, gameObject):
         gameObject.awake(self) 
         gameObject.start()
@@ -96,6 +111,7 @@ class GameWorld:
         self._events[event] = method
 
     def enemy_death(self, gameObject):
+        self._enemies_killed += 1
         match gameObject._entity_type:
             case Entities.WALKING_GOOSE:
                 self._player_score += 1
@@ -180,15 +196,22 @@ class GameWorld:
             for gameObject in self._gameObjects[:]:
                 gameObject.update(delta_time)
 
-            #Text update
             for text in self._text_button[:]:
                 text.update(delta_time)
 
-  
-
             for i, collider1 in enumerate(self._colliders):
-                for j in range(i+1, len(self._colliders)):
+                entity1 = collider1.gameObject._entity_type
+
+                for j in range(i + 1, len(self._colliders)):
                     collider2 = self._colliders[j]
+                    entity2 = collider2.gameObject._entity_type
+
+                    if not self.can_collide(entity1, entity2):
+                        continue  
+
+                    if not self.within_x_range(collider1.gameObject, collider2.gameObject):
+                        continue
+
                     collider1.collision_check(collider2)
 
             self._gameObjects = [obj for obj in self._gameObjects if not obj.is_destroyed]
@@ -210,7 +233,17 @@ class GameWorld:
         gameObject.awake(self)
         gameObject.start()
 
+    def can_collide(self, entity_a, entity_b) -> bool:
+        if entity_a in COLLISION_RULES and entity_b in COLLISION_RULES[entity_a]:
+            return True
 
+        if entity_b in COLLISION_RULES and entity_a in COLLISION_RULES[entity_b]:
+            return True
+
+        return False
+    
+    def within_x_range(self, go1, go2, max_distance=500) -> bool:
+        return abs(go1.transform.position.x - go2.transform.position.x) <= max_distance
 
 gw = GameWorld()
 

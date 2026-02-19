@@ -1,6 +1,6 @@
 import pygame
 from AssetLoader import AssetLoader
-from Enums import Entities, GameEvents, Components, Collisions
+from Enums import Entities, GameEvents, Components, Collisions, SFX
 from Components import Component, SpriteRenderer, Collider
 from GameObject import GameObject
 from Projectile import Projectile
@@ -27,6 +27,7 @@ class Player(Component):
         self._sprite_height = sr.sprite_image.get_height()
         self._sprite_width = sr.sprite_image.get_width()
         gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.enemy_escaped)
+        gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.enemy_escaped)
 
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
@@ -44,7 +45,9 @@ class Player(Component):
             direction -= 1
         if keys[pygame.K_s]:
             direction += 1
-                
+        
+        self._game_world._sound_manager.play_footsteps(direction)
+
         #Vertical movement
         transform = self.gameObject.transform
         transform.position.y += direction * self._speed * delta_time
@@ -90,14 +93,21 @@ class Player(Component):
     def take_damage(self, collider):
         other = collider.gameObject
         match other._entity_type:
-            case Entities.PLAYER_PROJECTILE:
-                return
             case Entities.ENEMY_PROJECTILE:
                 self._entity.health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
+                self._game_world._sound_manager.play_sound(SFX.EGG_SMASH)
             case Entities.FIREBALL:
                 self._entity.health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
+                self._game_world._sound_manager.play_sound(SFX.FIRE_HIT)
+        self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
+        if self._entity.health <= 0:
+            self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
+
+    def enemy_escaped(self):
+        self._entity.health -= 1
+        self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
         if self._entity.health <= 0:
             self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
     

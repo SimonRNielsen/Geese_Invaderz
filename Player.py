@@ -60,7 +60,7 @@ class Player(Component):
             self.shoot()
             self._time_since_last_shot = 0
 
-        print(self._entity.health)
+        # print(self._entity.health)
 
     def shoot(self):
                 
@@ -82,8 +82,9 @@ class Player(Component):
             case Entities.FIREBALL:
                 self._entity.health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
+                self._game_world._sound_manager.play_sound(SFX.FIRE_HIT)
+        self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
         if self._entity.health <= 0:
-            self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
             self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
 
     def enemy_escaped(self):

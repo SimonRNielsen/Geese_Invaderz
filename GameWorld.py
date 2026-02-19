@@ -8,6 +8,7 @@ from ObjectPool import EnemyPool, ProjectilePool
 from Enums import Entities, Assets, Button_Types, GameEvents
 from UI import Healthbar
 
+
 class GameWorld:
 
     def __init__(self) -> None:
@@ -39,10 +40,6 @@ class GameWorld:
         
         self._start_manu = Menu(self, Assets.START_MENU)
         self._menu_bool = True
-
-
-        self._running = True
-        self._clock = pygame.time.Clock()
 
     @property
     def screen(self):
@@ -135,7 +132,7 @@ class GameWorld:
 
     def start(self):
 
-        self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+        self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(2000,500))
 
         for gameObject in self._gameObjects[:]:
             gameObject.start()

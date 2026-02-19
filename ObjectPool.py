@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from Enums import Entities, GameEvents, Components
+from Enums import Entities, GameEvents, Components, SFX
 from Builder import EnemyBuilder, ProjectileBuilder
 
 class ObjectPool(ABC):
@@ -76,6 +76,15 @@ class ProjectilePool(ObjectPool):
         self._projectile_pool.append(entity)
 
     def get_object(self, entity_type, position):
+        match entity_type: 
+            case Entities.FIREBALL:
+                self._game_world._sound_manager.play_sound(SFX.FIREBALL)
+            case Entities.ENEMY_PROJECTILE:
+                self._game_world._sound_manager.play_sound(SFX.ENEMY_SHOOT)
+            case Entities.PLAYER_PROJECTILE:
+                self._game_world._sound_manager.play_sound(SFX.PLAYER_SHOOT)
+            case _:
+                pass
         self._projectile_pool = [obj for obj in self._projectile_pool if obj.is_destroyed]
         for entity in self._projectile_pool:
             if entity._entity_type == entity_type:

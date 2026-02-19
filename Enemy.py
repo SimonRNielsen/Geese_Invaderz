@@ -64,6 +64,7 @@ class Enemy(Entity):
         other = collider.gameObject
         match other._entity_type:
             case Entities.PLAYER_PROJECTILE:
+                self._game_world._sound_manager.play_sound(SFX.HVEDE)
                 self.gameObject._health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
                 if self.gameObject._health <= 0:

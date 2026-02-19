@@ -1,5 +1,5 @@
 import pygame
-from Enums import Entities, Assets
+from Enums import Entities, Assets, Components
 
 LEVELS = [
     {
@@ -87,7 +87,7 @@ class LevelManager:
 
         #Apply player modifiers
         if "player_modifiers" in level:
-            player_component = self._gw._player.get_component("player")
+            player_component = self._gw._player.get_component(Components.PLAYER.value)
             if player_component:
                 player_component.apply_level_modifiers(level["player_modifiers"])
     

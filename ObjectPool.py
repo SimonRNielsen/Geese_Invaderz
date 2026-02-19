@@ -157,3 +157,7 @@ class ProjectilePool(ObjectPool):
             if projectile._entity_type is Entities.PLAYER_PROJECTILE:
                 projectile.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
                 projectile._damage = self._player_projectile_damage
+        for active in self._game_world._colliders:
+            if active.gameObject._entity_type is Entities.PLAYER_PROJECTILE:
+                active.gameObject.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
+                active._damage = self._player_projectile_damage

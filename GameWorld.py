@@ -106,12 +106,22 @@ class GameWorld:
         self._colliders = []
         self._events = {}
         self._player_score = 0
+        self._text_button: List[Button] = []
+
         self._enemies_killed = 0
+
         builder = PlayerBuilder()
         builder.build()
-        self._gameObjects.append(builder.get_gameObject())
+        self._player = builder.get_gameObject()
+        self._gameObjects.append(self._player)
+ 
+        player_entity = builder.get_gameObject().get_component("Entity")
+        self._healthbar = Healthbar(player_entity, self.screen)
+
+        #self._gameObjects.append(self._player)
         self._enemy_pool = EnemyPool(self)
         self._projectile_pool = ProjectilePool(self)
+        
         self.awake()
         self.start()
     
@@ -139,17 +149,17 @@ class GameWorld:
             Menu(self, Assets.LOOSE_SCREEN)
             self._menu_bool = True
     
-    def reset_game(self):
-        self._gameObjects = []
-        self._colliders = []
-        self._events = {}
-        self._player_score = 0
-        self._enemies_killed = 0
-        builder = PlayerBuilder()
-        builder.build()
-        self._gameObjects.append(builder.get_gameObject())
-        self._enemy_pool = EnemyPool(self)
-        self._projectile_pool = ProjectilePool(self)
+    # def reset_game(self):
+    #     self._gameObjects = []
+    #     self._colliders = []
+    #     self._events = {}
+    #     self._player_score = 0
+    #     self._enemies_killed = 0
+    #     builder = PlayerBuilder()
+    #     builder.build()
+    #     self._gameObjects.append(builder.get_gameObject())
+    #     self._enemy_pool = EnemyPool(self)
+    #     self._projectile_pool = ProjectilePool(self)
     
     def instantiate(self, gameObject):
         gameObject.awake(self) 
@@ -200,7 +210,12 @@ class GameWorld:
     def update(self):
         while self._running:
 
-            delta_time = self._clock.tick(60) / 1000.0
+            # delta_time = self._clock.tick(60) / 1000.0
+            #Pause functionaly => stupid
+            if self._pause_bool == False:
+                delta_time = self._clock.tick(60) / 1000.0
+            else:
+                delta_time = 0
 
             if self._background:
                 self._screen.blit(self._background, (0,0))
@@ -243,16 +258,6 @@ class GameWorld:
                     for text in self._text_button[:]:
                         text.click_on_button()
 
-            
-
-            self._screen.fill("cornflowerblue")
-
-
-            #Pause functionaly => stupid
-            if self._pause_bool == False:
-                delta_time = self._clock.tick(60) / 1000.0
-            else:
-                delta_time = 0
 
             for gameObject in self._gameObjects[:]:
                 gameObject.update(delta_time)

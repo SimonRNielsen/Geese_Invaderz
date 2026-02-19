@@ -57,3 +57,4 @@ class SFX(Enum):
     PLAYER_SHOOT = "assets\\sfx\\sounds\\slingshoot.mp3"
     ENEMY_HONK = "assets\\sfx\\sounds\\gooseSound_Short.wav"
     EGG_SMASH = "assets\\sfx\\sounds\\eggSmashSound.wav"
+    SHEEP = "assets\\sfx\\sounds\\sheep.mp3"

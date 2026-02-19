@@ -50,6 +50,8 @@ class Enemy(Entity):
         collider.subscribe(Collisions.PIXEL_ENTER, self.take_damage)
         if self.gameObject._entity_type is not Entities.SHEEP:
             self._game_world._sound_manager.play_sound(SFX.ENEMY_HONK)
+        else:
+            self._game_world._sound_manager.play_sound(SFX.SHEEP)
 
     def update(self, delta_time):
         if self._strategy is not None:

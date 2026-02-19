@@ -73,7 +73,7 @@ class Enemy(Entity):
                         self._game_world._sound_manager.play_music(Music.MENU)
             case Entities.PLAYER:
                 self._game_world._enemy_pool.return_object(self._gameObject)
-                other._health -= self._damage
+                other.get_component(Components.ENTITY.value).health -= self._damage
 
     @property
     def speed(self):

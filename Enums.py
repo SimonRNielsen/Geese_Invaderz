@@ -11,6 +11,8 @@ class Components(Enum):
     COLLIDER = "Collider"
     ANIMATOR = "Animator"
     ENEMY = "Enemy"
+    PLAYER = "Player"
+    ENTITY = "Entity"
 
 class Assets(Enum):
     START_MENU = "Start"

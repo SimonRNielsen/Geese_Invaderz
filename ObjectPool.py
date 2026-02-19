@@ -68,12 +68,12 @@ class EnemyPool(ObjectPool):
         screen_width = self._game_world.screen.get_width()
         screen_height = self._game_world.screen.get_height()
 
-        sprite_height = 50
+        sprite_height = 200
         sprite_width = 50
     
         if enemy_type == Entities.OBERST:
             #Spawn på højre kant, tilfældig Y
-            x = int(screen_width * 0.8)
+            x = int(screen_width * 1.1)
             y = random.randint(0, screen_height - sprite_height)
             return pygame.math.Vector2(x, y)
         else:

@@ -5,7 +5,9 @@ from Menu import Button, Menu
 from ObjectPool import EnemyPool, ProjectilePool
 
 from Enums import Entities, Assets, Button_Types, GameEvents
-from UI import Healthbar
+from UI import Healthbar, LevelTimer
+from AssetLoader import AssetLoader
+from LevelManager import LevelManager
 
 class GameWorld:
 
@@ -13,6 +15,7 @@ class GameWorld:
         pygame.init()
         pygame.display.set_caption("Geese invaderz")
         self._screen = pygame.display.set_mode((1920,1080))
+        self._background = None
         self._running = True
         self._clock = pygame.time.Clock()
         self._gameObjects = []
@@ -26,7 +29,7 @@ class GameWorld:
         builder.build()
         self._player = builder.get_gameObject()
         self._gameObjects.append(self._player)
-
+ 
         player_entity = builder.get_gameObject().get_component("Entity")
         self._healthbar = Healthbar(player_entity, self.screen)
 
@@ -40,6 +43,9 @@ class GameWorld:
 
         self._running = True
         self._clock = pygame.time.Clock()
+
+        self.level_manager = LevelManager(self)
+        self.ui_timer = LevelTimer(self.screen)
 
     @property
     def screen(self):
@@ -59,7 +65,7 @@ class GameWorld:
     
     @property
     def menu_bool(self):
-        return self.menu_bool
+        return self._menu_bool
     
     @menu_bool.setter
     def menu_bool(self, value):
@@ -67,6 +73,19 @@ class GameWorld:
     
     def spawn_main_menu(self):
         Menu(self, Assets.START_MENU)
+    
+    def set_background(self, asset: Assets):
+        self._background = AssetLoader.get_sprite(asset)
+    
+    def show_win_screen(self):
+        if not self._menu_bool:
+            Menu(self, Assets.WIN_SCREEN)
+            self._menu_bool = True
+    
+    def show_loose_screen(self):
+        if not self._menu_bool:
+            Menu(self, Assets.LOOSE_SCREEN)
+            self._menu_bool = True
     
     def instantiate(self, gameObject):
         gameObject.awake(self) 
@@ -82,7 +101,7 @@ class GameWorld:
                 self._player_score += 1
             case Entities.AGGRO_GOOSE:
                 self._player_score += 3
-            case Entities.SHEEP:
+            case Entities.OBERST:
                 self._player_score += 7
             case Entities.GOOSIFER:
                 self._player_score += 10
@@ -107,13 +126,25 @@ class GameWorld:
 
     def start(self):
 
-        self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+        #self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+        self.level_manager.start_level()
 
         for gameObject in self._gameObjects[:]:
             gameObject.start()
 
     def update(self):
         while self._running:
+
+            delta_time = self._clock.tick(60) / 1000.0
+
+            if self._background:
+                self._screen.blit(self._background, (0,0))
+            else:
+                self._screen.fill("cornflowerblue")
+
+
+            self.level_manager.update(delta_time)
+            self.ui_timer.draw()
 
             keys = pygame.key.get_pressed()
 
@@ -142,8 +173,9 @@ class GameWorld:
                         text.click_on_button()
 
 
-            self._screen.fill("cornflowerblue")
-            delta_time = self._clock.tick(60) / 1000.0
+            #self._screen.fill("cornflowerblue")
+
+            #delta_time = self._clock.tick(60) / 1000.0
 
             for gameObject in self._gameObjects[:]:
                 gameObject.update(delta_time)

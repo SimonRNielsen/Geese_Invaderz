@@ -59,3 +59,28 @@ class Healthbar:
             4,
             border_radius = self._border_radius
         )
+
+class LevelTimer:
+    def __init__(self, screen):
+        self._screen = screen
+        self._time = 0
+        self._active = False
+        self._font = pygame.font.SysFont("CopperplateGothicBold", 36)
+    
+    def start(self, seconds):
+        self._time = seconds
+        self._active = True
+    
+    def set_time(self, time_left):
+        self._time = max(0, int(time_left))
+    
+    def hide(self):
+        self._active = False
+    
+    def draw(self):
+        if not self._active:
+            return
+        
+        text = self._font.render(f"{self._time}", True, (255, 255, 255))
+        rect = text.get_rect(center=(self._screen.get_width()/2, 40))
+        self._screen.blit(text, rect)

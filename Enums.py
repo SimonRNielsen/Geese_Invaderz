@@ -19,6 +19,10 @@ class Assets(Enum):
     BUTTON = "Button"
     BUTTON_PRESSED = "Button pressed"
     PAUSE = "Pause"
+    BG_LEVEL_1 = auto()
+    BG_LEVEL_2 = auto()
+    BG_LEVEL_3 = auto()
+    BG_LEVEL_4 = auto()
 
 class Entities(Enum):
     PLAYER = "Player"
@@ -26,9 +30,12 @@ class Entities(Enum):
     AGGRO_GOOSE = "Aggro_Goose"
     GOOSIFER = "Goosifer"
     FIREBALL = "Fireball"
-    SHEEP = "Sheep"
+    OBERST = auto()
+    #SHEEP = "Sheep"
     PLAYER_PROJECTILE = "Player_Projectile"
     ENEMY_PROJECTILE = "Enemy_Projectile"
+    STEN_HVEDE = "Sten_Hvede"
+    VARM_HVEDE = "Varm_Hvede"
     UNKNOWN = ""
 
 class Button_Types(Enum):

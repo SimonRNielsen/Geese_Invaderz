@@ -25,6 +25,9 @@ class AssetLoader:
                         "enemy\\gooseWalk5.png",
                         "enemy\\gooseWalk6.png",
                         "enemy\\gooseWalk7.png",)
+            case Entities.OBERST:
+                args = ("enemy\\OberstStille.png",
+                        "enemy\\OberstSkyd.png",)
             case Entities.AGGRO_GOOSE:
                 args = ("enemy\\aggro0.png",
                         "enemy\\aggro1.png",
@@ -38,9 +41,9 @@ class AssetLoader:
                 args = ("enemy\\goosifer0.png",
                         "enemy\\goosifer1.png",
                         "enemy\\goosifer2.png",)
-            case Entities.SHEEP:
-                args = ("enemy\\sheep.png",
-                        "enemy\\sheep.png",)
+            #case Entities.SHEEP:
+                #args = ("enemy\\sheep.png",
+                        #"enemy\\sheep.png",)
             case _:
                 print(f"No match case for {asset_key} in get_animation_args")
                 return None
@@ -51,12 +54,18 @@ class AssetLoader:
         match asset_key:
             case Entities.PLAYER:
                 return "player\\mortenMonk0.png"
+            case Entities.VARM_HVEDE:
+                return "projectiles\\Varm_Hvede.png"
+            case Entities.STEN_HVEDE:
+                return "projectiles\\Sten_Hvede.png"
             case Entities.WALKING_GOOSE:
                 return "enemy\\gooseWalk0.png"
+            case Entities.OBERST:
+                return "enemy\\OberstStille.png"
             case Entities.AGGRO_GOOSE:
                 return "enemy\\aggro0.png"
-            case Entities.SHEEP:
-                return "enemy\\sheep.png"
+            #case Entities.SHEEP:
+                #return "enemy\\sheep.png"
             case Entities.GOOSIFER:
                 return "enemy\\goosifer0.png"
             case Entities.FIREBALL:
@@ -77,6 +86,14 @@ class AssetLoader:
                 return "menu\\button.png"
             case Assets.BUTTON_PRESSED:
                 return "menu\\buttonPressed.png"
+            case Assets.BG_LEVEL_1:
+                return  "Background\\Bg1.png"
+            case Assets.BG_LEVEL_2:
+                return  "Background\\Bg2.png"
+            case Assets.BG_LEVEL_3:
+                return  "Background\\Bg3.png"
+            case Assets.BG_LEVEL_4:
+                return  "Background\\Bg4.png"
             case _:
                 print(f"No match case for {asset_key} in get_sprite_arg")
                 return None

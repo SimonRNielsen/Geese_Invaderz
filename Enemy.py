@@ -27,7 +27,7 @@ class Enemy(Entity):
                 self._speed = 300
                 self._strategy = Move_Strategy()
                 self._max_health = 2
-            case Entities.SHEEP:
+            case Entities.OBERST:
                 self._speed = 300
                 self._strategy = Move_Strategy(True)
                 self._max_health = 2
@@ -51,7 +51,7 @@ class Enemy(Entity):
             self._strategy.execute(delta_time)
         if self.gameObject.transform.position.x <= self._x_left_boundary:
             self._game_world._enemy_pool.return_object(self.gameObject)
-            self._game_world._events[GameEvents.ENEMY_ESCAPED](self._damage)
+            self._game_world._events[GameEvents.ENEMY_ESCAPED]()
 
     def take_damage(self, collider):
         other = collider.gameObject
@@ -60,6 +60,10 @@ class Enemy(Entity):
                 self.gameObject._health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
                 if self.gameObject._health <= 0:
+
+                    if self.gameObject._entity_type == Entities.GOOSIFER:
+                        self._game_world.level_manager.boss_killed()
+
                     self._game_world._enemy_pool.return_object(self._gameObject)
             case Entities.PLAYER:
                 self._game_world._enemy_pool.return_object(self._gameObject)
@@ -104,6 +108,7 @@ class Move_Strategy(Strategy):
             self._parent._strategy = self
         self._game_world = game_world
         if self._vertical:
+            self._direction = pygame.math.Vector2(-0.3, 1)
             sr = self._parent.gameObject.get_component(Components.SPRITERENDERER.value)
             self._sprite_height = sr.sprite_image.get_height()
             self._sprite_width = sr.sprite_image.get_width()

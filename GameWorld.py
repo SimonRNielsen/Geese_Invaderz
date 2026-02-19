@@ -4,9 +4,11 @@ from Builder import PlayerBuilder
 from Menu import Button, Menu
 from SoundManager import SoundManager
 from ObjectPool import EnemyPool, ProjectilePool
-
+from CollisionRules import COLLISION_RULES
 from Enums import Entities, Assets, Button_Types, GameEvents
-from UI import Healthbar
+from UI import Healthbar, LevelTimer
+from AssetLoader import AssetLoader
+from LevelManager import LevelManager
 
 class GameWorld:
 
@@ -15,6 +17,7 @@ class GameWorld:
         pygame.display.set_caption("Geese invaderz")
         self._sound_manager = SoundManager()
         self._screen = pygame.display.set_mode((1920,1080))
+        self._background = None
         self._running = True
         self._clock = pygame.time.Clock()
         self._gameObjects = []
@@ -29,7 +32,7 @@ class GameWorld:
         builder.build()
         self._player = builder.get_gameObject()
         self._gameObjects.append(self._player)
-
+ 
         player_entity = builder.get_gameObject().get_component("Entity")
         self._healthbar = Healthbar(player_entity, self.screen)
 
@@ -42,6 +45,9 @@ class GameWorld:
         self._pause_bool = False
 
         self._reset_game_bool = False
+
+        self.level_manager = LevelManager(self)
+        self.ui_timer = LevelTimer(self.screen)
 
     @property
     def screen(self):
@@ -65,7 +71,7 @@ class GameWorld:
     
     @property
     def menu_bool(self):
-        return self.menu_bool
+        return self._menu_bool
     
     @menu_bool.setter
     def menu_bool(self, value):
@@ -120,6 +126,30 @@ class GameWorld:
     #     self._gameObjects.append(builder.get_gameObject())
     #     self._enemy_pool = EnemyPool(self)
     #     self._projectile_pool = ProjectilePool(self)
+    def set_background(self, asset: Assets):
+        self._background = AssetLoader.get_sprite(asset)
+    
+    def show_win_screen(self):
+        if not self._menu_bool:
+            Menu(self, Assets.WIN_SCREEN)
+            self._menu_bool = True
+    
+    def show_loose_screen(self):
+        if not self._menu_bool:
+            Menu(self, Assets.LOOSE_SCREEN)
+            self._menu_bool = True
+    
+    def reset_game(self):
+        self._gameObjects = []
+        self._colliders = []
+        self._events = {}
+        self._player_score = 0
+        self._enemies_killed = 0
+        builder = PlayerBuilder()
+        builder.build()
+        self._gameObjects.append(builder.get_gameObject())
+        self._enemy_pool = EnemyPool(self)
+        self._projectile_pool = ProjectilePool(self)
     
     def instantiate(self, gameObject):
         gameObject.awake(self) 
@@ -136,7 +166,7 @@ class GameWorld:
                 self._player_score += 1
             case Entities.AGGRO_GOOSE:
                 self._player_score += 3
-            case Entities.SHEEP:
+            case Entities.OBERST:
                 self._player_score += 7
             case Entities.GOOSIFER:
                 self._player_score += 10
@@ -161,13 +191,25 @@ class GameWorld:
 
     def start(self):
 
-        self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+        #self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
+        self.level_manager.start_level()
 
         for gameObject in self._gameObjects[:]:
             gameObject.start()
 
     def update(self):
         while self._running:
+
+            delta_time = self._clock.tick(60) / 1000.0
+
+            if self._background:
+                self._screen.blit(self._background, (0,0))
+            else:
+                self._screen.fill("cornflowerblue")
+
+
+            self.level_manager.update(delta_time)
+            self.ui_timer.draw()
 
             keys = pygame.key.get_pressed()
 
@@ -215,15 +257,22 @@ class GameWorld:
             for gameObject in self._gameObjects[:]:
                 gameObject.update(delta_time)
 
-            #Text update
             for text in self._text_button[:]:
                 text.update(delta_time)
 
-  
-
             for i, collider1 in enumerate(self._colliders):
-                for j in range(i+1, len(self._colliders)):
+                entity1 = collider1.gameObject._entity_type
+
+                for j in range(i + 1, len(self._colliders)):
                     collider2 = self._colliders[j]
+                    entity2 = collider2.gameObject._entity_type
+
+                    if not self.can_collide(entity1, entity2):
+                        continue  
+
+                    if not self.within_x_range(collider1.gameObject, collider2.gameObject):
+                        continue
+
                     collider1.collision_check(collider2)
 
             self._gameObjects = [obj for obj in self._gameObjects if not obj.is_destroyed]
@@ -242,7 +291,17 @@ class GameWorld:
         gameObject.awake(self)
         gameObject.start()
 
+    def can_collide(self, entity_a, entity_b) -> bool:
+        if entity_a in COLLISION_RULES and entity_b in COLLISION_RULES[entity_a]:
+            return True
 
+        if entity_b in COLLISION_RULES and entity_a in COLLISION_RULES[entity_b]:
+            return True
+
+        return False
+    
+    def within_x_range(self, go1, go2, max_distance=500) -> bool:
+        return abs(go1.transform.position.x - go2.transform.position.x) <= max_distance
 
 gw = GameWorld()
 

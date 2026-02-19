@@ -11,6 +11,8 @@ class Components(Enum):
     COLLIDER = "Collider"
     ANIMATOR = "Animator"
     ENEMY = "Enemy"
+    PLAYER = "Player"
+    ENTITY = "Entity"
 
 class Assets(Enum):
     START_MENU = "Start"
@@ -19,6 +21,10 @@ class Assets(Enum):
     BUTTON = "Button"
     BUTTON_PRESSED = "Button pressed"
     PAUSE = "Pause"
+    BG_LEVEL_1 = auto()
+    BG_LEVEL_2 = auto()
+    BG_LEVEL_3 = auto()
+    BG_LEVEL_4 = auto()
 
 class Entities(Enum):
     PLAYER = "Player"
@@ -26,9 +32,12 @@ class Entities(Enum):
     AGGRO_GOOSE = "Aggro_Goose"
     GOOSIFER = "Goosifer"
     FIREBALL = "Fireball"
-    SHEEP = "Sheep"
+    OBERST = auto()
+    #SHEEP = "Sheep"
     PLAYER_PROJECTILE = "Player_Projectile"
     ENEMY_PROJECTILE = "Enemy_Projectile"
+    STEN_HVEDE = "Sten_Hvede"
+    VARM_HVEDE = "Varm_Hvede"
     UNKNOWN = ""
 
 class Button_Types(Enum):
@@ -57,5 +66,10 @@ class SFX(Enum):
     PLAYER_WALK_TWO = "assets\\sfx\\sounds\\walkSound2.wav"
     BUTTON_CLICK = "assets\\sfx\\sounds\\click.mp3"
     PLAYER_SHOOT = "assets\\sfx\\sounds\\slingshoot.mp3"
+    ENEMY_SHOOT = "assets\\sfx\\sounds\\shootSound.wav"
     ENEMY_HONK = "assets\\sfx\\sounds\\gooseSound_Short.wav"
     EGG_SMASH = "assets\\sfx\\sounds\\eggSmashSound.wav"
+    SHEEP = "assets\\sfx\\sounds\\sheep.mp3"
+    FIREBALL = "assets\\sfx\\sounds\\fire-sound.mp3"
+    FIRE_HIT = "assets\\sfx\\sounds\\fire_hit.mp3"
+    HVEDE = "assets\\sfx\\sounds\\hvede.mp3"

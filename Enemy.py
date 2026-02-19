@@ -27,7 +27,7 @@ class Enemy(Entity):
                 self._speed = 300
                 self._strategy = Move_Strategy()
                 self._max_health = 2
-            case Entities.SHEEP:
+            case Entities.OBERST:
                 self._speed = 300
                 self._strategy = Move_Strategy(True)
                 self._max_health = 2
@@ -40,7 +40,7 @@ class Enemy(Entity):
         self._gameObject._health = self._max_health
         self._gameObject._is_destroyed = False
         screen_width = game_world.screen.get_width()
-        if self.gameObject._entity_type is Entities.SHEEP:
+        if self.gameObject._entity_type is Entities.OBERST:
             self._initial_x = random.randint(int(screen_width * 0.6),int(screen_width * 0.95))
         if not self._strategy == None:
             self._strategy.enter(self, game_world)
@@ -48,8 +48,10 @@ class Enemy(Entity):
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
         collider.subscribe(Collisions.PIXEL_ENTER, self.take_damage)
-        if self.gameObject._entity_type is not Entities.SHEEP:
+        if self.gameObject._entity_type is not Entities.OBERST:
             self._game_world._sound_manager.play_sound(SFX.ENEMY_HONK)
+        else:
+            self._game_world._sound_manager.play_sound(SFX.SHEEP)
 
     def update(self, delta_time):
         if self._strategy is not None:
@@ -62,15 +64,19 @@ class Enemy(Entity):
         other = collider.gameObject
         match other._entity_type:
             case Entities.PLAYER_PROJECTILE:
+                self._game_world._sound_manager.play_sound(SFX.HVEDE)
                 self.gameObject._health -= other._damage
                 self._game_world._projectile_pool.return_object(other)
                 if self.gameObject._health <= 0:
-                    self._game_world._enemy_pool.return_object(self._gameObject)
-                    if self.gameObject._entity_type is Entities.GOOSIFER:
+
+                    if self.gameObject._entity_type == Entities.GOOSIFER:
+                        self._game_world.level_manager.boss_killed()
                         self._game_world._sound_manager.play_music(Music.MENU)
+
+                    self._game_world._enemy_pool.return_object(self._gameObject)
             case Entities.PLAYER:
                 self._game_world._enemy_pool.return_object(self._gameObject)
-                other._health -= self._damage
+                other.get_component(Components.ENTITY.value).health -= self._damage
 
     @property
     def speed(self):
@@ -111,6 +117,7 @@ class Move_Strategy(Strategy):
             self._parent._strategy = self
         self._game_world = game_world
         if self._vertical:
+            # self._direction = pygame.math.Vector2(-0.3, 1)
             sr = self._parent.gameObject.get_component(Components.SPRITERENDERER.value)
             self._sprite_height = sr.sprite_image.get_height()
             self._sprite_width = sr.sprite_image.get_width()

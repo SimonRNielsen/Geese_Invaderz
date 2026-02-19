@@ -20,9 +20,9 @@ class SoundManager:
         if self._current_music == music_enum:
             return
         self._current_music = music_enum
-        pygame.mixer.music.fadeout(2000)
+        pygame.mixer.music.fadeout(1000)
         pygame.mixer.music.load(music_enum.value)
-        pygame.mixer.music.play(-1)
+        pygame.mixer.music.play(-1, fade_ms=1000)
 
     def play_sound(self, sound):
         if sound in self._sfx.keys():

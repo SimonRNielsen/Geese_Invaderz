@@ -45,6 +45,7 @@ class GameEvents(Enum):
     PLAYER_DEATH = auto()
     ENEMY_ESCAPED = auto()
     MAIN = auto()
+    RESET_GAME = auto()
 
 class Music(Enum):
     MENU = "assets\\sfx\\music\\menu.mp3"

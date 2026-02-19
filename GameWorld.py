@@ -41,6 +41,8 @@ class GameWorld:
         self._menu_bool = True
         self._pause_bool = False
 
+        self._reset_game_bool = False
+
     @property
     def screen(self):
         return self._screen
@@ -56,7 +58,7 @@ class GameWorld:
     @texts.setter
     def texts(self, value):
         self._text_button = value
-    
+
     @property
     def player_alive(self):
         return self._player
@@ -82,6 +84,14 @@ class GameWorld:
         return self._enemies_killed
 
 
+    @property
+    def reset_game_bool(self):
+        return self._reset_game_bool
+    
+    @reset_game_bool.setter
+    def reset_game_bool(self, value):
+        self._reset_game_bool =value
+
     # def spawn_main_menu(self):
     #     Menu(self, Assets.START_MENU)
     
@@ -96,6 +106,8 @@ class GameWorld:
         self._gameObjects.append(builder.get_gameObject())
         self._enemy_pool = EnemyPool(self)
         self._projectile_pool = ProjectilePool(self)
+        self.awake()
+        self.start()
     
     # def reset_game(self):
     #     self._gameObjects = []
@@ -142,7 +154,7 @@ class GameWorld:
 
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
         self.subscribe(GameEvents.PLAYER_DEATH, self.player_death)
-
+        # self.subscribe(GameEvents.RESET_GAME,self.reset_game)
         # self.subscribe(GameEvents.MAIN, self.spawn_main_menu)
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)
@@ -158,6 +170,11 @@ class GameWorld:
         while self._running:
 
             keys = pygame.key.get_pressed()
+
+            if (self._reset_game_bool == True):
+                self.reset_game()
+                self._reset_game_bool = False
+            
 
             if keys[pygame.K_ESCAPE]:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
@@ -183,7 +200,6 @@ class GameWorld:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for text in self._text_button[:]:
                         text.click_on_button()
-
 
             
 

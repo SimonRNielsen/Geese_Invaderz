@@ -14,8 +14,11 @@ class Menu():
         self._gameObject.add_component(SpriteRenderer(self._menu_type))
         self._gameObject.add_component(self)
 
+        self._text_list = self._gameWorld.texts
+        self._gameObject._name = menu_type
 
-        if self._gameObject not in self._gameWorld._gameObjects:
+
+        if self._gameObject._name not in self._gameWorld._gameObjects:
             self._gameWorld.instantiate(self._gameObject)
 
             match self._menu_type:
@@ -124,6 +127,7 @@ class Button():
         self._text_rect = self._text_surface.get_rect(center=self.rect.center)
 
         self._main_amount = 0
+        self._gameWorld.texts.append(self)
                 
     
 
@@ -137,30 +141,31 @@ class Button():
         
 
     def click_on_button(self):
-        # pygame.mixer.Sound #Knaplyd
         if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
             match self._button_type:
                 case Button_Types.EXIT:
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
                 case Button_Types.MAIN:
                     self._gameWorld.player_alive.is_destroyed = False
-                    self._main_menu_bool = True
                     self._main_amount += 1
                 case Button_Types.RESTART:
                     self._gameWorld.player_alive.is_destroyed = False
+                    self._gameWorld.reset_game_bool = True
+                case Button_Types.START:
+                    self._gameWorld.player_alive.is_destroyed = False
+                    self._gameWorld.reset_game_bool = True
 
             self._menu.get_menu().destroy()
             self._gameWorld.menu_bool = False
             self._gameWorld.pause_bool = False
 
-
             for text_and_button in self._texts:
                 text_and_button._show_text = False
                 text_and_button.get_button().destroy()
 
-            self._texts.clear()
-
-            
+            if(self._main_amount == 1):
+                self._main_menu_bool = True
+                self._gameWorld.menu_bool = True          
     
     
     def update(self,delta_time):
@@ -168,7 +173,7 @@ class Button():
             # self.draw_text(self._text)
             self._text_rect.center = self.rect.center
             self._screen.blit(self._text_surface, self._text_rect)
-        if self._main_menu_bool == True and self._main_amount == 1:
+        if self._main_menu_bool == True:
             Menu(self._gameWorld, Assets.START_MENU)
             self._main_menu_bool = False
 

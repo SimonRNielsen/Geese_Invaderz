@@ -73,8 +73,6 @@ class Player(Component):
     def take_damage(self, collider):
         other = collider.gameObject
         match other._entity_type:
-            case Entities.PLAYER_PROJECTILE:
-                return
             case Entities.ENEMY_PROJECTILE:
                 self._entity.health -= other._damage
                 self._game_world._projectile_pool.return_object(other)

@@ -27,7 +27,6 @@ class Player(Component):
         self._sprite_height = sr.sprite_image.get_height()
         self._sprite_width = sr.sprite_image.get_width()
         gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.enemy_escaped)
-        gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.enemy_escaped)
 
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
@@ -87,8 +86,8 @@ class Player(Component):
             self._sprite_width,
             self._sprite_height // 2
         )
-        #self._game_world.spawn_projectile(Entities.PLAYER_PROJECTILE, pos)
-        self._game_world.spawn_projectile(self._projectile_type, pos)
+        self._game_world.spawn_projectile(Entities.PLAYER_PROJECTILE, pos)
+        #self._game_world.spawn_projectile(self._projectile_type, pos)
 
     def take_damage(self, collider):
         other = collider.gameObject
@@ -108,10 +107,5 @@ class Player(Component):
     def enemy_escaped(self):
         self._entity.health -= 1
         self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
-        if self._entity.health <= 0:
-            self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
-    
-    def enemy_escaped(self):
-        self._entity.health -= 1
         if self._entity.health <= 0:
             self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)

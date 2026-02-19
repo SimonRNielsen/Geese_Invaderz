@@ -12,7 +12,7 @@ COLLISION_RULES = {
         Entities.WALKING_GOOSE,
         Entities.AGGRO_GOOSE,
         Entities.GOOSIFER,
-        Entities.SHEEP,
+        Entities.OBERST,
     },
 
     Entities.FIREBALL: {
@@ -37,7 +37,7 @@ COLLISION_RULES = {
         Entities.PLAYER_PROJECTILE,
     },
 
-    Entities.SHEEP: {
+    Entities.OBERST: {
         Entities.PLAYER_PROJECTILE,
     },
 }

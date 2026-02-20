@@ -6,11 +6,20 @@ class GameObject:
         self._components = {}
         self._transform = self.add_component(Transform(position))
         self._is_destroyed = False
+        self._damage = 0
 
     @property
     def transform(self):
         return self._transform
     
+    @property
+    def damage(self):
+        return self._damage
+    
+    @damage.setter
+    def damage(self, value):
+        self._damage = value
+        
     @property
     def is_destroyed(self):
         return self._is_destroyed

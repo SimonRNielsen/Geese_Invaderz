@@ -108,6 +108,7 @@ class ProjectilePool(ObjectPool):
             builder = ProjectileBuilder()
             builder.build(Entities.ENEMY_PROJECTILE)
             self._projectile_pool.append(builder.get_gameObject())
+            builder.get_gameObject().awake(game_world)
             builder = ProjectileBuilder()
             builder.build(self._player_projectile_type)
             self._projectile_pool.append(builder.get_gameObject())
@@ -139,6 +140,7 @@ class ProjectilePool(ObjectPool):
         object = builder.get_gameObject()
         if entity_type is Entities.PLAYER_PROJECTILE and self._player_projectile_type is not Entities.PLAYER_PROJECTILE:
             object.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
+            object.awake(self._game_world)
             object._damage = self._player_projectile_damage
         object.transform.position = position
         return object
@@ -153,4 +155,4 @@ class ProjectilePool(ObjectPool):
         for active in self._game_world._colliders:
             if active.gameObject._entity_type is Entities.PLAYER_PROJECTILE:
                 active.gameObject.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
-                active._damage = self._player_projectile_damage
+                active.gameObject._damage = self._player_projectile_damage

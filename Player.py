@@ -61,7 +61,7 @@ class Player(Component):
 
         #Vertical movement
         transform = self.gameObject.transform
-        transform.position.y += direction * self._speed * delta_time
+        self.gameObject.transform.position.y += direction * self._speed * delta_time
 
         # Clamp så player ikke kan bevæge sig udenfor skærmens grænser
         # sprite_height = self.gameObject.get_component("SpriteRenderer").sprite_image.get_height()

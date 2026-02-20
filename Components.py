@@ -77,7 +77,7 @@ class SpriteRenderer(Component):
     @property
     def sprite_mask(self):
         return self._sprite_mask
-
+    
     def awake(self, game_world):
         self._game_world = game_world
         self._sprite.rect.topleft = self.gameObject.transform.position
@@ -86,13 +86,30 @@ class SpriteRenderer(Component):
         pass
 
     def update(self, delta_time):
-        self._sprite.rect.topleft = self.gameObject.transform.position
+        self._sprite.rect.topleft = self._sprite.rect.topleft = (
+            int(self.gameObject.transform.position.x),
+            int(self.gameObject.transform.position.y)
+        )
         self._game_world.screen.blit(self._sprite_image,self._sprite.rect)
+        # self.draw_mask(self._game_world.screen, self._sprite_mask, self._sprite.rect)
 
     def change_sprite(self, sprite_name):
         self._sprite_image = AssetLoader.get_sprite(sprite_name)
         self._sprite.rect = self._sprite_image.get_rect()
         self._sprite_mask = pygame.mask.from_surface(self.sprite_image)
+
+    def draw_mask(self, screen, mask, rect, color=(255, 0, 0)):
+        mask_surface = mask.to_surface(
+            setcolor=color,
+            unsetcolor=(0, 0, 0, 0)
+        )
+        mask_surface.set_colorkey((0, 0, 0))
+        screen.blit(mask_surface, rect.topleft)
+
+    def set_sprite_image(self, image):
+        self._sprite_image = image
+        self._sprite.rect.size = image.get_size()
+        self._sprite_mask = pygame.mask.from_surface(image)
 
 
 class Animator(Component):
@@ -130,7 +147,9 @@ class Animator(Component):
             if self._current_frame_index >= len(self._current_animation):
                 self._current_frame_index = 0
 
-            self._sprite_renderer.sprite_image = self._current_animation[self._current_frame_index]
+            self._sprite_renderer.set_sprite_image(
+                self._current_animation[self._current_frame_index]
+            )
 
 class Collider(Component):
 
@@ -142,16 +161,18 @@ class Collider(Component):
 
     @property
     def collision_box(self):
-        return self._collision_box
-    
+        return self._gameObject.get_component(
+            Components.SPRITERENDERER.value
+        ).sprite.rect
+
     @property
     def sprite_mask(self):
-        return self._sprite_mask
+        return self._gameObject.get_component(
+            Components.SPRITERENDERER.value
+        ).sprite_mask
     
     def awake(self, game_world):
         sr = self._gameObject.get_component(Components.SPRITERENDERER.value)
-        self._collision_box = sr.sprite.rect
-        self._sprite_mask = sr.sprite_mask
         game_world.colliders.append(self)
         self._other_colliders.clear()
         self._other_masks.clear()
@@ -166,17 +187,32 @@ class Collider(Component):
         pass
 
     def collision_check(self, other):
-        is_rect_colliding = self._collision_box.colliderect(other._collision_box)
+        if other.gameObject.is_destroyed:
+            return
+
+        is_rect_colliding = self.collision_box.colliderect(other.collision_box)
         is_already_colliding = other in self._other_colliders
 
-        self._other_colliders = [obj for obj in self._other_colliders if not obj.gameObject.is_destroyed]
-        self._other_masks = [obj for obj in self._other_masks if not obj.gameObject.is_destroyed]
+        self._other_colliders = [
+            obj for obj in self._other_colliders
+            if not obj.gameObject.is_destroyed
+        ]
+        self._other_masks = [
+            obj for obj in self._other_masks
+            if not obj.gameObject.is_destroyed
+        ]
 
-        if is_rect_colliding and not other.gameObject.is_destroyed:
+        if is_rect_colliding:
             if not is_already_colliding:
                 self.collision_enter(other)
                 other.collision_enter(self)
-            if self.check_pixel_collision(self._collision_box, other.collision_box, self._sprite_mask, other.sprite_mask):
+
+            if self.check_pixel_collision(
+                self.collision_box,
+                other.collision_box,
+                self.sprite_mask,
+                other.sprite_mask
+            ):
                 if other not in self._other_masks:
                     self.pixel_collision_enter(other)
                     other.pixel_collision_enter(self)
@@ -188,7 +224,6 @@ class Collider(Component):
             if is_already_colliding:
                 self.collision_exit(other)
                 other.collision_exit(self)
-
     def collision_enter(self, other):
         self._other_colliders.append(other)
         if Collisions.ENTER in self._listeners:

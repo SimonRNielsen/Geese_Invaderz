@@ -24,7 +24,6 @@ class Projectile(Component):
         self._screen = game_world.screen
         self._game_world = game_world
         self._transform = self.gameObject.transform
-        self._gameObject._damage = 1
         self._gameObject._is_destroyed = False
         self._sprite_width = self.gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_width()
 

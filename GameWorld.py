@@ -6,7 +6,7 @@ from SoundManager import SoundManager
 from ObjectPool import EnemyPool, ProjectilePool
 from CollisionRules import COLLISION_RULES
 from Enums import Entities, Assets, GameEvents
-from UI import Healthbar, LevelTimer
+from UI import Healthbar, LevelTimer, EnemyDeath
 from AssetLoader import AssetLoader
 from LevelManager import LevelManager
 
@@ -38,6 +38,9 @@ class GameWorld:
         self.level_manager.active_bool = False
         self._start_manu = Menu(self, Assets.START_MENU)
         self.ui_timer = LevelTimer(self.screen)
+        self.enemy_kill_counter = EnemyDeath(self.screen, self)
+
+
 
     @property
     def screen(self):
@@ -78,7 +81,6 @@ class GameWorld:
     @property
     def killed_enemies(self):
         return self._enemies_killed
-
 
     @property
     def reset_game_bool(self):
@@ -191,6 +193,7 @@ class GameWorld:
 
             self.level_manager.update(delta_time)
             self.ui_timer.draw()
+            self.enemy_kill_counter.draw()
 
             keys = pygame.key.get_pressed()
 
@@ -240,6 +243,7 @@ class GameWorld:
 
             if self.level_manager.active_bool == True:
                 self._healthbar.draw()
+
 
             pygame.display.flip()
 

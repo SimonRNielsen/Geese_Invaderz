@@ -87,9 +87,11 @@ class LevelManager:
         if level["duration"] is not None:
             self._time_left = level["duration"]
             self._gw.ui_timer.start(self._time_left)
+            self._gw.enemy_kill_counter.start()
         else:
             self._time_left = None
             self._gw.ui_timer.hide()
+            self._gw.enemy_kill_counter.hide()
         
         #Enemy spawning setup
         self._gw._enemy_pool.set_allowed_enemies(level["enemies"])

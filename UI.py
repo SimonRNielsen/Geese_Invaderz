@@ -84,3 +84,24 @@ class LevelTimer:
         text = self._font.render(f"{self._time}", True, (255, 255, 255))
         rect = text.get_rect(center=(self._screen.get_width()/2, 40))
         self._screen.blit(text, rect)
+
+class EnemyDeath:
+    def __init__(self, screen, gameworld):
+        self._screen = screen
+        self._gameworld = gameworld
+        self._active = False
+        self._font = pygame.font.SysFont("CopperplateGothicBold", 36)
+
+    def start(self):
+        self._active = True
+    
+    def hide(self):
+        self._active = False
+    
+    def draw(self):
+        if not self._active:
+            return
+        
+        text = self._font.render(f"Enemies killed: {self._gameworld.killed_enemies}", True, (255, 255, 255))
+        rect = text.get_rect(center=(self._screen.get_width() * 2/3, 40))
+        self._screen.blit(text, rect)

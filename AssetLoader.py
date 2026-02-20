@@ -94,6 +94,8 @@ class AssetLoader:
                 return  "Background\\Bg3.png"
             case Assets.BG_LEVEL_4:
                 return  "Background\\Bg4.png"
+            case Entities.PLAYER_SHOOTING:
+                return "player\\monkSling0.png"
             case _:
                 print(f"No match case for {asset_key} in get_sprite_arg")
                 return None

@@ -11,7 +11,7 @@ class Enemy(Entity):
 
     def set_value(self, entity_type):
         self._gameObject._entity_type = entity_type
-        self._damage = 1
+        # self._damage = 1
         self._sprite_width = self._gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_width()
         self._x_left_boundary = -self._sprite_width
         match entity_type:
@@ -19,18 +19,22 @@ class Enemy(Entity):
                 self._speed = 400
                 self._strategy = Boss_Strategy()
                 self._max_health = 25
+                self._damage = 5
             case Entities.AGGRO_GOOSE:
                 self._speed = 500
                 self._strategy = Move_Strategy()
                 self._max_health = 4
+                self._damage = 3
             case Entities.WALKING_GOOSE:
                 self._speed = 300
                 self._strategy = Move_Strategy()
                 self._max_health = 2
+                self._damage = 2
             case Entities.OBERST:
                 self._speed = 300
                 self._strategy = Move_Strategy(True)
                 self._max_health = 2
+                self._damage = 1
             case _:
                 self._max_health = 1
                 self._speed = 100

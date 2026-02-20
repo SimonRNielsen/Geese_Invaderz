@@ -16,6 +16,12 @@ class Player(Component):
         self._projectile_type = Entities.PLAYER_PROJECTILE
         self._projectile_speed = 600
         self._projectile_damage = 1
+        self._shooting = False
+        self._shooting_animation_timer = 0
+
+    @property
+    def shooting(self):
+        return self._shooting
 
     def awake(self, gameWorld):
         #Gem reference til skærmen, så der kan laves højdegrænser
@@ -23,10 +29,11 @@ class Player(Component):
         self._game_world = gameWorld
         self._gameObject._entity_type = Entities.PLAYER
         self._gameObject._health = 3
-        sr = self.gameObject.get_component("SpriteRenderer")
-        self._sprite_height = sr.sprite_image.get_height()
-        self._sprite_width = sr.sprite_image.get_width()
+        self._sr = self.gameObject.get_component("SpriteRenderer")
+        self._sprite_height = self._sr.sprite_image.get_height()
+        self._sprite_width = self._sr.sprite_image.get_width()
         gameWorld.subscribe(GameEvents.ENEMY_ESCAPED, self.enemy_escaped)
+        self._animator = self.gameObject.get_component(Components.ANIMATOR.value)
 
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
@@ -36,6 +43,14 @@ class Player(Component):
     def update(self, delta_time):
         if self.gameObject is None:
             return
+        
+        if self._shooting:
+            self._shooting_animation_timer += delta_time
+            if self._shooting_animation_timer >= 0.3:
+                self._shooting = False
+                self._shooting_animation_timer = 0
+                self._animator._freeze_animation = False
+                self._sr.change_sprite(Entities.PLAYER)
         
         keys = pygame.key.get_pressed()
 
@@ -81,7 +96,9 @@ class Player(Component):
         self._game_world._projectile_pool.upgrade_pooled_shots(self._projectile_type, self._projectile_damage)
 
     def shoot(self):
-                
+        self._animator._freeze_animation = True
+        self._shooting = True
+        self._sr.change_sprite(Entities.PLAYER_SHOOTING)
         pos = self.gameObject.transform.position + pygame.math.Vector2(
             self._sprite_width,
             self._sprite_height // 2

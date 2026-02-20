@@ -36,6 +36,7 @@ class Entities(Enum):
     #SHEEP = "Sheep"
     PLAYER_PROJECTILE = "Player_Projectile"
     ENEMY_PROJECTILE = "Enemy_Projectile"
+    PLAYER_SHOOTING = "Player_Shooting"
     STEN_HVEDE = "Sten_Hvede"
     VARM_HVEDE = "Varm_Hvede"
     UNKNOWN = ""

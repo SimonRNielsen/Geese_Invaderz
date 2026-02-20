@@ -100,6 +100,7 @@ class Animator(Component):
     def __init__(self) -> None:
         super().__init__()
         self._previous_position = None
+        self._freeze_animation = False
 
     def play_animation(self, animation):
         self._current_animation = AssetLoader.get_animations(animation)
@@ -114,7 +115,7 @@ class Animator(Component):
 
     def update(self, delta_time):
 
-        if self._previous_position == self._gameObject.transform.position:
+        if self._previous_position == self._gameObject.transform.position or self._freeze_animation:
             return
         else:
             self._previous_position = pygame.math.Vector2(self._gameObject.transform.position.x, self._gameObject.transform.position.y)

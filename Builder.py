@@ -39,8 +39,8 @@ class PlayerBuilder(Builder):
         self._gameObject.add_component(Player())
 
         entity = self._gameObject.add_component(Entity())
-        entity.max_health = 100
-        entity.health = 100
+        entity.max_health = 50
+        entity.health = 50
     
     def get_gameObject(self) -> GameObject:
         return self._gameObject

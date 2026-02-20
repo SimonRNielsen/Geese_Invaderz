@@ -38,7 +38,6 @@ class GameWorld:
 
         #self._gameObjects.append(self._player)
         self._enemy_pool = EnemyPool(self)
-        self._projectile_pool = ProjectilePool(self)
         
         self._menu_bool = True
         self._pause_bool = False
@@ -123,7 +122,6 @@ class GameWorld:
         self._healthbar = Healthbar(player_entity, self.screen)
 
         #self._gameObjects.append(self._player)
-        self._enemy_pool = EnemyPool(self)
         self._projectile_pool = ProjectilePool(self)
         self.level_manager.active_bool = True
         self.level_manager.reset_level_to_zero()

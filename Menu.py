@@ -33,14 +33,14 @@ class Menu():
                     self._gameWorld.instantiate(self._exit_button.get_button())
                     self._resume_button = Button(self._gameWorld, self, Button_Types.RESUME)
                     self._gameWorld.instantiate(self._resume_button.get_button())
-                    self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                    self._main_button = Button(self._gameWorld, self, Button_Types.MENU)
                     self._gameWorld.instantiate(self._main_button.get_button())
                 case Assets.WIN_SCREEN:
                     self._restart_button = Button(self._gameWorld, self, Button_Types.RESTART)
                     self._gameWorld.instantiate(self._restart_button.get_button())
                     self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                     self._gameWorld.instantiate(self._exit_button.get_button())
-                    self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                    self._main_button = Button(self._gameWorld, self, Button_Types.MENU)
                     self._gameWorld.instantiate(self._main_button.get_button())
                     self._killed_button = Button(self._gameWorld, self, Button_Types.KILLED)
                     self._gameWorld.instantiate(self._killed_button.get_button())
@@ -50,7 +50,7 @@ class Menu():
                     self._gameWorld.instantiate(self._restart_button.get_button())
                     self._exit_button = Button(self._gameWorld, self, Button_Types.EXIT)
                     self._gameWorld.instantiate(self._exit_button.get_button())
-                    self._main_button = Button(self._gameWorld, self, Button_Types.MAIN)
+                    self._main_button = Button(self._gameWorld, self, Button_Types.MENU)
                     self._gameWorld.instantiate(self._main_button.get_button())
                     self._killed_button = Button(self._gameWorld, self, Button_Types.KILLED)
                     self._gameWorld.instantiate(self._killed_button.get_button())
@@ -98,7 +98,7 @@ class Button():
                 self._pos = pygame.math.Vector2(800, 600)
             case Button_Types.RESUME:
                 self._pos = pygame.math.Vector2(800, 600)
-            case Button_Types.MAIN:
+            case Button_Types.MENU:
                 self._pos = pygame.math.Vector2(900, 700)
             case Button_Types.KILLED:
                 # self._pos = pygame.math.Vector2(self._screen.get_width()/2, 400)
@@ -149,7 +149,7 @@ class Button():
             match self._button_type:
                 case Button_Types.EXIT:
                     pygame.event.post(pygame.event.Event(pygame.QUIT))
-                case Button_Types.MAIN:
+                case Button_Types.MENU:
                     self._gameWorld.player_alive.is_destroyed = True
                     self._main_amount += 1
                 case Button_Types.RESTART:

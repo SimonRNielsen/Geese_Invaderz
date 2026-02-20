@@ -1,10 +1,9 @@
 from typing import List
 import pygame
 from AssetLoader import AssetLoader
-from Enums import Assets, Button_Types, GameEvents, SFX
+from Enums import Assets, Button_Types, SFX
 from Components import SpriteRenderer
 from GameObject import GameObject
-import time
 
 class Menu():
     def __init__(self, gameWorld, menu_type):

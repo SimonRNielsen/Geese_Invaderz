@@ -5,8 +5,7 @@ from Enemy import Enemy
 from Enums import Entities
 from Player import Player
 from Projectile import Projectile
-import random, pygame
-from UI import Healthbar
+import pygame
 
 class Builder(ABC):
 

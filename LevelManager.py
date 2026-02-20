@@ -1,4 +1,3 @@
-import pygame
 from Enums import Entities, Assets, Components
 
 LEVELS = [

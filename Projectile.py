@@ -1,4 +1,3 @@
-# import pygame
 from Enums import Components
 from Components import Component
 

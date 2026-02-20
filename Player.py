@@ -1,9 +1,6 @@
 import pygame
-from AssetLoader import AssetLoader
 from Enums import Entities, GameEvents, Components, Collisions, SFX
-from Components import Component, SpriteRenderer, Collider
-from GameObject import GameObject
-from Projectile import Projectile
+from Components import Component
 
 class Player(Component):
     def __init__(self, speed=400):

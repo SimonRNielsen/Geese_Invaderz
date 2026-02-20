@@ -1,11 +1,11 @@
 from typing import List
-import pygame, random
+import pygame
 from Builder import PlayerBuilder
 from Menu import Button, Menu
 from SoundManager import SoundManager
 from ObjectPool import EnemyPool, ProjectilePool
 from CollisionRules import COLLISION_RULES
-from Enums import Entities, Assets, Button_Types, GameEvents
+from Enums import Entities, Assets, GameEvents
 from UI import Healthbar, LevelTimer
 from AssetLoader import AssetLoader
 from LevelManager import LevelManager
@@ -27,16 +27,6 @@ class GameWorld:
         self._text_button: List[Button] = []
 
         self._enemies_killed = 0
-
-        # builder = PlayerBuilder()
-        # builder.build()
-        # self._player = builder.get_gameObject()
-        # self._gameObjects.append(self._player)
- 
-        # player_entity = builder.get_gameObject().get_component("Entity")
-        # self._healthbar = Healthbar(player_entity, self.screen)
-
-        #self._gameObjects.append(self._player)
         self._enemy_pool = EnemyPool(self)
         
         self._menu_bool = True
@@ -98,9 +88,6 @@ class GameWorld:
     def reset_game_bool(self, value):
         self._reset_game_bool =value
 
-    # def spawn_main_menu(self):
-    #     Menu(self, Assets.START_MENU)
-
     def change_level_manager_bool(self, value):
         self.level_manager.active_bool = value
     
@@ -121,7 +108,6 @@ class GameWorld:
         player_entity = builder.get_gameObject().get_component("Entity")
         self._healthbar = Healthbar(player_entity, self.screen)
 
-        #self._gameObjects.append(self._player)
         self._projectile_pool = ProjectilePool(self)
         self.level_manager.active_bool = True
         self.level_manager.reset_level_to_zero()
@@ -129,17 +115,6 @@ class GameWorld:
         self.awake()
         self.start()
     
-    # def reset_game(self):
-    #     self._gameObjects = []
-    #     self._colliders = []
-    #     self._events = {}
-    #     self._player_score = 0
-    #     self._enemies_killed = 0
-    #     builder = PlayerBuilder()
-    #     builder.build()
-    #     self._gameObjects.append(builder.get_gameObject())
-    #     self._enemy_pool = EnemyPool(self)
-    #     self._projectile_pool = ProjectilePool(self)
     def set_background(self, asset: Assets):
         self._background = AssetLoader.get_sprite(asset)
     
@@ -152,18 +127,6 @@ class GameWorld:
         if not self._menu_bool:
             Menu(self, Assets.LOOSE_SCREEN)
             self._menu_bool = True
-    
-    # def reset_game(self):
-    #     self._gameObjects = []
-    #     self._colliders = []
-    #     self._events = {}
-    #     self._player_score = 0
-    #     self._enemies_killed = 0
-    #     builder = PlayerBuilder()
-    #     builder.build()git 
-    #     self._gameObjects.append(builder.get_gameObject())
-    #     self._enemy_pool = EnemyPool(self)
-    #     self._projectile_pool = ProjectilePool(self)
     
     def instantiate(self, gameObject):
         gameObject.awake(self) 
@@ -185,11 +148,10 @@ class GameWorld:
             case Entities.GOOSIFER:
                 self._player_score += 10
 
-    def player_death(self, player): ####################################################
+    def player_death(self, player): 
         self.show_loose_screen()
         self._player.is_destroyed = True
         self.level_manager.active_bool = False
-        # self._enemy_pool.set_allowed_enemies = None
 
     def spawn_enemy(self, entity_type, position):
         self.instantiate(self._enemy_pool.get_object(entity_type, position))
@@ -201,15 +163,12 @@ class GameWorld:
 
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
         self.subscribe(GameEvents.PLAYER_DEATH, self.player_death)
-        # self.subscribe(GameEvents.RESET_GAME,self.reset_game)
-        # self.subscribe(GameEvents.MAIN, self.spawn_main_menu)
+
         for gameObject in self._gameObjects[:]:
             gameObject.awake(self)
 
     def start(self):
-
-        #self.spawn_enemy(Entities.GOOSIFER, pygame.math.Vector2(1000,500))
-        
+       
         if self.level_manager.active_bool == True:
             self.level_manager.start_level()
 
@@ -219,8 +178,6 @@ class GameWorld:
     def update(self):
         while self._running:
 
-            # delta_time = self._clock.tick(60) / 1000.0
-            #Pause functionaly => stupid
             if self._pause_bool == False:
                 delta_time = self._clock.tick(60) / 1000.0
             else:
@@ -248,17 +205,6 @@ class GameWorld:
                 Menu(self, Assets.PAUSE)
                 self._menu_bool = True
                 self._pause_bool = True
-
-            # if keys[pygame.K_h]:
-            #     Menu(self, Assets.WIN_SCREEN)
-            
-
-            # if keys[pygame.K_k]:
-            #     self._player.is_destroyed = True
-            # if self._player.is_destroyed == True and self._menu_bool == False:
-            #     Menu(self, Assets.LOOSE_SCREEN)
-            #     self._menu_bool = True
-
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -301,10 +247,6 @@ class GameWorld:
 
     def add_to_text_button(self, button):
         self._text_button.append(button)
-
-    # def add_menu_and_button(self, gameObject):
-    #     gameObject.awake(self)
-    #     gameObject.start()
 
     def can_collide(self, entity_a, entity_b) -> bool:
         if entity_a in COLLISION_RULES and entity_b in COLLISION_RULES[entity_a]:

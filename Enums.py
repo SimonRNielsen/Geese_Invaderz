@@ -33,7 +33,6 @@ class Entities(Enum):
     GOOSIFER = "Goosifer"
     FIREBALL = "Fireball"
     OBERST = auto()
-    #SHEEP = "Sheep"
     PLAYER_PROJECTILE = "Player_Projectile"
     ENEMY_PROJECTILE = "Enemy_Projectile"
     PLAYER_SHOOTING = "Player_Shooting"
@@ -48,7 +47,6 @@ class Button_Types(Enum):
     RESUME = "Resume"
     MENU = "Main menu"
     KILLED = "Killed enemies"
-    # EXIT_PAUSE = "Exit pause"
 
 class GameEvents(Enum):
     ENEMY_DEATH = auto()

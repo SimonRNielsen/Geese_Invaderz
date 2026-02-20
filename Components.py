@@ -163,12 +163,6 @@ class Collider(Component):
         pass
 
     def update(self, delta_time):
-        # if True:
-        #     mask_surf = self._sprite_mask.to_surface(
-        #     setcolor=(255, 0, 0, 120),
-        #     unsetcolor=(0, 0, 0, 0)
-        # )
-        # self._game_world.screen.blit(mask_surf, self._sprite.rect.topleft)
         pass
 
     def collision_check(self, other):

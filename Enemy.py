@@ -11,7 +11,6 @@ class Enemy(Entity):
 
     def set_value(self, entity_type):
         self._gameObject._entity_type = entity_type
-        # self._damage = 1
         self._sprite_width = self._gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_width()
         self._x_left_boundary = -self._sprite_width
         match entity_type:
@@ -124,7 +123,6 @@ class Move_Strategy(Strategy):
             self._parent._strategy = self
         self._game_world = game_world
         if self._vertical:
-            # self._direction = pygame.math.Vector2(-0.3, 1)
             sr = self._parent.gameObject.get_component(Components.SPRITERENDERER.value)
             self._sprite_height = sr.sprite_image.get_height()
             self._sprite_width = sr.sprite_image.get_width()

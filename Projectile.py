@@ -1,9 +1,7 @@
-import pygame
-from Enums import Entities, Components
-from AssetLoader import AssetLoader
+# import pygame
+from Enums import Components
 from Components import Component
-#from Enums import Entities
-#from AssetLoader import AssetLoader
+
 
 class Projectile(Component):
     def __init__(self, speed=600, projectile_type="player", direction=1):
@@ -30,16 +28,6 @@ class Projectile(Component):
         self._gameObject._damage = 1
         self._gameObject._is_destroyed = False
         self._sprite_width = self.gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_width()
-        # try:
-        #     if self._type.lower() == "player":
-        #         self._sprite_image = AssetLoader.get_sprite(Entities.PLAYER)  # eller lav en PLAYER_PROJECTILE
-        #     elif self._type.lower() == "enemy":
-        #         self._sprite_image = AssetLoader.get_sprite(Entities.ENEMY_PROJECTILE)
-        #     elif self._type.lower() == "boss":
-        #         self._sprite_image = AssetLoader.get_sprite(Entities.FIREBALL)
-        # except Exception as e:
-        #     self._sprite_image = None
-        #     print(f"[projectile] Sprite for {self._type} ikke fundet: {e}")
 
     def start(self):
         pass
@@ -47,10 +35,6 @@ class Projectile(Component):
     def update(self, delta_time):
         #Flyt projectiles
         self._transform.position.x += self._speed * delta_time * self._direction
-
-        #Tegn projectile hvis sprite findes
-        # if self._sprite_image:
-        #     self._screen.blit(self._sprite_image, self._transform.position)
 
         #Fjern hvis udenfor skærmen
         if self._transform.position.x < -self._sprite_width or self._transform.position.x > self._screen.get_width():

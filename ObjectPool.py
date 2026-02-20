@@ -57,13 +57,6 @@ class EnemyPool(ObjectPool):
         if enemy:
             self._game_world.instantiate(enemy)
 
-        #y = random.randint(50, self._game_world.screen.get_height() - 100)
-        #pos = pygame.math.Vector2(
-        #    self._game_world.screen.get_width() + 50,
-        #    y
-        #)
-
-        #self._game_world.spawn_enemy(enemy_type, pos)
     def get_spawn_position(self, enemy_type):
         screen_width = self._game_world.screen.get_width()
         screen_height = self._game_world.screen.get_height()

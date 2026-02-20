@@ -101,7 +101,6 @@ class Button():
             case Button_Types.MENU:
                 self._pos = pygame.math.Vector2(900, 700)
             case Button_Types.KILLED:
-                # self._pos = pygame.math.Vector2(self._screen.get_width()/2, 400)
                 self._pos = pygame.math.Vector2(1000,500)
             case _:
                 print(f"No match case for {button_type} in Button.__init__")
@@ -136,11 +135,6 @@ class Button():
 
     def get_button(self):
         return self._gameObject
-    
-    # def draw_text(self, text):
-    #     self._font = pygame.font.SysFont("CopperplateGothicBold", 30)
-    #     self._text_surface = self._font.render(text, True, (0, 0, 0))
-    #     self._text_rect = self._text_surface.get_rect()
         
 
     def click_on_button(self):
@@ -156,7 +150,6 @@ class Button():
                     self._gameWorld.player_alive.is_destroyed = False
                     self._gameWorld.reset_game_bool = True
                 case Button_Types.START:
-                    # self._gameWorld.player_alive.is_destroyed = False
                     self._gameWorld.reset_game_bool = True
 
             self._menu.get_menu().destroy()
@@ -174,7 +167,6 @@ class Button():
     
     def update(self,delta_time):
         if (self._show_text == True):
-            # self.draw_text(self._text)
             self._text_rect.center = self.rect.center
             self._screen.blit(self._text_surface, self._text_rect)
         if self._main_menu_bool == True:

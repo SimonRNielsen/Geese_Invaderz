@@ -41,9 +41,6 @@ class AssetLoader:
                 args = ("enemy\\goosifer0.png",
                         "enemy\\goosifer1.png",
                         "enemy\\goosifer2.png",)
-            #case Entities.SHEEP:
-                #args = ("enemy\\sheep.png",
-                        #"enemy\\sheep.png",)
             case _:
                 print(f"No match case for {asset_key} in get_animation_args")
                 return None
@@ -64,8 +61,6 @@ class AssetLoader:
                 return "enemy\\OberstStille.png"
             case Entities.AGGRO_GOOSE:
                 return "enemy\\aggro0.png"
-            #case Entities.SHEEP:
-                #return "enemy\\sheep.png"
             case Entities.GOOSIFER:
                 return "enemy\\goosifer0.png"
             case Entities.FIREBALL:

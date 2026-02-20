@@ -79,7 +79,6 @@ class Player(Component):
             self.shoot()
             self._time_since_last_shot = 0
 
-        #print(self._entity.health)
 
     def apply_level_modifiers(self, modifiers: dict) :
         #if "speed" in modifiers:
@@ -104,7 +103,6 @@ class Player(Component):
             self._sprite_height // 2
         )
         self._game_world.spawn_projectile(Entities.PLAYER_PROJECTILE, pos)
-        #self._game_world.spawn_projectile(self._projectile_type, pos)
 
     def take_damage(self, collider):
         other = collider.gameObject

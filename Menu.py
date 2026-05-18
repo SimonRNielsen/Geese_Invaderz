@@ -150,6 +150,7 @@ class Button():
                     self._gameWorld.reset_game_bool = True
                 case Button_Types.START:
                     self._gameWorld.reset_game_bool = True
+                    AssetLoader.fade_background(Assets.START_MENU)
                 case Button_Types.KILLED:
                     self._gameWorld.player_alive.is_destroyed = True
                     self._main_amount += 1

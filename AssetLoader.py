@@ -116,3 +116,15 @@ class AssetLoader:
             cls._sprites[asset_key] = sprite
         return cls._sprites[asset_key]
     
+    @classmethod
+    def fade_background(cls, asset_key):
+        imageOld=AssetLoader.get_sprite(asset_key)
+
+        kage=pygame.time.Clock()
+
+        for alpha in range(255, 0):
+            imageOld.set_alpha(alpha)
+
+            pygame.display.flip()
+
+            kage.tick(60)

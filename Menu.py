@@ -150,6 +150,10 @@ class Button():
                     self._gameWorld.reset_game_bool = True
                 case Button_Types.START:
                     self._gameWorld.reset_game_bool = True
+                case Button_Types.KILLED:
+                    self._gameWorld.player_alive.is_destroyed = True
+                    self._main_amount += 1
+                    
 
             self._menu.get_menu().destroy()
             self._gameWorld.menu_bool = False

@@ -115,3 +115,4 @@ class AssetLoader:
             sprite = pygame.image.load(f"assets\\{arg}")
             cls._sprites[asset_key] = sprite
         return cls._sprites[asset_key]
+    

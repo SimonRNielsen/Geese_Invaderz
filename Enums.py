@@ -25,6 +25,7 @@ class Assets(Enum):
     BG_LEVEL_2 = auto()
     BG_LEVEL_3 = auto()
     BG_LEVEL_4 = auto()
+    HVEDER = "Hveder"
 
 class Entities(Enum):
     PLAYER = "Player"

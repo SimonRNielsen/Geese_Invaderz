@@ -106,6 +106,9 @@ class LevelManager:
         if not self._active:
             return
         
+        if self._gw._pause_bool or self._gw._menu_bool:
+            return
+        
         if self._time_left is not None:
             self._time_left -= delta_time
             self._gw.ui_timer.set_time(self._time_left)

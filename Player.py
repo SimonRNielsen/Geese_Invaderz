@@ -19,7 +19,7 @@ class Player(Component):
     @property
     def shooting(self):
         return self._shooting
-
+    
     def awake(self, gameWorld):
         #Gem reference til skærmen, så der kan laves højdegrænser
         self._screen_height = gameWorld.screen.get_height()
@@ -38,6 +38,10 @@ class Player(Component):
         self._entity = self.gameObject.get_component("Entity")
             
     def update(self, delta_time):
+
+        if self._game_world.pause_bool or self._game_world.menu_bool:
+            return
+
         if self.gameObject is None:
             return
         
@@ -89,7 +93,7 @@ class Player(Component):
         #if "projectile_damage" in modifiers:
         self._projectile_damage = modifiers.get("projectile_damage", self._projectile_damage)
         
-        self._game_world._projectile_pool.upgrade_pooled_shots(self._projectile_type, self._projectile_damage)
+        self._game_world.projectile_pool.upgrade_pooled_shots(self._projectile_type, self._projectile_damage)
 
     def shoot(self):
         self._animator._freeze_animation = True
@@ -103,21 +107,22 @@ class Player(Component):
 
     def take_damage(self, collider):
         other = collider.gameObject
-        match other._entity_type:
+        match other.entity_type:
             case Entities.ENEMY_PROJECTILE:
-                self._entity.health -= other._damage
-                self._game_world._projectile_pool.return_object(other)
-                self._game_world._sound_manager.play_sound(SFX.EGG_SMASH)
+                self._entity.health -= other.damage
+                self._game_world.projectile_pool.return_object(other)
+                self._game_world.sound_manager.play_sound(SFX.EGG_SMASH)
             case Entities.FIREBALL:
-                self._entity.health -= other._damage
-                self._game_world._projectile_pool.return_object(other)
-                self._game_world._sound_manager.play_sound(SFX.FIRE_HIT)
-        self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
+                self._entity.health -= other.damage
+                self._game_world.projectile_pool.return_object(other)
+                self._game_world.sound_manager.play_sound(SFX.FIRE_HIT)
+        self._game_world.sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
         if self._entity.health <= 0:
-            self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
+            #self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject) #HUSK
+            self._game_world.notify(GameEvents.PLAYER_DEATH, self.gameObject)
 
     def enemy_escaped(self):
         self._entity.health -= 1
-        self._game_world._sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
+        self._game_world.sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
         if self._entity.health <= 0:
-            self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject)
+            self._game_world.notify(GameEvents.PLAYER_DEATH, self.gameObject) #HUSK

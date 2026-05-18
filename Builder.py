@@ -91,7 +91,7 @@ class ProjectileBuilder(Builder):
                 print(f"Projectile builder missing case for {entity_type}")
                 pass
         self._gameObject = GameObject(pygame.math.Vector2(-1000,-1000))
-        self._gameObject._entity_type = entity_type
+        self._gameObject.entity_type = entity_type
         self._gameObject.add_component(SpriteRenderer(entity_type))
         self._gameObject.add_component(Collider())
         self._gameObject.add_component(Projectile(speed, projectile_type, direction))

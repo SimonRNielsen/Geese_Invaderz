@@ -38,6 +38,14 @@ class Enemy(Entity):
                 self._max_health = 1
                 self._speed = 100
 
+    @property
+    def max_health(self):
+        return self._max_health
+    
+    @property
+    def damage(self):
+        return self._damage
+
     def awake(self, game_world):
         self._game_world = game_world
         self._gameObject._health = self._max_health
@@ -51,17 +59,22 @@ class Enemy(Entity):
     def start(self):
         collider = self.gameObject.get_component(Components.COLLIDER.value)
         collider.subscribe(Collisions.PIXEL_ENTER, self.take_damage)
-        if self.gameObject._entity_type is not Entities.OBERST:
-            self._game_world._sound_manager.play_sound(SFX.ENEMY_HONK)
+        if self.gameObject.entity_type is not Entities.OBERST:
+            self._game_world.sound_manager.play_sound(SFX.ENEMY_HONK)
         else:
-            self._game_world._sound_manager.play_sound(SFX.SHEEP)
+            self._game_world.sound_manager.play_sound(SFX.SHEEP)
 
     def update(self, delta_time):
+        
+        if self._game_world.pause_bool or self._game_world.menu_bool:
+            return
+
         if self._strategy is not None:
             self._strategy.execute(delta_time)
         if self.gameObject.transform.position.x <= self._x_left_boundary:
-            self._game_world._enemy_pool.return_object(self.gameObject)
-            self._game_world._events[GameEvents.ENEMY_ESCAPED]()
+            self._game_world.enemy_pool.return_object(self.gameObject)
+            #self._game_world._events[GameEvents.ENEMY_ESCAPED]()
+            self._game_world.notify(GameEvents.ENEMY_ESCAPED, None)
         
         if self._game_world.player_alive.is_destroyed == True:
             self._gameObject.is_destroyed = True
@@ -71,17 +84,17 @@ class Enemy(Entity):
         match other._entity_type:
             case Entities.PLAYER_PROJECTILE:
                 self._game_world._sound_manager.play_sound(SFX.HVEDE)
-                self.gameObject._health -= other._damage
-                self._game_world._projectile_pool.return_object(other)
-                if self.gameObject._health <= 0:
+                self.gameObject.health -= other.damage
+                self._game_world.projectile_pool.return_object(other)
+                if self.gameObject.health <= 0:
 
-                    if self.gameObject._entity_type == Entities.GOOSIFER:
+                    if self.gameObject.entity_type == Entities.GOOSIFER:
                         self._game_world.level_manager.boss_killed()
-                        self._game_world._sound_manager.play_music(Music.MENU)
+                        self._game_world.sound_manager.play_music(Music.MENU)
 
-                    self._game_world._enemy_pool.return_object(self._gameObject)
+                    self._game_world.enemy_pool.return_object(self._gameObject)
             case Entities.PLAYER:
-                self._game_world._enemy_pool.return_object(self._gameObject)
+                self._game_world.enemy_pool.return_object(self._gameObject)
                 other.get_component(Components.ENTITY.value).health -= self._damage
 
     @property
@@ -163,6 +176,8 @@ class Boss_Strategy(Strategy):
         self._second_shot = False
         self._time_since_last_barrage = -2
         self._time_between_barrages = 5
+        self._wave_timer = 0
+        self._time_between_waves = 4
 
     def enter(self, parent, game_world):
         self._parent = parent
@@ -181,8 +196,12 @@ class Boss_Strategy(Strategy):
     def execute(self, delta_time):
         self._game_world._sound_manager.play_music(Music.BOSSFIGHT)
         self._time_since_last_barrage += delta_time
+        self._wave_timer += delta_time
         if self._time_since_last_barrage >= self._time_between_barrages:
             self.shoot()
+        if self._wave_timer >= self._time_between_waves:
+            self._wave_timer = 0
+            self.spawn_wave()
         direction = self._current_waypoint - self._parent.gameObject.transform.position
         if direction.length() < 10:
             self._current_waypoint = self._waypoints.pop(0)
@@ -218,3 +237,15 @@ class Boss_Strategy(Strategy):
             self._time_since_last_barrage = 0
             self._first_shot = False
             self._second_shot = False
+
+    def spawn_wave(self):
+        
+        screen_width = self._game_world.screen.get_width()
+        screen_height = self._game_world.screen.get_height()
+        sprite_height = 200
+        sprite_width = 50
+        
+        for i in range(5):
+            x = screen_width + sprite_width
+            y = random.randint(0, screen_height - sprite_height)
+            self._game_world.enemy_pool.boss_wave_enemy()

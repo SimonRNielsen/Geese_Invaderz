@@ -95,16 +95,19 @@ class LevelManager:
             self._gw.enemy_kill_counter.hide()
         
         #Enemy spawning setup
-        self._gw._enemy_pool.set_allowed_enemies(level["enemies"])
+        self._gw.enemy_pool.set_allowed_enemies(level["enemies"])
 
         #Apply player modifiers
         if "player_modifiers" in level:
-            player_component = self._gw._player.get_component(Components.PLAYER.value)
+            player_component = self._gw.player_alive.get_component(Components.PLAYER.value)
             if player_component:
                 player_component.apply_level_modifiers(level["player_modifiers"])
     
     def update(self, delta_time):
         if not self._active:
+            return
+        
+        if self._gw.pause_bool or self._gw.menu_bool:
             return
         
         if self._time_left is not None:
@@ -117,7 +120,7 @@ class LevelManager:
         self._spawn_timer += delta_time
         if self._spawn_timer >= self._spawn_interval:
             self._spawn_timer = 0
-            self._gw._enemy_pool.spawn_random_enemy()
+            self._gw.enemy_pool.spawn_random_enemy()
     
     def next_level(self):
         self._gw.old_asset_key = LEVELS[self._current_level]["bg"]

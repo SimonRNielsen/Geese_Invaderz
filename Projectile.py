@@ -24,7 +24,7 @@ class Projectile(Component):
         self._screen = game_world.screen
         self._game_world = game_world
         self._transform = self.gameObject.transform
-        self._gameObject._is_destroyed = False
+        self._gameObject.is_destroyed = False
         self._sprite_width = self.gameObject.get_component(Components.SPRITERENDERER.value).sprite_image.get_width()
 
     def start(self):
@@ -36,4 +36,4 @@ class Projectile(Component):
 
         #Fjern hvis udenfor skærmen
         if self._transform.position.x < -self._sprite_width or self._transform.position.x > self._screen.get_width():
-            self._game_world._projectile_pool.return_object(self.gameObject)
+            self._game_world.projectile_pool.return_object(self.gameObject)

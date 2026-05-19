@@ -24,7 +24,7 @@ class EnemyPool(ObjectPool):
         self._game_world = game_world
         self._enemy_pool = []
         self._allowed_enemies = []
-        for i in range(4):
+        for i in range(10):
             builder = EnemyBuilder()
             builder.build(Entities.WALKING_GOOSE)
             self._enemy_pool.append(builder.get_gameObject())
@@ -37,6 +37,7 @@ class EnemyPool(ObjectPool):
         builder = EnemyBuilder()
         builder.build(Entities.GOOSIFER)
         self._enemy_pool.append(builder.get_gameObject())
+        self._game_world.boss = builder.get_gameObject()
         
     def set_allowed_enemies(self, enemies: list[Entities]):
         self._allowed_enemies = enemies
@@ -47,13 +48,11 @@ class EnemyPool(ObjectPool):
         
         enemy_type = random.choice(self._allowed_enemies)
 
-        if enemy_type == Entities.GOOSIFER:
-            for obj in self._game_world._gameObjects:
-                if getattr(obj, "_entity_type", None) == Entities.GOOSIFER:
-                    return
+        if self._game_world.boss_exists():
+            return
                 
         pos= self.get_spawn_position(enemy_type)
-        enemy = self.get_object(enemy_type, pos)
+        enemy = self.get_object_filtered(enemy_type, pos)
         if enemy:
             self._game_world.instantiate(enemy)
 
@@ -71,23 +70,42 @@ class EnemyPool(ObjectPool):
             return pygame.math.Vector2(x, y)
         else:
             #Default spawn
-            x = screen_width + 50
+            x = screen_width + sprite_width
             y = random.randint(0, screen_height - sprite_height)
             return pygame.math.Vector2(x, y)
+        
+    def boss_wave_enemy(self):
+        pos= self.get_spawn_position(Entities.AGGRO_GOOSE)
+        enemy = self.get_object(Entities.AGGRO_GOOSE, pos)
+        if enemy:
+            self._game_world.instantiate(enemy)
 
     def return_object(self, entity):
         entity.destroy()
         self._enemy_pool.append(entity)
-        self._game_world._events[GameEvents.ENEMY_DEATH](entity)
+        self._game_world.notify(GameEvents.ENEMY_DEATH, entity)
 
-    def get_object(self, entity_type, position):
+    def get_object_filtered(self, entity_type, position):
         
         if self._allowed_enemies and entity_type not in self._allowed_enemies:
             return None
         
         self._enemy_pool = [obj for obj in self._enemy_pool if obj.is_destroyed]
         for entity in self._enemy_pool:
-            if entity._entity_type == entity_type:
+            if entity.entity_type == entity_type:
+                entity.transform.position = position
+                return entity
+        builder = EnemyBuilder()
+        builder.build(entity_type)
+        object = builder.get_gameObject()
+        object.transform.position = position
+        return object
+
+    def get_object(self, entity_type, position):
+                
+        self._enemy_pool = [obj for obj in self._enemy_pool if obj.is_destroyed]
+        for entity in self._enemy_pool:
+            if entity.entity_type == entity_type:
                 entity.transform.position = position
                 return entity
         builder = EnemyBuilder()
@@ -132,7 +150,7 @@ class ProjectilePool(ObjectPool):
                 pass
         self._projectile_pool = [obj for obj in self._projectile_pool if obj.is_destroyed]
         for entity in self._projectile_pool:
-            if entity._entity_type == entity_type:
+            if entity.entity_type == entity_type:
                 entity.transform.position = position
                 return entity
         builder = ProjectileBuilder()
@@ -141,7 +159,7 @@ class ProjectilePool(ObjectPool):
         if entity_type is Entities.PLAYER_PROJECTILE and self._player_projectile_type is not Entities.PLAYER_PROJECTILE:
             object.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
             object.awake(self._game_world)
-            object._damage = self._player_projectile_damage
+            object.damage = self._player_projectile_damage
         object.transform.position = position
         return object
     
@@ -149,10 +167,10 @@ class ProjectilePool(ObjectPool):
         self._player_projectile_type = upgraded_sprite
         self._player_projectile_damage = upgraded_damage
         for projectile in self._projectile_pool:
-            if projectile._entity_type is Entities.PLAYER_PROJECTILE:
+            if projectile.entity_type is Entities.PLAYER_PROJECTILE:
                 projectile.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
-                projectile._damage = self._player_projectile_damage
-        for active in self._game_world._colliders:
-            if active.gameObject._entity_type is Entities.PLAYER_PROJECTILE:
+                projectile.damage = self._player_projectile_damage
+        for active in self._game_world.colliders:
+            if active.gameObject.entity_type is Entities.PLAYER_PROJECTILE:
                 active.gameObject.get_component(Components.SPRITERENDERER.value).change_sprite(self._player_projectile_type)
-                active.gameObject._damage = self._player_projectile_damage
+                active.gameObject.damage = self._player_projectile_damage

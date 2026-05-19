@@ -31,6 +31,7 @@ class GameWorld:
         self._old_asset_key=None
         self._new_asset_key=None
 
+        self._boss = None
         self._enemies_killed = 0
         self._enemy_pool = EnemyPool(self)
         
@@ -39,13 +40,27 @@ class GameWorld:
 
         self._reset_game_bool = False
 
-        self.level_manager = LevelManager(self)
-        self.level_manager.active_bool = False
+        self._level_manager = LevelManager(self)
+        self._level_manager.active_bool = False
         self._start_manu = Menu(self, Assets.START_MENU)
-        self.ui_timer = LevelTimer(self.screen)
-        self.enemy_kill_counter = EnemyDeath(self.screen, self)
+        self._ui_timer = LevelTimer(self.screen)
+        self._enemy_kill_counter = EnemyDeath(self.screen, self)
 
+    @property
+    def boss(self):
+        return self._boss
 
+    @boss.setter
+    def boss(self, value):
+        self._boss = value
+
+    @property
+    def sound_manager(self):
+        return self._sound_manager
+    
+    @property
+    def projectile_pool(self):
+        return self._projectile_pool
 
     @property
     def screen(self):
@@ -59,6 +74,18 @@ class GameWorld:
     def texts(self):
         return self._text_button
     
+    @property
+    def level_manager(self):
+        return self._level_manager
+    
+    @property
+    def ui_timer(self):
+        return self._ui_timer
+    
+    @property
+    def enemy_kill_counter(self):
+        return self._enemy_kill_counter
+
     @texts.setter
     def texts(self, value):
         self._text_button = value
@@ -77,7 +104,7 @@ class GameWorld:
     
     @property
     def pause_bool(self):
-        return self.pause_bool
+        return self._pause_bool
     
     @pause_bool.setter
     def pause_bool(self, value):
@@ -94,6 +121,10 @@ class GameWorld:
     @reset_game_bool.setter
     def reset_game_bool(self, value):
         self._reset_game_bool =value
+
+    @property
+    def enemy_pool(self):
+        return self._enemy_pool
 
     @property #Ikke sikker på at der er behov for den
     def is_fading(self):
@@ -140,8 +171,8 @@ class GameWorld:
         self._healthbar = Healthbar(player_entity, self.screen)
 
         self._projectile_pool = ProjectilePool(self)
-        self.level_manager.active_bool = True
-        self.level_manager.reset_level_to_zero()
+        self._level_manager.active_bool = True
+        self._level_manager.reset_level_to_zero()
 
         self.awake()
         self.start()
@@ -182,7 +213,7 @@ class GameWorld:
     def player_death(self, player): 
         self.show_loose_screen()
         self._player.is_destroyed = True
-        self.level_manager.active_bool = False
+        self._level_manager.active_bool = False
 
     def spawn_enemy(self, entity_type, position):
         self.instantiate(self._enemy_pool.get_object(entity_type, position))
@@ -208,9 +239,8 @@ class GameWorld:
     def update(self):
         while self._running:
 
-            if self._pause_bool == False:
-                delta_time = self._clock.tick(60) / 1000.0
-            else:
+            delta_time = min((self._clock.tick(60) / 1000.0), 0.05)
+            if self._pause_bool:
                 delta_time = 0
 
             if self._is_fading == True:                
@@ -235,8 +265,8 @@ class GameWorld:
 
 
             self.level_manager.update(delta_time)
-            self.ui_timer.draw()
-            self.enemy_kill_counter.draw()
+            self._ui_timer.draw()
+            self._enemy_kill_counter.draw()
 
             keys = pygame.key.get_pressed()
 
@@ -259,7 +289,6 @@ class GameWorld:
                     for text in self._text_button[:]:
                         text.click_on_button()
 
-
             for gameObject in self._gameObjects[:]:
                 gameObject.update(delta_time)
 
@@ -267,11 +296,11 @@ class GameWorld:
                 text.update(delta_time)
 
             for i, collider1 in enumerate(self._colliders):
-                entity1 = collider1.gameObject._entity_type
+                entity1 = collider1.gameObject.entity_type
 
                 for j in range(i + 1, len(self._colliders)):
                     collider2 = self._colliders[j]
-                    entity2 = collider2.gameObject._entity_type
+                    entity2 = collider2.gameObject.entity_type
 
                     if not self.can_collide(entity1, entity2):
                         continue  
@@ -306,6 +335,16 @@ class GameWorld:
     
     def within_x_range(self, go1, go2, max_distance=500) -> bool:
         return abs(go1.transform.position.x - go2.transform.position.x) <= max_distance
+    
+    def notify(self, event, data):
+        if event in self._events:
+            if data is None:
+                self._events[event]()
+            else:
+                self._events[event](data)
+
+    def boss_exists(self):
+        return self._boss in self._gameObjects
 
 gw = GameWorld()
 

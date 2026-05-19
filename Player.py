@@ -118,7 +118,6 @@ class Player(Component):
                 self._game_world.sound_manager.play_sound(SFX.FIRE_HIT)
         self._game_world.sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
         if self._entity.health <= 0:
-            #self._game_world._events[GameEvents.PLAYER_DEATH](self.gameObject) #HUSK
             self._game_world.notify(GameEvents.PLAYER_DEATH, self.gameObject)
 
     def enemy_escaped(self):

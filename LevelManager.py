@@ -1,4 +1,5 @@
 from Enums import Entities, Assets, Components
+from AssetLoader import AssetLoader
 
 LEVELS = [
     {
@@ -116,12 +117,17 @@ class LevelManager:
             if self._time_left <= 0:
                 self.next_level()
         
+        #Spawing new enemies
         self._spawn_timer += delta_time
         if self._spawn_timer >= self._spawn_interval:
             self._spawn_timer = 0
             self._gw.enemy_pool.spawn_random_enemy()
     
     def next_level(self):
+        #Setting the old assets key in GameWorld to be used for the fading background
+        self._gw.old_asset_key = LEVELS[self._current_level]["bg"]
+        
+        #Settig the value of the _current_level
         self._current_level += 1
 
         if self._current_level >= len(LEVELS):
@@ -129,6 +135,11 @@ class LevelManager:
             self._active = False
             return #Game done(Win/Lose Screen)
         
+        #Setting is_fading to True for the fading proces to begind 
+        self._gw.is_fading = True
+        #Setting the new assets key in GameWorld to be used for the fading background
+        self._gw.new_asset_key = LEVELS[self._current_level]["bg"]
+
         self.start_level()
     
     def boss_killed(self):

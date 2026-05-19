@@ -5,6 +5,7 @@ class AssetLoader:
 
     _animations = {}
     _sprites = {}
+    fading = False
 
     @classmethod
     def get_animation_args(cls, asset_key):
@@ -89,8 +90,6 @@ class AssetLoader:
                 return  "Background\\Bg3.png"
             case Assets.BG_LEVEL_4:
                 return  "Background\\Bg4.png"
-            case Assets.HVEDER:
-                return "menu\\hvede.png"
             case Entities.PLAYER_SHOOTING:
                 return "player\\monkSling0.png"
             case _:
@@ -115,3 +114,13 @@ class AssetLoader:
             sprite = pygame.image.load(f"assets\\{arg}")
             cls._sprites[asset_key] = sprite
         return cls._sprites[asset_key]
+    
+    @classmethod
+    def fade_background(cls, old_asset_key, new_asset_key, alpha):     
+        old_bg = cls.get_sprite(old_asset_key)
+        new_bg = cls.get_sprite(new_asset_key).copy()
+
+        #Changing the alpha setting
+        new_bg.set_alpha(alpha)
+
+        return old_bg, new_bg

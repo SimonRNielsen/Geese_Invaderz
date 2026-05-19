@@ -15,7 +15,7 @@ class GameWorld:
     def __init__(self) -> None: #Startup logic
         pygame.init()
         pygame.display.set_caption("Geese invaderz")
-        pygame.display.set_icon(AssetLoader.get_sprite(Assets.HVEDER))
+        pygame.display.set_icon(AssetLoader.get_sprite(Entities.PLAYER_PROJECTILE))
         self._sound_manager = SoundManager()
         self._screen = pygame.display.set_mode((1920,1080))
         self._background = None
@@ -26,6 +26,10 @@ class GameWorld:
         self._events = {}
         self._player_score = 0
         self._text_button: List[Button] = []
+        self._is_fading = False
+        self._fading_alpha = 0
+        self._old_asset_key=None #Assets key for fading between levels - old
+        self._new_asset_key=None #Assets key for fading between levels - new
 
         self._boss = None
         self._enemies_killed = 0
@@ -122,6 +126,30 @@ class GameWorld:
     def enemy_pool(self):
         return self._enemy_pool
 
+    @property
+    def is_fading(self):
+        return self._is_fading
+    
+    @is_fading.setter
+    def is_fading(self, value):
+        self._is_fading =value
+
+    @property
+    def old_asset_key(self):
+        return self._old_asset_key
+
+    @old_asset_key.setter
+    def old_asset_key(self, value):
+        self._old_asset_key=value
+
+    @property
+    def new_asset_key(self):
+        return self._new_asset_key
+
+    @new_asset_key.setter
+    def new_asset_key(self, value):
+        self._new_asset_key=value
+
     def change_level_manager_bool(self, value):
         self.level_manager.active_bool = value
     
@@ -194,7 +222,6 @@ class GameWorld:
         self.instantiate(self._projectile_pool.get_object(entity_type, position))
 
     def awake(self):
-
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
         self.subscribe(GameEvents.PLAYER_DEATH, self.player_death)
 
@@ -216,10 +243,28 @@ class GameWorld:
             if self._pause_bool:
                 delta_time = 0
 
-            if self._background:
-                self._screen.blit(self._background, (0,0))
+            #The background is fading between levels 
+            if self._is_fading == True: #Is sat to True when the levels are changing in LevelManager            
+                old_bg, fade_bg = AssetLoader.fade_background(
+                    self._old_asset_key, 
+                    self._new_asset_key, 
+                    self._fading_alpha)
+
+                self._screen.blit(old_bg, (0, 0))
+                self._screen.blit(fade_bg, (0, 0))
+
+                self._fading_alpha = self._fading_alpha + 5
+
+                #Stop fading when alpha reaches 256 (fully transparten at 255)
+                if(self._fading_alpha > 256):
+                    #Resetting 
+                    self._is_fading = False
+                    self._fading_alpha = 0            
             else:
-                self._screen.fill("cornflowerblue")
+                if self._background:
+                    self._screen.blit(self._background, (0,0))
+                else:
+                    self._screen.fill("cornflowerblue")
 
             #Update of UI and manager
             self.level_manager.update(delta_time)
@@ -232,7 +277,7 @@ class GameWorld:
                 self.reset_game()
                 self._reset_game_bool = False
             
-            #Check certain player input
+            #Pressed keys to exit and pause game
             if keys[pygame.K_ESCAPE]:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p] and self._menu_bool == False:

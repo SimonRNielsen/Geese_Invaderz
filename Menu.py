@@ -85,7 +85,6 @@ class Button():
         self._texts: List[Button] = self._gameWorld.texts        
         self._main_menu_bool = False
 
-        
 
         #Position of the button
         match self._button_type:
@@ -114,7 +113,7 @@ class Button():
         self.rect = self._image.get_rect(topleft=(self._pos))
         self._show_text =True
 
-        #Text on the button
+        #Getting the text on the button
         if(self._button_type == Button_Types.KILLED):
             self._text = str(self._gameWorld.killed_enemies)
         else:
@@ -150,6 +149,10 @@ class Button():
                     self._gameWorld.reset_game_bool = True
                 case Button_Types.START:
                     self._gameWorld.reset_game_bool = True
+                case Button_Types.KILLED: #If pressed on going back to the menu
+                    self._gameWorld.player_alive.is_destroyed = True
+                    self._main_amount += 1
+                    
 
             self._menu.get_menu().destroy()
             self._gameWorld.menu_bool = False

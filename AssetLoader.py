@@ -5,6 +5,7 @@ class AssetLoader:
 
     _animations = {}
     _sprites = {}
+    fading = False
 
     @classmethod
     def get_animation_args(cls, asset_key):
@@ -117,14 +118,10 @@ class AssetLoader:
         return cls._sprites[asset_key]
     
     @classmethod
-    def fade_background(cls, asset_key):
-        imageOld=AssetLoader.get_sprite(asset_key)
+    def fade_background(cls, old_asset_key, new_asset_key, alpha):     
+        old_bg = cls.get_sprite(old_asset_key)
+        new_bg = cls.get_sprite(new_asset_key).copy()
 
-        kage=pygame.time.Clock()
+        new_bg.set_alpha(alpha)
 
-        for alpha in range(255, 0):
-            imageOld.set_alpha(alpha)
-
-            pygame.display.flip()
-
-            kage.tick(60)
+        return old_bg, new_bg

@@ -1,4 +1,5 @@
 from Enums import Entities, Assets, Components
+from AssetLoader import AssetLoader
 
 LEVELS = [
     {
@@ -119,6 +120,7 @@ class LevelManager:
             self._gw._enemy_pool.spawn_random_enemy()
     
     def next_level(self):
+        self._gw.old_asset_key = LEVELS[self._current_level]["bg"]
         self._current_level += 1
 
         if self._current_level >= len(LEVELS):
@@ -126,6 +128,9 @@ class LevelManager:
             self._active = False
             return #Game done(Win/Lose Screen)
         
+        self._gw.is_fading = True
+        self._gw.new_asset_key = LEVELS[self._current_level]["bg"]
+
         self.start_level()
     
     def boss_killed(self):

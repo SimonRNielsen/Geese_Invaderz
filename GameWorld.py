@@ -26,6 +26,10 @@ class GameWorld:
         self._events = {}
         self._player_score = 0
         self._text_button: List[Button] = []
+        self._is_fading = False
+        self._fading_alpha = 0
+        self._old_asset_key=None
+        self._new_asset_key=None
 
         self._enemies_killed = 0
         self._enemy_pool = EnemyPool(self)
@@ -90,6 +94,30 @@ class GameWorld:
     @reset_game_bool.setter
     def reset_game_bool(self, value):
         self._reset_game_bool =value
+
+    @property #Ikke sikker på at der er behov for den
+    def is_fading(self):
+        return self._is_fading
+    
+    @is_fading.setter
+    def is_fading(self, value):
+        self._is_fading =value
+
+    @property
+    def old_asset_key(self):
+        return self._old_asset_key
+
+    @old_asset_key.setter
+    def old_asset_key(self, value):
+        self._old_asset_key=value
+
+    @property
+    def new_asset_key(self):
+        return self._new_asset_key
+
+    @new_asset_key.setter
+    def new_asset_key(self, value):
+        self._new_asset_key=value
 
     def change_level_manager_bool(self, value):
         self.level_manager.active_bool = value
@@ -163,7 +191,6 @@ class GameWorld:
         self.instantiate(self._projectile_pool.get_object(entity_type, position))
 
     def awake(self):
-
         self.subscribe(GameEvents.ENEMY_DEATH, self.enemy_death)
         self.subscribe(GameEvents.PLAYER_DEATH, self.player_death)
 
@@ -186,10 +213,25 @@ class GameWorld:
             else:
                 delta_time = 0
 
-            if self._background:
-                self._screen.blit(self._background, (0,0))
+            if self._is_fading == True:                
+                old_bg,fade_bg = AssetLoader.fade_background(
+                    self._old_asset_key, 
+                    self._new_asset_key, 
+                    self._fading_alpha)
+
+                self._screen.blit(old_bg, (0, 0))
+                self._screen.blit(fade_bg, (0, 0))
+
+                self._fading_alpha = self._fading_alpha + 5
+
+                if(self._fading_alpha > 256):
+                    self._is_fading = False
+                    self._fading_alpha = 0            
             else:
-                self._screen.fill("cornflowerblue")
+                if self._background:
+                    self._screen.blit(self._background, (0,0))
+                else:
+                    self._screen.fill("cornflowerblue")
 
 
             self.level_manager.update(delta_time)

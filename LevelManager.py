@@ -123,6 +123,7 @@ class LevelManager:
             self._gw.enemy_pool.spawn_random_enemy()
     
     def next_level(self):
+        #Setting the old assets key to be used for the fading background
         self._gw.old_asset_key = LEVELS[self._current_level]["bg"]
         self._current_level += 1
 
@@ -131,7 +132,9 @@ class LevelManager:
             self._active = False
             return #Game done(Win/Lose Screen)
         
+        #Setting is_fading to True for the fading proces to begind 
         self._gw.is_fading = True
+        #Setting the new assets key to be used for the fading background
         self._gw.new_asset_key = LEVELS[self._current_level]["bg"]
 
         self.start_level()

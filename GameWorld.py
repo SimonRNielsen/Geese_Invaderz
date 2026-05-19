@@ -15,7 +15,7 @@ class GameWorld:
     def __init__(self) -> None:
         pygame.init()
         pygame.display.set_caption("Geese invaderz")
-        pygame.display.set_icon(AssetLoader.get_sprite(Assets.HVEDER))
+        pygame.display.set_icon(AssetLoader.get_sprite(Entities.PLAYER_PROJECTILE))
         self._sound_manager = SoundManager()
         self._screen = pygame.display.set_mode((1920,1080))
         self._background = None
@@ -28,8 +28,8 @@ class GameWorld:
         self._text_button: List[Button] = []
         self._is_fading = False
         self._fading_alpha = 0
-        self._old_asset_key=None
-        self._new_asset_key=None
+        self._old_asset_key=None #Assets key for fading between levels - old
+        self._new_asset_key=None #Assets key for fading between levels - new
 
         self._boss = None
         self._enemies_killed = 0
@@ -126,7 +126,7 @@ class GameWorld:
     def enemy_pool(self):
         return self._enemy_pool
 
-    @property #Ikke sikker på at der er behov for den
+    @property
     def is_fading(self):
         return self._is_fading
     
@@ -238,13 +238,13 @@ class GameWorld:
 
     def update(self):
         while self._running:
-
             delta_time = min((self._clock.tick(60) / 1000.0), 0.05)
             if self._pause_bool:
                 delta_time = 0
 
-            if self._is_fading == True:                
-                old_bg,fade_bg = AssetLoader.fade_background(
+            #The background is fading between levels 
+            if self._is_fading == True: #Is sat to True when the levels are changing in LevelManager            
+                old_bg, fade_bg = AssetLoader.fade_background(
                     self._old_asset_key, 
                     self._new_asset_key, 
                     self._fading_alpha)
@@ -254,7 +254,9 @@ class GameWorld:
 
                 self._fading_alpha = self._fading_alpha + 5
 
+                #Stop fading when alpha reaches 256 (fully transparten at 255)
                 if(self._fading_alpha > 256):
+                    #Resetting 
                     self._is_fading = False
                     self._fading_alpha = 0            
             else:
@@ -274,7 +276,7 @@ class GameWorld:
                 self.reset_game()
                 self._reset_game_bool = False
             
-
+            #Pressed keys to exit and pause game
             if keys[pygame.K_ESCAPE]:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p] and self._menu_bool == False:

@@ -15,6 +15,7 @@ class GameWorld:
     def __init__(self) -> None:
         pygame.init()
         pygame.display.set_caption("Geese invaderz")
+        pygame.display.set_icon(AssetLoader.get_sprite(Assets.HVEDER))
         self._sound_manager = SoundManager()
         self._screen = pygame.display.set_mode((1920,1080))
         self._background = None

@@ -89,6 +89,8 @@ class AssetLoader:
                 return  "Background\\Bg3.png"
             case Assets.BG_LEVEL_4:
                 return  "Background\\Bg4.png"
+            case Assets.HVEDER:
+                return "menu\\hvede.png"
             case Entities.PLAYER_SHOOTING:
                 return "player\\monkSling0.png"
             case _:

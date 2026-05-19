@@ -49,15 +49,15 @@ class EnemyBuilder(Builder):
     def __init__(self):
         super().__init__()
 
-    def build(self, entity_type):
+    def build(self, entity_type): #Adds components to build the enemy
         self._gameObject = GameObject(pygame.math.Vector2(-1000,-1000))
         self._gameObject.add_component(SpriteRenderer(entity_type))
         animator = self._gameObject.add_component(Animator())
         animator.play_animation(entity_type)
         self._gameObject.add_component(Collider())
         enemy = self._gameObject.add_component(Enemy())
-        enemy.set_value(entity_type)
-        self._gameObject.destroy()
+        enemy.set_value(entity_type) #Sets enemys parameters according to type
+        self._gameObject.destroy() #Sets parameters into pooling-ready mode
 
     def get_gameObject(self):
         return self._gameObject
@@ -67,7 +67,7 @@ class ProjectileBuilder(Builder):
     def __init__(self):
         super().__init__()
 
-    def build(self, entity_type):
+    def build(self, entity_type): #Adds component and sets parameters according to projectile type
         match entity_type:
             case Entities.PLAYER_PROJECTILE:
                 speed = 700

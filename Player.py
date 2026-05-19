@@ -24,8 +24,8 @@ class Player(Component):
         #Gem reference til skærmen, så der kan laves højdegrænser
         self._screen_height = gameWorld.screen.get_height()
         self._game_world = gameWorld
-        self._gameObject._entity_type = Entities.PLAYER
-        self._gameObject._health = 3
+        self._gameObject.entity_type = Entities.PLAYER
+        self._gameObject.health = 3
         self._sr = self.gameObject.get_component("SpriteRenderer")
         self._sprite_height = self._sr.sprite_image.get_height()
         self._sprite_width = self._sr.sprite_image.get_width()
@@ -47,10 +47,10 @@ class Player(Component):
         
         if self._shooting:
             self._shooting_animation_timer += delta_time
-            if self._shooting_animation_timer >= 0.3:
+            if self._shooting_animation_timer >= 0.3: #Refire and enable normal animation
                 self._shooting = False
                 self._shooting_animation_timer = 0
-                self._animator._freeze_animation = False
+                self._animator.freeze_animation = False
                 self._sr.change_sprite(Entities.PLAYER)
         
         keys = pygame.key.get_pressed()
@@ -61,7 +61,7 @@ class Player(Component):
         if keys[pygame.K_s]:
             direction += 1
         
-        self._game_world._sound_manager.play_footsteps(direction)
+        self._game_world.sound_manager.play_footsteps(direction)
 
         #Vertical movement
         transform = self.gameObject.transform
@@ -96,7 +96,7 @@ class Player(Component):
         self._game_world.projectile_pool.upgrade_pooled_shots(self._projectile_type, self._projectile_damage)
 
     def shoot(self):
-        self._animator._freeze_animation = True
+        self._animator.freeze_animation = True
         self._shooting = True
         self._sr.change_sprite(Entities.PLAYER_SHOOTING)
         pos = self.gameObject.transform.position + pygame.math.Vector2(
@@ -105,7 +105,7 @@ class Player(Component):
         )
         self._game_world.spawn_projectile(Entities.PLAYER_PROJECTILE, pos)
 
-    def take_damage(self, collider):
+    def take_damage(self, collider): #Method to take damage - activated by collider
         other = collider.gameObject
         match other.entity_type:
             case Entities.ENEMY_PROJECTILE:
@@ -120,7 +120,7 @@ class Player(Component):
         if self._entity.health <= 0:
             self._game_world.notify(GameEvents.PLAYER_DEATH, self.gameObject)
 
-    def enemy_escaped(self):
+    def enemy_escaped(self): #Method to damage player when enemy runs past player
         self._entity.health -= 1
         self._game_world.sound_manager.play_sound(SFX.PLAYER_TAKES_DAMAGE)
         if self._entity.health <= 0:

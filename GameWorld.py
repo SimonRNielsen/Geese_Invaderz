@@ -12,7 +12,7 @@ from LevelManager import LevelManager
 
 class GameWorld:
 
-    def __init__(self) -> None:
+    def __init__(self) -> None: #Startup logic
         pygame.init()
         pygame.display.set_caption("Geese invaderz")
         pygame.display.set_icon(AssetLoader.get_sprite(Assets.HVEDER))
@@ -125,7 +125,7 @@ class GameWorld:
     def change_level_manager_bool(self, value):
         self.level_manager.active_bool = value
     
-    def reset_game(self):
+    def reset_game(self): #Resets needed parameters for a clean rerun
         self._gameObjects = []
         self._colliders = []
         self._events = {}
@@ -149,28 +149,28 @@ class GameWorld:
         self.awake()
         self.start()
     
-    def set_background(self, asset: Assets):
+    def set_background(self, asset: Assets): #
         self._background = AssetLoader.get_sprite(asset)
     
-    def show_win_screen(self):
+    def show_win_screen(self): #Win screen logic
         if not self._menu_bool:
             Menu(self, Assets.WIN_SCREEN)
             self._menu_bool = True
     
-    def show_loose_screen(self):
+    def show_loose_screen(self): #Loss screen logic
         if not self._menu_bool:
             Menu(self, Assets.LOOSE_SCREEN)
             self._menu_bool = True
     
-    def instantiate(self, gameObject):
+    def instantiate(self, gameObject): #Initialization logic for all gameObjects
         gameObject.awake(self) 
         gameObject.start()
         self._gameObjects.append(gameObject)
 
-    def subscribe(self, event, method):
+    def subscribe(self, event, method): #For subscribing to events
         self._events[event] = method
 
-    def enemy_death(self, gameObject):
+    def enemy_death(self, gameObject): #Handles Enemy death
         self._enemies_killed += 1
         match gameObject._entity_type:
             case Entities.WALKING_GOOSE:
@@ -182,15 +182,15 @@ class GameWorld:
             case Entities.GOOSIFER:
                 self._player_score += 10
 
-    def player_death(self, player): 
+    def player_death(self, player): #Handles player death
         self.show_loose_screen()
         self._player.is_destroyed = True
         self._level_manager.active_bool = False
 
-    def spawn_enemy(self, entity_type, position):
+    def spawn_enemy(self, entity_type, position): #Used for spawning enemies
         self.instantiate(self._enemy_pool.get_object(entity_type, position))
         
-    def spawn_projectile(self, entity_type, position):
+    def spawn_projectile(self, entity_type, position): #Used for spawning projectiles
         self.instantiate(self._projectile_pool.get_object(entity_type, position))
 
     def awake(self):
@@ -212,7 +212,7 @@ class GameWorld:
     def update(self):
         while self._running:
 
-            delta_time = min((self._clock.tick(60) / 1000.0), 0.05)
+            delta_time = min((self._clock.tick(60) / 1000.0), 0.05) #Clamps deltatime to avoid jumps when tabbed out/breaks
             if self._pause_bool:
                 delta_time = 0
 
@@ -221,18 +221,18 @@ class GameWorld:
             else:
                 self._screen.fill("cornflowerblue")
 
-
+            #Update of UI and manager
             self.level_manager.update(delta_time)
             self._ui_timer.draw()
             self._enemy_kill_counter.draw()
 
             keys = pygame.key.get_pressed()
 
-            if (self._reset_game_bool == True):
+            if (self._reset_game_bool == True): #Resets game if triggered
                 self.reset_game()
                 self._reset_game_bool = False
             
-
+            #Check certain player input
             if keys[pygame.K_ESCAPE]:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
             if keys[pygame.K_p] and self._menu_bool == False:
@@ -240,20 +240,20 @@ class GameWorld:
                 self._menu_bool = True
                 self._pause_bool = True
 
-            for event in pygame.event.get():
+            for event in pygame.event.get(): #Checks events
                 if event.type == pygame.QUIT:
                     self._running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for text in self._text_button[:]:
                         text.click_on_button()
 
-            for gameObject in self._gameObjects[:]:
+            for gameObject in self._gameObjects[:]: #Update loop
                 gameObject.update(delta_time)
 
             for text in self._text_button[:]:
                 text.update(delta_time)
 
-            for i, collider1 in enumerate(self._colliders):
+            for i, collider1 in enumerate(self._colliders): #Collision checks
                 entity1 = collider1.gameObject.entity_type
 
                 for j in range(i + 1, len(self._colliders)):
@@ -268,8 +268,8 @@ class GameWorld:
 
                     collider1.collision_check(collider2)
 
-            self._gameObjects = [obj for obj in self._gameObjects if not obj.is_destroyed]
-            self._colliders = [obj for obj in self._colliders if not obj.gameObject.is_destroyed]
+            self._gameObjects = [obj for obj in self._gameObjects if not obj.is_destroyed] #Remove destroyed objects from updateloop
+            self._colliders = [obj for obj in self._colliders if not obj.gameObject.is_destroyed] #Remove collider from colliders
 
             if self.level_manager.active_bool == True:
                 self._healthbar.draw()
@@ -279,10 +279,10 @@ class GameWorld:
 
         pygame.quit()
 
-    def add_to_text_button(self, button):
+    def add_to_text_button(self, button): #Adds button
         self._text_button.append(button)
 
-    def can_collide(self, entity_a, entity_b) -> bool:
+    def can_collide(self, entity_a, entity_b) -> bool: #Checks Rulesets if two objects can collide (used for avoiding needless collisionchecks)
         if entity_a in COLLISION_RULES and entity_b in COLLISION_RULES[entity_a]:
             return True
 
@@ -291,17 +291,17 @@ class GameWorld:
 
         return False
     
-    def within_x_range(self, go1, go2, max_distance=500) -> bool:
+    def within_x_range(self, go1, go2, max_distance=500) -> bool: #Checks if two objects are within a certain distance (default is 500 pixels) of each other (used for avoiding needless collisionchecks)
         return abs(go1.transform.position.x - go2.transform.position.x) <= max_distance
     
-    def notify(self, event, data):
+    def notify(self, event, data=None): #Used to trigger events from other classes
         if event in self._events:
             if data is None:
                 self._events[event]()
             else:
                 self._events[event](data)
 
-    def boss_exists(self):
+    def boss_exists(self) -> bool: #Checks if enemy is active
         return self._boss in self._gameObjects
 
 gw = GameWorld()

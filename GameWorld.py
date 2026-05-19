@@ -26,6 +26,7 @@ class GameWorld:
         self._player_score = 0
         self._text_button: List[Button] = []
 
+        self._boss = None
         self._enemies_killed = 0
         self._enemy_pool = EnemyPool(self)
         
@@ -39,6 +40,14 @@ class GameWorld:
         self._start_manu = Menu(self, Assets.START_MENU)
         self._ui_timer = LevelTimer(self.screen)
         self._enemy_kill_counter = EnemyDeath(self.screen, self)
+
+    @property
+    def boss(self):
+        return self._boss
+
+    @boss.setter
+    def boss(self, value):
+        self._boss = value
 
     @property
     def sound_manager(self):
@@ -202,8 +211,7 @@ class GameWorld:
     def update(self):
         while self._running:
 
-            delta_time = self._clock.tick(60) / 1000.0
-            delta_time = min(delta_time, 0.05)
+            delta_time = min((self._clock.tick(60) / 1000.0), 0.05)
             if self._pause_bool:
                 delta_time = 0
 
@@ -245,11 +253,11 @@ class GameWorld:
                 text.update(delta_time)
 
             for i, collider1 in enumerate(self._colliders):
-                entity1 = collider1.gameObject._entity_type
+                entity1 = collider1.gameObject.entity_type
 
                 for j in range(i + 1, len(self._colliders)):
                     collider2 = self._colliders[j]
-                    entity2 = collider2.gameObject._entity_type
+                    entity2 = collider2.gameObject.entity_type
 
                     if not self.can_collide(entity1, entity2):
                         continue  
@@ -291,6 +299,9 @@ class GameWorld:
                 self._events[event]()
             else:
                 self._events[event](data)
+
+    def boss_exists(self):
+        return self._boss in self._gameObjects
 
 gw = GameWorld()
 

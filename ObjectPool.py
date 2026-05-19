@@ -24,7 +24,7 @@ class EnemyPool(ObjectPool):
         self._game_world = game_world
         self._enemy_pool = []
         self._allowed_enemies = []
-        for i in range(4):
+        for i in range(10):
             builder = EnemyBuilder()
             builder.build(Entities.WALKING_GOOSE)
             self._enemy_pool.append(builder.get_gameObject())
@@ -37,6 +37,7 @@ class EnemyPool(ObjectPool):
         builder = EnemyBuilder()
         builder.build(Entities.GOOSIFER)
         self._enemy_pool.append(builder.get_gameObject())
+        self._game_world.boss = builder.get_gameObject()
         
     def set_allowed_enemies(self, enemies: list[Entities]):
         self._allowed_enemies = enemies
@@ -47,10 +48,8 @@ class EnemyPool(ObjectPool):
         
         enemy_type = random.choice(self._allowed_enemies)
 
-        if enemy_type == Entities.GOOSIFER:
-            for obj in self._game_world._gameObjects:
-                if getattr(obj, "_entity_type", None) == Entities.GOOSIFER:
-                    return
+        if self._game_world.boss_exists():
+            return
                 
         pos= self.get_spawn_position(enemy_type)
         enemy = self.get_object_filtered(enemy_type, pos)

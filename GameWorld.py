@@ -73,6 +73,10 @@ class GameWorld:
     @property
     def texts(self):
         return self._text_button
+
+    @texts.setter
+    def texts(self, value):
+        self._text_button = value
     
     @property
     def level_manager(self):
@@ -85,10 +89,6 @@ class GameWorld:
     @property
     def enemy_kill_counter(self):
         return self._enemy_kill_counter
-
-    @texts.setter
-    def texts(self, value):
-        self._text_button = value
 
     @property
     def player_alive(self):
@@ -135,20 +135,20 @@ class GameWorld:
         self._is_fading =value
 
     @property
-    def old_asset_key(self):
-        return self._old_asset_key
-
-    @old_asset_key.setter
-    def old_asset_key(self, value):
-        self._old_asset_key=value
-
-    @property
     def new_asset_key(self):
         return self._new_asset_key
 
     @new_asset_key.setter
     def new_asset_key(self, value):
         self._new_asset_key=value
+
+    @property
+    def old_asset_key(self):
+        return self._old_asset_key
+
+    @old_asset_key.setter
+    def old_asset_key(self, value):
+        self._old_asset_key=value
 
     def change_level_manager_bool(self, value):
         self.level_manager.active_bool = value

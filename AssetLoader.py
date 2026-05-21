@@ -55,7 +55,7 @@ class AssetLoader:
             case Entities.VARM_HVEDE:
                 return "projectiles\\Varm_Hvede.png"
             case Entities.STEN_HVEDE:
-                return "projectiles\\Sten_Hvede.png"
+                return "projectiles\\Sten_Hvede_.png"
             case Entities.WALKING_GOOSE:
                 return "enemy\\gooseWalk0.png"
             case Entities.OBERST:

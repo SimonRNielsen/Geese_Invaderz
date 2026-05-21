@@ -327,6 +327,9 @@ class GameWorld:
     def add_to_text_button(self, button): #Adds button
         self._text_button.append(button)
 
+    def clear_to_text_button(self):
+        self._text_button.clear()
+
     def can_collide(self, entity_a, entity_b) -> bool: #Checks Rulesets if two objects can collide (used for avoiding needless collisionchecks)
         if entity_a in COLLISION_RULES and entity_b in COLLISION_RULES[entity_a]:
             return True

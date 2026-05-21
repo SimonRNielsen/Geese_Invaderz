@@ -127,7 +127,7 @@ class Button():
         self._text_rect = self._text_surface.get_rect(center=self.rect.center)
 
         self._main_amount = 0
-        self._gameWorld.texts.append(self)
+        #self._gameWorld.texts.append(self)
                 
     
 
@@ -136,7 +136,8 @@ class Button():
         
 
     def click_on_button(self):
-        if(self.rect.collidepoint(pygame.mouse.get_pos()) == True):
+        #If they are colliding and the text on the buttons are showing 
+        if(self.rect.collidepoint(pygame.mouse.get_pos()) & self._show_text == True):
             self._gameWorld._sound_manager.play_sound(SFX.BUTTON_CLICK)
             match self._button_type:
                 case Button_Types.EXIT:

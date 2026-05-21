@@ -20,6 +20,7 @@ class Menu():
         if self._gameObject._name not in self._gameWorld._gameObjects:
             self._gameWorld.instantiate(self._gameObject)
 
+            #Different types of menues and their buttons
             match self._menu_type:
                 case Assets.START_MENU:             
                     self._start_button = Button(self._gameWorld, self, Button_Types.START)
@@ -127,7 +128,7 @@ class Button():
         self._text_rect = self._text_surface.get_rect(center=self.rect.center)
 
         self._main_amount = 0
-        #self._gameWorld.texts.append(self)
+        self._gameWorld.texts.append(self)
                 
     
 
@@ -154,7 +155,7 @@ class Button():
                     self._gameWorld.player_alive.is_destroyed = True
                     self._main_amount += 1
                     
-
+            #Menu and buttons will be destroyed
             self._menu.get_menu().destroy()
             self._gameWorld.menu_bool = False
             self._gameWorld.pause_bool = False
@@ -169,9 +170,12 @@ class Button():
     
     
     def update(self,delta_time):
+        #Show text
         if (self._show_text == True):
             self._text_rect.center = self.rect.center
             self._screen.blit(self._text_surface, self._text_rect)
+        
+        #Start with the start/main menu
         if self._main_menu_bool == True:
             Menu(self._gameWorld, Assets.START_MENU)
             self._main_menu_bool = False
